@@ -15,4 +15,3 @@
         android:text="Send"
         android:onClick = "sendMessage" />
 </LinearLayout>
-ti
