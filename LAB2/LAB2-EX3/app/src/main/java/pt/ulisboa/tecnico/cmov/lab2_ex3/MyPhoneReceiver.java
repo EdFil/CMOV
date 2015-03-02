@@ -15,7 +15,8 @@ public class MyPhoneReceiver extends BroadcastReceiver {
 
     @Override
     public void onReceive(Context context, Intent intent) {
-        Log.w(TAG, intent.getExtras().get(TelephonyManager.EXTRA_INCOMING_NUMBER).toString());
-        
+        Object extra = intent.getExtras().get(TelephonyManager.EXTRA_INCOMING_NUMBER);
+        if(extra != null)
+            Log.d(TAG, extra.toString());
     }
 }
