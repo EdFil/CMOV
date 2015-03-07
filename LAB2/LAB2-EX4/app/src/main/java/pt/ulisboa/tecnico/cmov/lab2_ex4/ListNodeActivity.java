@@ -3,6 +3,7 @@ package pt.ulisboa.tecnico.cmov.lab2_ex4;
 import android.app.Activity;
 import android.app.ListActivity;
 import android.content.Intent;
+import android.graphics.BitmapFactory;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
@@ -35,7 +36,8 @@ public class ListNodeActivity extends Activity {
         mNoteList.add(new Note("Note title 1", "Note description 1"));
         mNoteList.add(new Note("Note title 2", "Note description 2"));
         mNoteList.add(new Note("Note title 3", "Note description 3"));
-        mNoteList.add(new Note("Note title 4", "Note description 4"));
+        mNoteList.add(new Note("Note title 4", "Note description 4", BitmapFactory.decodeResource(getApplicationContext().getResources(),
+                R.mipmap.ic_launcher)));
 
         mNoteArrayAdapter = new NoteArrayAdapter(this, mNoteList);
 

@@ -23,6 +23,26 @@
         android:layout_alignParentLeft="true"
         android:layout_alignParentStart="true" />
 
+
+    <ImageButton
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:id="@+id/imageButton"
+        android:layout_below="@+id/noteDescription"
+        android:layout_centerHorizontal="true"
+        android:src="@android:drawable/ic_menu_gallery"
+        android:adjustViewBounds="false"
+        android:onClick="onLoadImage"
+        android:background="@android:color/transparent"
+        android:contentDescription="Image Button" />
+
+    <ImageView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_centerHorizontal="true"
+        android:id="@+id/imageView"
+        android:layout_below="@+id/imageButton" />
+
     <LinearLayout
         android:orientation="horizontal"
         android:layout_width="fill_parent"
@@ -47,4 +67,5 @@
             android:onClick="onClickCancel" />
 
     </LinearLayout>
+
 </RelativeLayout>

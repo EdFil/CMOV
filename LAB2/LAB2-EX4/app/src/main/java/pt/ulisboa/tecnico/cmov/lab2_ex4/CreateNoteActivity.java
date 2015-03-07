@@ -2,11 +2,22 @@ package pt.ulisboa.tecnico.cmov.lab2_ex4;
 
 import android.app.Activity;
 import android.content.Intent;
+import android.database.Cursor;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
+import android.net.Uri;
 import android.os.Bundle;
+import android.provider.MediaStore;
 import android.util.Log;
 import android.view.View;
+import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
+
+import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.IOException;
+import java.net.URI;
 
 import pt.ulisboa.tecnico.cmov.lab2_ex4.note.Note;
 
@@ -20,6 +31,8 @@ public class CreateNoteActivity extends Activity {
 
     TextView mTitle;
     TextView mDescription;
+    ImageView mImageView;
+    Bitmap mBitmap = null;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -28,6 +41,7 @@ public class CreateNoteActivity extends Activity {
 
         mTitle = (TextView) findViewById(R.id.noteTitle);
         mDescription = (TextView) findViewById(R.id.noteDescription);
+        mImageView = (ImageView) findViewById(R.id.imageView);
 
         if(savedInstanceState != null){
             Note note = savedInstanceState.getParcelable(Note.NOTE_MESSAGE);
@@ -57,14 +71,14 @@ public class CreateNoteActivity extends Activity {
     @Override
     protected void onSaveInstanceState(Bundle state) {
         super.onSaveInstanceState(state);
-        state.putParcelable(Note.NOTE_MESSAGE, new Note(mTitle.getText().toString(), mDescription.getText().toString()));
+        state.putParcelable(Note.NOTE_MESSAGE, new Note(mTitle.getText().toString(), mDescription.getText().toString(), mBitmap));
         Log.d(TAG, "Saved a note");
     }
 
 
     public void onClickOk(View view){
         Intent intent = getIntent();
-        intent.putExtra(Note.NOTE_MESSAGE, new Note(mTitle.getText().toString(), mDescription.getText().toString()));
+        intent.putExtra(Note.NOTE_MESSAGE, new Note(mTitle.getText().toString(), mDescription.getText().toString(), mBitmap));
         setResult(RESULT_OK, intent);
         finish();
     }
@@ -73,6 +87,30 @@ public class CreateNoteActivity extends Activity {
         setResult(RESULT_CANCELED);
         finish();
     }
+
+    public void onLoadImage(View view){
+        Intent photoPickerIntent = new Intent(Intent.ACTION_PICK);
+        photoPickerIntent.setType("image/*");
+        startActivityForResult(photoPickerIntent, 1);
+    }
+
+    @Override
+    public void onActivityResult(int requestCode, int resultCode, Intent data)
+    {
+        super.onActivityResult(requestCode, resultCode, data);
+
+        if(requestCode == 1)
+        {
+            try {
+                Uri imageUri = data.getData();
+                mBitmap = MediaStore.Images.Media.getBitmap(this.getContentResolver(), imageUri);
+                mImageView.setImageBitmap(mBitmap);
+            }catch(IOException e) {
+                Log.e(TAG, e.getMessage());
+            }
+        }
+    }
+
 
 
 }

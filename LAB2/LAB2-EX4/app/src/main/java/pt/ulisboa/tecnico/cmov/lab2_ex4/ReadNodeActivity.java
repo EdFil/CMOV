@@ -2,9 +2,11 @@ package pt.ulisboa.tecnico.cmov.lab2_ex4;
 
 import android.app.Activity;
 import android.content.Intent;
+import android.media.Image;
 import android.nfc.Tag;
 import android.os.Bundle;
 import android.util.Log;
+import android.widget.ImageView;
 import android.widget.TextView;
 
 import pt.ulisboa.tecnico.cmov.lab2_ex4.note.Note;
@@ -27,9 +29,12 @@ public class ReadNodeActivity extends Activity {
 
         TextView textView = (TextView) findViewById(R.id.noteTitle);
         TextView textView2 = (TextView) findViewById(R.id.noteDescription);
+        ImageView imageView = (ImageView) findViewById(R.id.imageView);
 
         textView.setText(note.getTitle());
         textView2.setText(note.getDescription());
+        if(note.getImage() != null)
+            imageView.setImageBitmap(note.getImage());
     }
 
 }
