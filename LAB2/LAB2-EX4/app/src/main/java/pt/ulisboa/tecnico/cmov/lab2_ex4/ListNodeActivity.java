@@ -1,6 +1,7 @@
 package pt.ulisboa.tecnico.cmov.lab2_ex4;
 
 import android.app.Activity;
+import android.app.ListActivity;
 import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
@@ -17,6 +18,7 @@ import pt.ulisboa.tecnico.cmov.lab2_ex4.note.Note;
 public class ListNodeActivity extends Activity {
 
     private static String TAG = ListNodeActivity.class.getSimpleName();
+    private static int CREATE_NOTE_CODE = 1;
 
     ArrayList<Note> mNoteList;
     NoteArrayAdapter mNoteArrayAdapter;
@@ -26,6 +28,8 @@ public class ListNodeActivity extends Activity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+
+
 
         mNoteList = new ArrayList<Note>();
         mNoteList.add(new Note("Note title 1", "Note description 1"));
@@ -47,8 +51,22 @@ public class ListNodeActivity extends Activity {
         });
     }
 
-    public void newNote(View view){
-        startActivity(new Intent(this, CreateNoteActivity.class));
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
 
+        if (requestCode == CREATE_NOTE_CODE) {
+            if(resultCode == RESULT_OK){
+                Note note = data.getParcelableExtra(Note.NOTE_MESSAGE);
+                mNoteArrayAdapter.add(note);
+            }
+            if (resultCode == RESULT_CANCELED) {
+                //Empty
+            }
+        }
+    }
+
+    public void newNote(View view){
+        startActivityForResult(new Intent(this, CreateNoteActivity.class), CREATE_NOTE_CODE);
+        //startActivity();
     }
 }

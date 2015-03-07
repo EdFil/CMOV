@@ -6,7 +6,7 @@
     <EditText
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:id="@+id/editText"
+        android:id="@+id/noteTitle"
         android:layout_gravity="center_horizontal"
         android:inputType="text"
         android:hint="@string/activity_create_title_hint"
@@ -15,11 +15,11 @@
     <EditText
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:id="@+id/editText2"
+        android:id="@+id/noteDescription"
         android:layout_gravity="center_horizontal"
         android:inputType="text"
         android:hint="@string/activity_create_description_hint"
-        android:layout_below="@+id/editText"
+        android:layout_below="@+id/noteTitle"
         android:layout_alignParentLeft="true"
         android:layout_alignParentStart="true" />
 
