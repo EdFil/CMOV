@@ -1,0 +1,10 @@
+<resources>
+    <string name="app_name">TODO</string>
+
+    <string name="insert_TODO">Insert To Do!</string>
+    <string name="TODOS">To Dos</string>
+
+    <string name="action_settings">Settings</string>
+
+</resources>
+
