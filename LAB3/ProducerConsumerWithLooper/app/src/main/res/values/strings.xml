@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <string name="app_name">ProducerConsumerWithLooper</string>
+    <string name="hello_world">Producer Consumer With Looper</string>
+    <string name="action_settings">Settings</string>
+
+</resources>
