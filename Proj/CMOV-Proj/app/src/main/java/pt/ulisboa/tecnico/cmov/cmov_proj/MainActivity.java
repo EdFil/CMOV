@@ -1,26 +1,32 @@
 package pt.ulisboa.tecnico.cmov.cmov_proj;
 
 import android.app.Activity;
-import android.support.v7.app.ActionBarActivity;
-import android.support.v7.app.ActionBar;
+import android.content.Intent;
+import android.content.SharedPreferences;
+import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
-import android.content.Context;
-import android.os.Build;
-import android.os.Bundle;
-import android.view.Gravity;
+import android.support.v4.widget.DrawerLayout;
+import android.support.v7.app.ActionBar;
+import android.support.v7.app.ActionBarActivity;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
-import android.support.v4.widget.DrawerLayout;
-import android.widget.ArrayAdapter;
-import android.widget.TextView;
+import android.widget.AdapterView;
+import android.widget.ListView;
+import android.widget.Toast;
+
+import java.util.ArrayList;
+import java.util.HashSet;
+
+import pt.ulisboa.tecnico.cmov.cmov_proj.adapter.WorkspaceListAdapter;
+import pt.ulisboa.tecnico.cmov.cmov_proj.core.LoginActivity;
+import pt.ulisboa.tecnico.cmov.cmov_proj.core.workspace.Workspace;
 
 
-public class MainActivity extends ActionBarActivity
-        implements NavigationDrawerFragment.NavigationDrawerCallbacks {
+public class MainActivity extends ActionBarActivity implements NavigationDrawerFragment.NavigationDrawerCallbacks {
 
     /**
      * Fragment managing the behaviors, interactions and presentation of the navigation drawer.
@@ -31,6 +37,8 @@ public class MainActivity extends ActionBarActivity
      * Used to store the last screen title. For use in {@link #restoreActionBar()}.
      */
     private CharSequence mTitle;
+
+    private WorkspaceListAdapter mWorkspaceAdapter;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -45,7 +53,85 @@ public class MainActivity extends ActionBarActivity
         mNavigationDrawerFragment.setUp(
                 R.id.navigation_drawer,
                 (DrawerLayout) findViewById(R.id.drawer_layout));
+
+
+
+        SharedPreferences pref = getApplicationContext().getSharedPreferences("UserPref", 0); // 0 - for private mode
+
+        if(!pref.contains("user_email")){
+            Intent intent = new Intent(this, LoginActivity.class);
+            startActivityForResult(intent, LoginActivity.LOGIN_REQUEST);
+        }
+
+        mWorkspaceAdapter = new WorkspaceListAdapter(this, new ArrayList<Workspace>());
+        mWorkspaceAdapter.add(new Workspace("Nome 1", 10, true, new HashSet<String>()));
+        mWorkspaceAdapter.add(new Workspace("Nome 2", 10, true, new HashSet<String>()));
+        mWorkspaceAdapter.add(new Workspace("Nome 3", 10, true, new HashSet<String>()));
+        mWorkspaceAdapter.add(new Workspace("Nome 4", 10, true, new HashSet<String>()));
+        mWorkspaceAdapter.add(new Workspace("Nome 5", 10, true, new HashSet<String>()));
+
+        ListView listView = (ListView) findViewById(R.id.workspacesList);
+        listView.setAdapter(mWorkspaceAdapter);
+//        listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+//            @Override
+//            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+//                Intent intent = new Intent(view.getContext(), ReadNodeActivity.class);
+//                intent.putExtra(Note.NOTE_MESSAGE, (Note)parent.getItemAtPosition(position));
+//                startActivity(intent);
+//            }
+//        });
+
     }
+
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+
+        if (requestCode == LoginActivity.LOGIN_REQUEST) {
+            if(resultCode == RESULT_OK){
+                Toast.makeText(this, "Login OK", Toast.LENGTH_LONG).show();
+            }
+            if (resultCode == RESULT_CANCELED) {
+                Toast.makeText(this, "Login NOT OK", Toast.LENGTH_LONG).show();
+                finish();
+            }
+        }
+    }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
     @Override
     public void onNavigationDrawerItemSelected(int position) {

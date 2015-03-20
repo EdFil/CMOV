@@ -89,7 +89,7 @@ public class CreateNoteActivity extends Activity {
     }
 
     public void onLoadImage(View view){
-        Intent photoPickerIntent = new Intent(Intent.ACTION_PICK);
+        Intent photoPickerIntent = new Intent(Intent.ACTION_GET_CONTENT);
         photoPickerIntent.setType("image/*");
         startActivityForResult(photoPickerIntent, 1);
     }
