@@ -8,6 +8,6 @@ import java.util.HashSet;
 public class ForeignWorkspace extends Workspace {
 
     public ForeignWorkspace(String name, int quota, boolean isPrivate, HashSet<String> tags) {
-        super(name, quota, isPrivate, tags);
+        super(name, quota);
     }
 }

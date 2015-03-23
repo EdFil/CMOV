@@ -15,11 +15,15 @@ public class Workspace {
     private HashSet<MyFile> mFiles;
     private HashSet<User> mUser;
 
-    public Workspace(String name, int quota, boolean isPrivate, HashSet<String> tags){
+    public Workspace(String name, int quota){
+        this(name, quota, false);
+    }
+
+    public Workspace(String name, int quota, boolean isPrivate){
         mName = name;
         mQuota = quota;
         mIsPrivate = isPrivate;
-        mTags = tags;
+        mTags = new HashSet<String>();
         mFiles = new HashSet<MyFile>();
         mUser = new HashSet<User>();
     }

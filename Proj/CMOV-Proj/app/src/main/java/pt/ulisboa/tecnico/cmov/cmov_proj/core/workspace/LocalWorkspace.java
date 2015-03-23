@@ -7,7 +7,7 @@ import java.util.HashSet;
  */
 public class LocalWorkspace extends Workspace {
 
-    public LocalWorkspace(String name, int quota, boolean isPrivate, HashSet<String> tags) {
-        super(name, quota, isPrivate, tags);
+    public LocalWorkspace(String name, int quota) {
+        super(name, quota);
     }
 }

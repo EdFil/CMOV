@@ -18,15 +18,21 @@ import android.widget.AdapterView;
 import android.widget.ListView;
 import android.widget.Toast;
 
+import java.io.File;
 import java.util.ArrayList;
-import java.util.HashSet;
 
 import pt.ulisboa.tecnico.cmov.cmov_proj.adapter.WorkspaceListAdapter;
 import pt.ulisboa.tecnico.cmov.cmov_proj.core.LoginActivity;
+import pt.ulisboa.tecnico.cmov.cmov_proj.core.workspace.LocalWorkspace;
 import pt.ulisboa.tecnico.cmov.cmov_proj.core.workspace.Workspace;
+import pt.ulisboa.tecnico.cmov.cmov_proj.util.FileManager;
 
 
-public class MainActivity extends ActionBarActivity implements NavigationDrawerFragment.NavigationDrawerCallbacks {
+public class WorkspaceActivity extends ActionBarActivity implements NavigationDrawerFragment.NavigationDrawerCallbacks {
+
+    public static final String TAG = WorkspaceActivity.class.getSimpleName();
+    public static final String WORKSPACE_MESSAGE = "Workspace_message";
+    public static final String WORKSPACES_FOLDER_NAME = "workspaces";
 
     /**
      * Fragment managing the behaviors, interactions and presentation of the navigation drawer.
@@ -54,6 +60,14 @@ public class MainActivity extends ActionBarActivity implements NavigationDrawerF
                 R.id.navigation_drawer,
                 (DrawerLayout) findViewById(R.id.drawer_layout));
 
+        // Set up the workspace folder
+        getDir(WORKSPACES_FOLDER_NAME, MODE_PRIVATE);
+        FileManager.createFolder(this, "Workspace 1");
+        FileManager.createFolder(this, "Workspace 2");
+        FileManager.createFolder(this, "Workspace 3");
+        FileManager.createFolder(this, "Workspace 4");
+        FileManager.createFolder(this, "Workspace 5");
+        FileManager.createFile(this, "Workspace 1", "File 1");
 
 
         SharedPreferences pref = getApplicationContext().getSharedPreferences("UserPref", 0); // 0 - for private mode
@@ -64,19 +78,19 @@ public class MainActivity extends ActionBarActivity implements NavigationDrawerF
         }
 
         mWorkspaceAdapter = new WorkspaceListAdapter(this, new ArrayList<Workspace>());
-        mWorkspaceAdapter.add(new Workspace("Nome 1", 10, true, new HashSet<String>()));
-        mWorkspaceAdapter.add(new Workspace("Nome 2", 10, true, new HashSet<String>()));
-        mWorkspaceAdapter.add(new Workspace("Nome 3", 10, true, new HashSet<String>()));
-        mWorkspaceAdapter.add(new Workspace("Nome 4", 10, true, new HashSet<String>()));
-        mWorkspaceAdapter.add(new Workspace("Nome 5", 10, true, new HashSet<String>()));
+        File rootFolder = getDir(WORKSPACES_FOLDER_NAME, MODE_PRIVATE);
+        String[] children = rootFolder.list();
+        for (int i = 0; i < children.length; i++) {
+            mWorkspaceAdapter.add(new LocalWorkspace(children[i], 10));
+        }
 
         ListView listView = (ListView) findViewById(R.id.workspacesList);
         listView.setAdapter(mWorkspaceAdapter);
 //        listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
 //            @Override
 //            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-//                Intent intent = new Intent(view.getContext(), ReadNodeActivity.class);
-//                intent.putExtra(Note.NOTE_MESSAGE, (Note)parent.getItemAtPosition(position));
+//                Intent intent = new Intent(view.getContext(), WorkspaceActivity.class);
+//                intent.putExtra(WORKSPACE_MESSAGE, position);
 //                startActivity(intent);
 //            }
 //        });
@@ -227,7 +241,7 @@ public class MainActivity extends ActionBarActivity implements NavigationDrawerF
         @Override
         public void onAttach(Activity activity) {
             super.onAttach(activity);
-            ((MainActivity) activity).onSectionAttached(
+            ((WorkspaceActivity) activity).onSectionAttached(
                     getArguments().getInt(ARG_SECTION_NUMBER));
         }
     }
