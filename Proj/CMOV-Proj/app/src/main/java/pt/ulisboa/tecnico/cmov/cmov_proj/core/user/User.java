@@ -8,9 +8,6 @@ import java.util.HashSet;
 import pt.ulisboa.tecnico.cmov.cmov_proj.core.workspace.ForeignWorkspace;
 import pt.ulisboa.tecnico.cmov.cmov_proj.core.workspace.LocalWorkspace;
 
-/**
- * Created by edgar on 20-03-2015.
- */
 public class User {
 
     private String mEmail;
