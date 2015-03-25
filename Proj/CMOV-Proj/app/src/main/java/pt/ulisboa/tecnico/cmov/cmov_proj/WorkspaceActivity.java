@@ -1,8 +1,11 @@
 package pt.ulisboa.tecnico.cmov.cmov_proj;
 
 import android.app.Activity;
+import android.content.ContentValues;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.database.Cursor;
+import android.database.sqlite.SQLiteDatabase;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
@@ -14,7 +17,6 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.AdapterView;
 import android.widget.ListView;
 import android.widget.Toast;
 
@@ -25,6 +27,8 @@ import pt.ulisboa.tecnico.cmov.cmov_proj.adapter.WorkspaceListAdapter;
 import pt.ulisboa.tecnico.cmov.cmov_proj.core.LoginActivity;
 import pt.ulisboa.tecnico.cmov.cmov_proj.core.workspace.LocalWorkspace;
 import pt.ulisboa.tecnico.cmov.cmov_proj.core.workspace.Workspace;
+import pt.ulisboa.tecnico.cmov.cmov_proj.database.AirDeskContract;
+import pt.ulisboa.tecnico.cmov.cmov_proj.database.AirDeskDbHelper;
 import pt.ulisboa.tecnico.cmov.cmov_proj.util.FileManager;
 
 
