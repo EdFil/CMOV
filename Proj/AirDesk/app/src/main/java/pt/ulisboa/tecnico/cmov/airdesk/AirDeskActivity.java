@@ -1,6 +1,8 @@
 package pt.ulisboa.tecnico.cmov.airdesk;
 
 import android.app.Activity;
+import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
@@ -14,8 +16,23 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ListView;
 
+import java.io.File;
+import java.util.ArrayList;
+
+import pt.ulisboa.tecnico.cmov.airdesk.adapter.WorkspaceListAdapter;
+import pt.ulisboa.tecnico.cmov.airdesk.core.workspace.LocalWorkspace;
+import pt.ulisboa.tecnico.cmov.airdesk.core.workspace.Workspace;
+import pt.ulisboa.tecnico.cmov.airdesk.util.FileManager;
+
 
 public class AirDeskActivity extends ActionBarActivity implements NavigationDrawerFragment.NavigationDrawerCallbacks {
+
+    public static final String TAG = AirDeskActivity.class.getSimpleName();
+    public static final String WORKSPACE_MESSAGE = "Workspace_message";
+    public static final String WORKSPACES_FOLDER_NAME = "workspaces";
+
+    private WorkspaceListAdapter mWorkspaceAdapter;
+
 
     /**
      * Fragment managing the behaviors, interactions and presentation of the navigation drawer.
@@ -43,6 +60,46 @@ public class AirDeskActivity extends ActionBarActivity implements NavigationDraw
         mNavigationDrawerFragment.setUp(
                 R.id.navigation_drawer,
                 (DrawerLayout) findViewById(R.id.drawer_layout));
+
+
+        //***************************************************************************************
+        // WORKSPACES POPULATION
+        //***************************************************************************************
+
+        // Set up the workspace folder
+        getDir(WORKSPACES_FOLDER_NAME, MODE_PRIVATE);
+        FileManager.createFolder(this, "Workspace 1");
+        FileManager.createFolder(this, "Workspace 2");
+        FileManager.createFolder(this, "Workspace 3");
+        FileManager.createFolder(this, "Workspace 4");
+        FileManager.createFolder(this, "Workspace 5");
+        FileManager.createFile(this, "Workspace 1", "File 1");
+
+
+        SharedPreferences pref = getApplicationContext().getSharedPreferences("UserPref", 0); // 0 - for private mode
+
+        if(!pref.contains("user_email")){
+            Intent intent = new Intent(this, LoginActivity.class);
+            startActivityForResult(intent, LoginActivity.LOGIN_REQUEST);
+        }
+
+        mWorkspaceAdapter = new WorkspaceListAdapter(this, new ArrayList<Workspace>());
+        File rootFolder = getDir(WORKSPACES_FOLDER_NAME, MODE_PRIVATE);
+        String[] children = rootFolder.list();
+        for (int i = 0; i < children.length; i++) {
+            mWorkspaceAdapter.add(new LocalWorkspace(children[i], 10));
+        }
+
+        listView = (ListView) findViewById(R.id.workspacesList);
+        listView.setAdapter(mWorkspaceAdapter);
+//        listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+//            @Override
+//            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+//                Intent intent = new Intent(view.getContext(), WorkspaceActivity.class);
+//                intent.putExtra(WORKSPACE_MESSAGE, position);
+//                startActivity(intent);
+//            }
+//        });
     }
 
     @Override
