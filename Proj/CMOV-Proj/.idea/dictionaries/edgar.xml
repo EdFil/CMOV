@@ -2,8 +2,11 @@
   <dictionary name="edgar">
     <words>
       <w>airdesk</w>
+      <w>cenas</w>
       <w>cmov</w>
+      <w>foreygn</w>
       <w>proj</w>
+      <w>tablename</w>
     </words>
   </dictionary>
 </component>

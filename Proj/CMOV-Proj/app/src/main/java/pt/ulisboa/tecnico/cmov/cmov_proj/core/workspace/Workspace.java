@@ -4,6 +4,7 @@ import java.util.HashSet;
 
 import pt.ulisboa.tecnico.cmov.cmov_proj.core.MyFile;
 import pt.ulisboa.tecnico.cmov.cmov_proj.core.user.User;
+import pt.ulisboa.tecnico.cmov.cmov_proj.util.FileManager;
 
 public class Workspace {
 
