@@ -12,9 +12,6 @@ import java.util.List;
 import pt.ulisboa.tecnico.cmov.airdesk.R;
 import pt.ulisboa.tecnico.cmov.airdesk.core.MyFile;
 
-/**
- * Created by edgar on 20-03-2015.
- */
 public class FileListAdapter extends ArrayAdapter<MyFile> {
 
 

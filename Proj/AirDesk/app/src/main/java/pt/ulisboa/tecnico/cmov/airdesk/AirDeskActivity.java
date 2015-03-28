@@ -9,12 +9,14 @@ import android.support.v4.app.FragmentManager;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.ActionBarActivity;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ListView;
+import android.widget.TextView;
 
 import java.io.File;
 import java.util.ArrayList;
@@ -31,30 +33,46 @@ public class AirDeskActivity extends ActionBarActivity implements NavigationDraw
     public static final String WORKSPACE_MESSAGE = "Workspace_message";
     public static final String WORKSPACES_FOLDER_NAME = "workspaces";
 
-    /**
-     * Adapter of the list of Workspaces
-     */
+    // Adapter of the list of Workspaces.
     private WorkspaceListAdapter mWorkspaceAdapter;
 
-    /**
-     * Fragment managing the behaviors, interactions and presentation of the navigation drawer.
-     */
+    // Fragment managing the behaviors, interactions and presentation of the navigation drawer.
     private NavigationDrawerFragment mNavigationDrawerFragment;
 
-    /**
-     * Used to store the last screen title. For use in {@link #restoreActionBar()}.
-     */
+    // Used to store the last screen title. For use in {@link #restoreActionBar()}.
     private CharSequence mTitle;
+
+    SharedPreferences pref;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_air_desk);
 
+        // Ready the User
+        pref = getApplicationContext().getSharedPreferences("UserPref", MODE_PRIVATE); // 0 - for private mode
+        checkUserLogin();
+        Log.d("NICK NAME : ", pref.getString("user_nick", "Ridiculo"));
+
+        setSideDrawer();
+        populateAccount(); // goes to LoginActivity
+    }
+
+    private void setSideDrawer() {
+
+        // Adding of the header to the drawer list
         ListView listView = (ListView) findViewById(R.id.list_fragment);
         View header = getLayoutInflater().inflate(R.layout.drawer_header, null);
         listView.addHeaderView(header);
 
+        // Adding of the footer to the drawer list
+        listView = (ListView) findViewById(R.id.list_fragment);
+        View footer = getLayoutInflater().inflate(R.layout.drawer_logout, null);
+        listView.addFooterView(footer);
+
+        updateNickEmail();
+
+        // Get the reference of the Drawer Fragment.
         mNavigationDrawerFragment = (NavigationDrawerFragment) getSupportFragmentManager().findFragmentById(R.id.navigation_drawer);
         mTitle = getTitle();
 
@@ -62,18 +80,20 @@ public class AirDeskActivity extends ActionBarActivity implements NavigationDraw
         mNavigationDrawerFragment.setUp(
                 R.id.navigation_drawer,
                 (DrawerLayout) findViewById(R.id.drawer_layout));
+    }
 
-
-        checkUserLogin();
-        populateAccount();
-
-
+    private void updateNickEmail() {
+        // Update the nickname and the email of the user in the drawer
+        TextView nick = (TextView) findViewById(R.id.nick);
+        TextView email = (TextView) findViewById(R.id.email);
+        nick.setText(pref.getString("user_nick", "Nickname"));
+        email.setText(pref.getString("user_email", "Email"));
     }
 
 
-    private void checkUserLogin() {
-        SharedPreferences pref = getApplicationContext().getSharedPreferences("UserPref", 0); // 0 - for private mode
 
+
+    private void checkUserLogin() {
         if(!pref.contains("user_email")){
             Intent intent = new Intent(this, LoginActivity.class);
             startActivityForResult(intent, LoginActivity.LOGIN_REQUEST);
@@ -81,7 +101,8 @@ public class AirDeskActivity extends ActionBarActivity implements NavigationDraw
     }
 
     private void populateAccount() {
-        ListView listView;//***************************************************************************************
+
+        //***************************************************************************************
         // WORKSPACES POPULATION
         //***************************************************************************************
 
@@ -96,13 +117,14 @@ public class AirDeskActivity extends ActionBarActivity implements NavigationDraw
 
 
         mWorkspaceAdapter = new WorkspaceListAdapter(this, new ArrayList<Workspace>());
+
         File rootFolder = getDir(WORKSPACES_FOLDER_NAME, MODE_PRIVATE);
         String[] children = rootFolder.list();
         for (int i = 0; i < children.length; i++) {
             mWorkspaceAdapter.add(new LocalWorkspace(children[i], 10));
         }
 
-        listView = (ListView) findViewById(R.id.workspacesList);
+        ListView listView = (ListView) findViewById(R.id.workspacesList);
         listView.setAdapter(mWorkspaceAdapter);
 //        listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
 //            @Override
@@ -114,6 +136,19 @@ public class AirDeskActivity extends ActionBarActivity implements NavigationDraw
 //        });
     }
 
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        // Check which request we're responding to
+        if (requestCode == LoginActivity.LOGIN_REQUEST) {
+            // Make sure the request was successful
+            if (resultCode == RESULT_OK) {
+                updateNickEmail();
+            }
+            if (resultCode == RESULT_CANCELED) {
+                checkUserLogin();
+            }
+        }
+    }
 
     @Override
     public void onNavigationDrawerItemSelected(int position) {

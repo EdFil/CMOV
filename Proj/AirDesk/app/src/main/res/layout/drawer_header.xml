@@ -6,6 +6,7 @@
     android:orientation="vertical">
 
     <TextView
+        android:id="@+id/nick"
         android:layout_width="match_parent"
         android:layout_height="0dp"
         android:layout_weight="4"
@@ -20,12 +21,13 @@
          />
 
     <TextView
+        android:id="@+id/email"
         android:layout_width="match_parent"
         android:layout_height="0dp"
         android:layout_weight="1"
         android:background="#ff000000"
         android:text="email"
-        android:textSize="20dp"
+        android:textSize="16dp"
         android:textColor="#ffffffff"
         android:gravity="top"
         android:paddingLeft="@dimen/activity_horizontal_margin"

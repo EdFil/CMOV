@@ -1,5 +1,7 @@
 package pt.ulisboa.tecnico.cmov.airdesk;
 
+import android.content.Context;
+import android.content.Intent;
 import android.support.v7.app.ActionBarActivity;
 import android.app.Activity;
 import android.support.v7.app.ActionBar;
@@ -11,6 +13,7 @@ import android.content.SharedPreferences;
 import android.content.res.Configuration;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -97,8 +100,8 @@ public class NavigationDrawerFragment extends Fragment {
         });
         mDrawerListView.setAdapter(new ArrayAdapter<String>(
                 getActionBar().getThemedContext(),
-                android.R.layout.simple_list_item_activated_1,
-                android.R.id.text1,
+                R.layout.drawer_list_item,
+                R.id.drawer_item,
                 new String[]{
                         getString(R.string.title_section1),
                         getString(R.string.title_section2),
@@ -160,8 +163,7 @@ public class NavigationDrawerFragment extends Fragment {
                     // The user manually opened the drawer; store this flag to prevent auto-showing
                     // the navigation drawer automatically in the future.
                     mUserLearnedDrawer = true;
-                    SharedPreferences sp = PreferenceManager
-                            .getDefaultSharedPreferences(getActivity());
+                    SharedPreferences sp = PreferenceManager.getDefaultSharedPreferences(getActivity());
                     sp.edit().putBoolean(PREF_USER_LEARNED_DRAWER, true).apply();
                 }
 
@@ -194,8 +196,19 @@ public class NavigationDrawerFragment extends Fragment {
         if (mDrawerLayout != null && position != 0) {
             mDrawerLayout.closeDrawer(mFragmentContainerView);
         }
-        if (mCallbacks != null) {
+        if (mCallbacks != null && position != 4) {
             mCallbacks.onNavigationDrawerItemSelected(position);
+        }
+        if (mCallbacks != null && position == 4) {
+            // Put user on Cache.
+            SharedPreferences preferences = getActivity().getSharedPreferences("UserPref", Context.MODE_PRIVATE);
+            SharedPreferences.Editor editor = preferences.edit();
+            editor.remove("user_email").commit();
+            editor.remove("user_nick").commit();
+
+            // Returns the result to the AirDeskActivity
+            Intent intent = new Intent(getActivity(), LoginActivity.class);
+            getActivity().startActivityForResult(intent, LoginActivity.LOGIN_REQUEST);
         }
     }
 
