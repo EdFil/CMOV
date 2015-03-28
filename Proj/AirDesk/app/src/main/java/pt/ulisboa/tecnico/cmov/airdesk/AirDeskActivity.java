@@ -31,8 +31,10 @@ public class AirDeskActivity extends ActionBarActivity implements NavigationDraw
     public static final String WORKSPACE_MESSAGE = "Workspace_message";
     public static final String WORKSPACES_FOLDER_NAME = "workspaces";
 
+    /**
+     * Adapter of the list of Workspaces
+     */
     private WorkspaceListAdapter mWorkspaceAdapter;
-
 
     /**
      * Fragment managing the behaviors, interactions and presentation of the navigation drawer.
@@ -50,7 +52,7 @@ public class AirDeskActivity extends ActionBarActivity implements NavigationDraw
         setContentView(R.layout.activity_air_desk);
 
         ListView listView = (ListView) findViewById(R.id.list_fragment);
-        View header = getLayoutInflater().inflate(R.layout.header, null);
+        View header = getLayoutInflater().inflate(R.layout.drawer_header, null);
         listView.addHeaderView(header);
 
         mNavigationDrawerFragment = (NavigationDrawerFragment) getSupportFragmentManager().findFragmentById(R.id.navigation_drawer);
@@ -62,7 +64,24 @@ public class AirDeskActivity extends ActionBarActivity implements NavigationDraw
                 (DrawerLayout) findViewById(R.id.drawer_layout));
 
 
-        //***************************************************************************************
+        checkUserLogin();
+        populateAccount();
+
+
+    }
+
+
+    private void checkUserLogin() {
+        SharedPreferences pref = getApplicationContext().getSharedPreferences("UserPref", 0); // 0 - for private mode
+
+        if(!pref.contains("user_email")){
+            Intent intent = new Intent(this, LoginActivity.class);
+            startActivityForResult(intent, LoginActivity.LOGIN_REQUEST);
+        }
+    }
+
+    private void populateAccount() {
+        ListView listView;//***************************************************************************************
         // WORKSPACES POPULATION
         //***************************************************************************************
 
@@ -75,13 +94,6 @@ public class AirDeskActivity extends ActionBarActivity implements NavigationDraw
         FileManager.createFolder(this, "Workspace 5");
         FileManager.createFile(this, "Workspace 1", "File 1");
 
-
-        SharedPreferences pref = getApplicationContext().getSharedPreferences("UserPref", 0); // 0 - for private mode
-
-        if(!pref.contains("user_email")){
-            Intent intent = new Intent(this, LoginActivity.class);
-            startActivityForResult(intent, LoginActivity.LOGIN_REQUEST);
-        }
 
         mWorkspaceAdapter = new WorkspaceListAdapter(this, new ArrayList<Workspace>());
         File rootFolder = getDir(WORKSPACES_FOLDER_NAME, MODE_PRIVATE);
@@ -101,6 +113,7 @@ public class AirDeskActivity extends ActionBarActivity implements NavigationDraw
 //            }
 //        });
     }
+
 
     @Override
     public void onNavigationDrawerItemSelected(int position) {
