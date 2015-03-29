@@ -77,9 +77,7 @@ public class AirDeskActivity extends ActionBarActivity implements NavigationDraw
         mTitle = getTitle();
 
         // Set up the drawer.
-        mNavigationDrawerFragment.setUp(
-                R.id.navigation_drawer,
-                (DrawerLayout) findViewById(R.id.drawer_layout));
+        mNavigationDrawerFragment.setUp(R.id.navigation_drawer, (DrawerLayout) findViewById(R.id.drawer_layout));
     }
 
     private void updateNickEmail() {
@@ -117,7 +115,6 @@ public class AirDeskActivity extends ActionBarActivity implements NavigationDraw
 
 
         mWorkspaceAdapter = new WorkspaceListAdapter(this, new ArrayList<Workspace>());
-
         File rootFolder = getDir(WORKSPACES_FOLDER_NAME, MODE_PRIVATE);
         String[] children = rootFolder.list();
         for (int i = 0; i < children.length; i++) {
