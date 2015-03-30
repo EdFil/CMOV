@@ -2,6 +2,7 @@ package pt.ulisboa.tecnico.cmov.airdesk.database;
 
 import android.content.ContentValues;
 import android.content.Context;
+import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
 
@@ -77,8 +78,9 @@ public class AirDeskDbHelper extends SQLiteOpenHelper {
         onCreate(db);
     }
 
-    public void insertWorkspace(String name, String owner, int quota, boolean isPrivate){
+    public long insertWorkspace(String name, String owner, int quota, boolean isPrivate){
         SQLiteDatabase db = mInstance.getWritableDatabase();
+        long workspaceId = -1;
 
         ContentValues values = new ContentValues();
         values.put(WorkspaceEntry.COLUMN_WORKSPACE_NAME, name);
@@ -86,12 +88,20 @@ public class AirDeskDbHelper extends SQLiteOpenHelper {
         values.put(WorkspaceEntry.COLUMN_WORKSPACE_QUOTA, quota);
         values.put(WorkspaceEntry.COLUMN_WORKSPACE_IS_PRIVATE, isPrivate ? 1 : 0);
 
-        db.insert(WorkspaceEntry.TABLE_NAME, null, values);
+        long rowId = db.insert(WorkspaceEntry.TABLE_NAME, null, values);
+
+        String query =   String.format("SELECT %s FROM %s ORDER BY %s DESC LIMIT 1", rowId, WorkspaceEntry.TABLE_NAME, rowId);
+        Cursor c = db.rawQuery(query, null);
+        if (c != null && c.moveToFirst()) {
+            workspaceId = c.getLong(0); //The 0 is the column index, we only have 1 column, so the index is 0
+        }
 
         db.close();
+
+        return workspaceId;
     }
 
-    public void deleteWorkspace(int workspaceId){
+    public void deleteWorkspace(long workspaceId){
         SQLiteDatabase db = mInstance.getWritableDatabase();
 
         // Delete all tag association
@@ -109,7 +119,9 @@ public class AirDeskDbHelper extends SQLiteOpenHelper {
         db.close();
     }
 
-    public void addTagsToWorkspace(int workspaceId, String[] files) {
+    public void addTagsToWorkspace(long workspaceId, String[] files) {
+        if(files == null)
+            return;
         SQLiteDatabase db = mInstance.getWritableDatabase();
         // INSERT INTO 'tablename' ('column1', 'column2') VALUES
         String query = "INSERT INTO " + TagsEntry.TABLE_NAME + "('" + TagsEntry.COLUMN_WORKSPACE_KEY + "', '" + TagsEntry.COLUMN_TAG_NAME + "') VALUES ";
@@ -121,7 +133,7 @@ public class AirDeskDbHelper extends SQLiteOpenHelper {
         db.execSQL(query);
     }
 
-    public void removeTagsFromWorkspace(int workspaceId, String[] files) {
+    public void removeTagsFromWorkspace(long workspaceId, String[] files) {
         SQLiteDatabase db = mInstance.getWritableDatabase();
         String query = "DELETE FROM " + TagsEntry.TABLE_NAME + " WHERE " + TagsEntry.COLUMN_WORKSPACE_KEY + "='" + workspaceId + "' AND ";
 
@@ -130,7 +142,9 @@ public class AirDeskDbHelper extends SQLiteOpenHelper {
         }
     }
 
-    public void addUserToWorkspace(int workspaceId, String[] users) {
+    public void addUserToWorkspace(long workspaceId, String[] users) {
+        if(users == null)
+            return;
         SQLiteDatabase db = mInstance.getWritableDatabase();
         // INSERT INTO 'tablename' ('column1', 'column2') VALUES
         String query = "INSERT INTO " + UsersEntry.TABLE_NAME + "('" + UsersEntry.COLUMN_WORKSPACE_KEY + "', '" + UsersEntry.COLUMN_USER_EMAIL + "') VALUES ";
@@ -142,7 +156,7 @@ public class AirDeskDbHelper extends SQLiteOpenHelper {
         db.execSQL(query);
     }
 
-    public void removeUserFromWorkspace(int workspaceId, String[] files) {
+    public void removeUserFromWorkspace(long workspaceId, String[] files) {
         SQLiteDatabase db = mInstance.getWritableDatabase();
         String query = "DELETE FROM " + UsersEntry.TABLE_NAME + " WHERE " + UsersEntry.COLUMN_WORKSPACE_KEY + "='" + workspaceId + "' AND ";
 

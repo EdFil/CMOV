@@ -23,7 +23,9 @@ import java.util.List;
 
 import pt.ulisboa.tecnico.cmov.airdesk.R;
 import pt.ulisboa.tecnico.cmov.airdesk.adapter.TagListAdapter;
-import pt.ulisboa.tecnico.cmov.airdesk.util.FileManager;
+import pt.ulisboa.tecnico.cmov.airdesk.core.workspace.LocalWorkspace;
+import pt.ulisboa.tecnico.cmov.airdesk.core.workspace.Workspace;
+import pt.ulisboa.tecnico.cmov.airdesk.core.workspace.exception.WorkspaceException;
 
 /**
  * Created by edgar on 30-03-2015.
@@ -99,9 +101,26 @@ public class CreateWorkspace extends DialogFragment {
             @Override
             public void onClick(View v) {
                 String workspaceName = ((EditText)v.getRootView().findViewById(R.id.newWorkspaceName)).getText().toString().trim();
-                if(!workspaceName.isEmpty()){
-                    FileManager.createFolder(v.getContext(), workspaceName);
+                int workspaceQuota = Integer.parseInt(((EditText)v.getRootView().findViewById(R.id.editQuota)).getText().toString());
+                try {
+                    Workspace workspace = new LocalWorkspace(v.getContext(), workspaceName, workspaceQuota, ((Switch) view.findViewById(R.id.privateSwitch)).isChecked(), null);
+                    dismiss();
+                } catch (WorkspaceException e) {
+                    Toast.makeText(view.getContext(), e.getMessage(), Toast.LENGTH_SHORT).show();
                 }
+//                if(workspaceName.isEmpty()){
+//                    Toast.makeText(v.getContext(), "Workspace name is empty", Toast.LENGTH_SHORT).show();
+//                    return;
+//                }
+//                // Get workspace quota from editText
+//
+//                if(workspaceQuota > 100) {
+//                    Toast.makeText(v.getContext(), "Quota is too big (>100)", Toast.LENGTH_SHORT).show();
+//                    return;
+//                }
+
+
+
             }
         });
 

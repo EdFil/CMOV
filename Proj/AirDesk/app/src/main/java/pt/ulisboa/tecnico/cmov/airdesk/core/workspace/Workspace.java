@@ -1,9 +1,16 @@
 package pt.ulisboa.tecnico.cmov.airdesk.core.workspace;
 
+import android.content.Context;
+
 import java.util.HashSet;
 
 import pt.ulisboa.tecnico.cmov.airdesk.core.MyFile;
 import pt.ulisboa.tecnico.cmov.airdesk.core.user.User;
+import pt.ulisboa.tecnico.cmov.airdesk.core.workspace.exception.WorkspaceAlreadyExistsException;
+import pt.ulisboa.tecnico.cmov.airdesk.core.workspace.exception.WorkspaceNameIsEmptyException;
+import pt.ulisboa.tecnico.cmov.airdesk.core.workspace.exception.WorkspaceQuotaInvalidException;
+import pt.ulisboa.tecnico.cmov.airdesk.database.AirDeskDbHelper;
+import pt.ulisboa.tecnico.cmov.airdesk.util.FileManager;
 
 public class Workspace {
 
@@ -15,11 +22,15 @@ public class Workspace {
     private HashSet<MyFile> mFiles;
     private HashSet<User> mUser;
 
-    public Workspace(String name, int quota){
-        this(name, quota, false);
-    }
-
-    public Workspace(String name, int quota, boolean isPrivate){
+    public Workspace(Context context, String name, int quota, boolean isPrivate, String[] tags){
+        if(name.isEmpty()) {
+            throw new WorkspaceNameIsEmptyException();
+        }
+        if(!FileManager.isWorkspaceNameAvailable(context, name))
+            throw new WorkspaceAlreadyExistsException();
+        if(quota <= 0 || quota >= 1000) {
+            throw new WorkspaceQuotaInvalidException();
+        }
         mName = name;
         mQuota = quota;
         mIsPrivate = isPrivate;

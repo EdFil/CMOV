@@ -106,27 +106,12 @@ public class AirDeskActivity extends ActionBarActivity implements NavigationDraw
     }
 
     private void populateAccount() {
-
-        //***************************************************************************************
-        // WORKSPACES POPULATION
-        //***************************************************************************************
-
-        // Set up the workspace folder
-        getDir(WORKSPACES_FOLDER_NAME, MODE_PRIVATE);
-        FileManager.createFolder(this, "Workspace 1");
-        FileManager.createFolder(this, "Workspace 2");
-        FileManager.createFolder(this, "Workspace 3");
-        FileManager.createFolder(this, "Workspace 4");
-        FileManager.createFolder(this, "Workspace 5");
-        FileManager.createFile(this, "Workspace 1", "File 1");
-
-
-        mWorkspaceAdapter = new WorkspaceListAdapter(this, new ArrayList<Workspace>());
-        File rootFolder = getDir(WORKSPACES_FOLDER_NAME, MODE_PRIVATE);
-        String[] children = rootFolder.list();
-        for (int i = 0; i < children.length; i++) {
-            mWorkspaceAdapter.add(new LocalWorkspace(children[i], 10));
-        }
+//        mWorkspaceAdapter = new WorkspaceListAdapter(this, new ArrayList<Workspace>());
+//        File rootFolder = getDir(WORKSPACES_FOLDER_NAME, MODE_PRIVATE);
+//        String[] children = rootFolder.list();
+//        for (int i = 0; i < children.length; i++) {
+//            mWorkspaceAdapter.add(new LocalWorkspace(children[i], 10));
+//        }
 
         ListView listView = (ListView) findViewById(R.id.workspacesList);
         listView.setAdapter(mWorkspaceAdapter);

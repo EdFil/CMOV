@@ -16,6 +16,11 @@ public class FileManager {
 
     private static final String TAG = FileManager.class.getSimpleName();
 
+    public static boolean isWorkspaceNameAvailable(Context context, String workspaceName) {
+        File rootFolder = context.getDir(AirDeskActivity.WORKSPACES_FOLDER_NAME, Context.MODE_PRIVATE);
+        File newFolder = new File(rootFolder, workspaceName); //Getting a folder within the dir.
+        return !newFolder.exists();
+    }
 
     public static boolean createFolder(Context context, String folderName){
         File rootFolder = context.getDir(AirDeskActivity.WORKSPACES_FOLDER_NAME, Context.MODE_PRIVATE);
@@ -23,7 +28,7 @@ public class FileManager {
         if(!newFolder.exists()) {
             return newFolder.mkdir();
         }
-        return true;
+        return false;
     }
 
     public static void deleteFolder(Context context, String folderName){
