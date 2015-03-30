@@ -39,6 +39,10 @@ public class Workspace {
         mUser = new HashSet<User>();
     }
 
+    public Workspace(String workspaceName) {
+        mName = workspaceName;
+    }
+
     public String getName() { return mName; }
     public int getQuota() { return mQuota; }
     public boolean isPrivate() { return mIsPrivate; }

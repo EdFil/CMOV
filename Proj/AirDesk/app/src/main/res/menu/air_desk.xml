@@ -4,8 +4,8 @@
     tools:context=".AirDeskActivity">
 
     <item
-        android:id="@+id/action_example"
-        android:title="@string/action_example"
+        android:id="@+id/refresh"
+        android:title="Refresh"
         app:showAsAction="withText|ifRoom" />
 
     <item

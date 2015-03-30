@@ -28,6 +28,10 @@ public class LocalWorkspace extends Workspace {
 
     }
 
+    public LocalWorkspace(String workspaceName) {
+        super(workspaceName);
+    }
+
     private String getOwner(Context context){
         return context.getSharedPreferences("UserPref", context.MODE_PRIVATE).getString("user_email", null);
     }
