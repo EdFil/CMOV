@@ -29,6 +29,7 @@
 
             <Button
                 android:id="@+id/createButton"
+                android:onClick="onNewWorkspace"
 
                 android:text="+"
                 android:textColor="#FFFF"
@@ -67,7 +68,6 @@
         android:layout_gravity="start"
         android:name="pt.ulisboa.tecnico.cmov.airdesk.NavigationDrawerFragment"
         tools:layout="@layout/fragment_navigation_drawer" />
-
 
 
 </android.support.v4.widget.DrawerLayout>

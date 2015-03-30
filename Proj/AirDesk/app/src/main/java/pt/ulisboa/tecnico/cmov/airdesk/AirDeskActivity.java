@@ -3,6 +3,7 @@ package pt.ulisboa.tecnico.cmov.airdesk;
 import android.app.Activity;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.graphics.drawable.ColorDrawable;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
@@ -10,12 +11,15 @@ import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.ActionBarActivity;
 import android.util.Log;
+import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.LinearLayout;
 import android.widget.ListView;
+import android.widget.PopupWindow;
 import android.widget.TextView;
 
 import java.io.File;
@@ -24,6 +28,7 @@ import java.util.ArrayList;
 import pt.ulisboa.tecnico.cmov.airdesk.adapter.WorkspaceListAdapter;
 import pt.ulisboa.tecnico.cmov.airdesk.core.workspace.LocalWorkspace;
 import pt.ulisboa.tecnico.cmov.airdesk.core.workspace.Workspace;
+import pt.ulisboa.tecnico.cmov.airdesk.dialogFragment.CreateWorkspace;
 import pt.ulisboa.tecnico.cmov.airdesk.util.FileManager;
 
 
@@ -133,6 +138,10 @@ public class AirDeskActivity extends ActionBarActivity implements NavigationDraw
 //        });
     }
 
+    public void onNewWorkspace(View view) {
+        CreateWorkspace.newInstance().show(getFragmentManager(), "Create Workspace");
+    }
+
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         // Check which request we're responding to
@@ -142,10 +151,12 @@ public class AirDeskActivity extends ActionBarActivity implements NavigationDraw
                 updateNickEmail();
             }
             if (resultCode == RESULT_CANCELED) {
-                checkUserLogin();
+                finish();
+                //checkUserLogin();
             }
         }
     }
+
 
     @Override
     public void onNavigationDrawerItemSelected(int position) {
