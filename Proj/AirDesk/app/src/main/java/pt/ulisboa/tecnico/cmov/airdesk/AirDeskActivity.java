@@ -17,6 +17,8 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.AdapterView;
+import android.widget.ArrayAdapter;
 import android.widget.LinearLayout;
 import android.widget.ListView;
 import android.widget.PopupWindow;
@@ -128,14 +130,6 @@ public class AirDeskActivity extends ActionBarActivity implements NavigationDraw
 
         ListView listView = (ListView) findViewById(R.id.workspacesList);
         listView.setAdapter(mWorkspaceAdapter);
-//        listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
-//            @Override
-//            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-//                Intent intent = new Intent(view.getContext(), WorkspaceActivity.class);
-//                intent.putExtra(WORKSPACE_MESSAGE, position);
-//                startActivity(intent);
-//            }
-//        });
     }
 
     public void onNewWorkspace(View view) {
