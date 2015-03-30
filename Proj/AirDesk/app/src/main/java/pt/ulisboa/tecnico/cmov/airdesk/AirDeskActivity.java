@@ -51,6 +51,8 @@ public class AirDeskActivity extends ActionBarActivity implements NavigationDraw
 
     SharedPreferences pref;
 
+    public WorkspaceListAdapter getWorkspaceListAdapter () {return mWorkspaceAdapter;}
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -106,7 +108,7 @@ public class AirDeskActivity extends ActionBarActivity implements NavigationDraw
     }
 
     private void populateAccount() {
-//        mWorkspaceAdapter = new WorkspaceListAdapter(this, new ArrayList<Workspace>());
+        mWorkspaceAdapter = new WorkspaceListAdapter(this, new ArrayList<Workspace>());
 //        File rootFolder = getDir(WORKSPACES_FOLDER_NAME, MODE_PRIVATE);
 //        String[] children = rootFolder.list();
 //        for (int i = 0; i < children.length; i++) {

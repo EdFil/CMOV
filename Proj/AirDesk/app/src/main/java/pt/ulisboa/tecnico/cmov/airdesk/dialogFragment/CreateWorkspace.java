@@ -21,8 +21,10 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
+import pt.ulisboa.tecnico.cmov.airdesk.AirDeskActivity;
 import pt.ulisboa.tecnico.cmov.airdesk.R;
 import pt.ulisboa.tecnico.cmov.airdesk.adapter.TagListAdapter;
+import pt.ulisboa.tecnico.cmov.airdesk.adapter.WorkspaceListAdapter;
 import pt.ulisboa.tecnico.cmov.airdesk.core.workspace.LocalWorkspace;
 import pt.ulisboa.tecnico.cmov.airdesk.core.workspace.Workspace;
 import pt.ulisboa.tecnico.cmov.airdesk.core.workspace.exception.WorkspaceException;
@@ -34,6 +36,13 @@ public class CreateWorkspace extends DialogFragment {
 
     List<String> mTagCache;
     TagListAdapter mTagListAdapter;
+    WorkspaceListAdapter mWorkspaceListAdapter;
+
+    Button cancelButton, createButton, addTagButton;
+    EditText workspaceNameText, quotaValueText, newTagText;
+    Switch privacySwitch;
+    ListView tagList;
+
 
     public static CreateWorkspace newInstance() {
         return new CreateWorkspace();
@@ -45,17 +54,30 @@ public class CreateWorkspace extends DialogFragment {
         getDialog().setTitle("Create new Workspace");
         final View view = inflater.inflate(R.layout.create_workspace_dialog, container, false);
 
-        ((Button)view.findViewById(R.id.cancelWorkspaceDialog)).setOnClickListener(new View.OnClickListener() {
+        addTagButton = (Button)view.findViewById(R.id.addTagButton);
+        newTagText = (EditText)view.findViewById(R.id.newTag);
+        cancelButton = (Button)view.findViewById(R.id.cancelWorkspaceDialog);
+        createButton = (Button) view.findViewById(R.id.createWorkspaceDialog);
+        workspaceNameText = (EditText) view.findViewById(R.id.newWorkspaceName);
+        quotaValueText = (EditText) view.findViewById(R.id.editQuota);
+        privacySwitch = (Switch) view.findViewById(R.id.privateSwitch);
+        tagList = (ListView) view.findViewById(R.id.tagList);
+
+        addTagButton.setVisibility(View.INVISIBLE);
+        newTagText.setVisibility(View.INVISIBLE);
+
+        cancelButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 dismiss();
             }
         });
 
+
+
         mTagListAdapter = new TagListAdapter(view.getContext(), new ArrayList<String>());
-        mTagListAdapter.add("ASKDKASMD");
-        ((ListView)view.findViewById(R.id.tagList)).setAdapter(mTagListAdapter);
-        ((ListView)view.findViewById(R.id.tagList)).setOnItemLongClickListener(new AdapterView.OnItemLongClickListener() {
+        tagList.setAdapter(mTagListAdapter);
+        tagList.setOnItemLongClickListener(new AdapterView.OnItemLongClickListener() {
             @Override
             public boolean onItemLongClick(AdapterView<?> parent, View view, int position, long id) {
                 ArrayAdapter<String> list = (ArrayAdapter<String>) parent.getAdapter();
@@ -65,11 +87,11 @@ public class CreateWorkspace extends DialogFragment {
         });
 
         // OnChangeListener for switch
-        ((Switch)view.findViewById(R.id.privateSwitch)).setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+        privacySwitch.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
             @Override
             public void onCheckedChanged(CompoundButton compoundButton, boolean b) {
-                view.findViewById(R.id.addTagButton).setVisibility(b ? View.VISIBLE : View.INVISIBLE);
-                view.findViewById(R.id.newTag).setVisibility(b ? View.VISIBLE : View.INVISIBLE);
+                addTagButton.setVisibility(b ? View.VISIBLE : View.INVISIBLE);
+                newTagText.setVisibility(b ? View.VISIBLE : View.INVISIBLE);
                 if(!b) {
                     mTagCache.clear();
                     for(int i = 0; i < mTagListAdapter.getCount(); i++){
@@ -85,42 +107,33 @@ public class CreateWorkspace extends DialogFragment {
             }
         });
 
-        ((Button)view.findViewById(R.id.addTagButton)).setOnClickListener(new View.OnClickListener() {
+        addTagButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                EditText tagString = (EditText)v.getRootView().findViewById(R.id.newTag);
+                EditText tagString = (EditText) v.getRootView().findViewById(R.id.newTag);
                 String tag = tagString.getText().toString().trim();
-                if(tag.length() > 0) {
+                if (tag.length() > 0) {
                     mTagListAdapter.add(tag);
                     tagString.getText().clear();
                 }
             }
         });
 
-        ((Button)view.findViewById(R.id.createWorkspaceDialog)).setOnClickListener(new View.OnClickListener() {
+        createButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                String workspaceName = ((EditText)v.getRootView().findViewById(R.id.newWorkspaceName)).getText().toString().trim();
-                int workspaceQuota = Integer.parseInt(((EditText)v.getRootView().findViewById(R.id.editQuota)).getText().toString());
+                String workspaceName = workspaceNameText.getText().toString().trim();
+                int workspaceQuota = Integer.parseInt(quotaValueText.getText().toString());
                 try {
-                    Workspace workspace = new LocalWorkspace(v.getContext(), workspaceName, workspaceQuota, ((Switch) view.findViewById(R.id.privateSwitch)).isChecked(), null);
+                    Workspace workspace = new LocalWorkspace(v.getContext(), workspaceName, workspaceQuota, privacySwitch.isChecked(), null);
+                    Toast.makeText(view.getContext(), "Workspace created", Toast.LENGTH_SHORT).show();
                     dismiss();
+
+                    mWorkspaceListAdapter = ((AirDeskActivity)getActivity()).getWorkspaceListAdapter();
+                    mWorkspaceListAdapter.add(workspace);
                 } catch (WorkspaceException e) {
                     Toast.makeText(view.getContext(), e.getMessage(), Toast.LENGTH_SHORT).show();
                 }
-//                if(workspaceName.isEmpty()){
-//                    Toast.makeText(v.getContext(), "Workspace name is empty", Toast.LENGTH_SHORT).show();
-//                    return;
-//                }
-//                // Get workspace quota from editText
-//
-//                if(workspaceQuota > 100) {
-//                    Toast.makeText(v.getContext(), "Quota is too big (>100)", Toast.LENGTH_SHORT).show();
-//                    return;
-//                }
-
-
-
             }
         });
 
