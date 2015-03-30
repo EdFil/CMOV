@@ -125,7 +125,7 @@ public class CreateWorkspace extends DialogFragment {
                 String workspaceName = workspaceNameText.getText().toString().trim();
                 int workspaceQuota = Integer.parseInt(quotaValueText.getText().toString());
                 try {
-                    Workspace workspace = new LocalWorkspace(v.getContext(), workspaceName, workspaceQuota, privacySwitch.isChecked(), null);
+                    Workspace workspace = new LocalWorkspace(v.getContext(), workspaceName, workspaceQuota, !privacySwitch.isChecked(), null);
                     Toast.makeText(view.getContext(), "Workspace created", Toast.LENGTH_SHORT).show();
                     dismiss();
 

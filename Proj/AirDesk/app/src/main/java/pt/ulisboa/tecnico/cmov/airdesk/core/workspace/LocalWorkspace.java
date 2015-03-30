@@ -21,10 +21,11 @@ public class LocalWorkspace extends Workspace {
 
     public LocalWorkspace(Context context, String name, int quota, boolean isPrivate, String[] tags) {
         super(context, name, quota, isPrivate, tags);
+        String owner = getOwner(context);
         FileManager.createFolder(context, name);
-//        long workspaceId = AirDeskDbHelper.getInstance(context).insertWorkspace(name, getOwner(context), quota, isPrivate);
-//        AirDeskDbHelper.getInstance(context).addTagsToWorkspace(workspaceId, tags);
-//        AirDeskDbHelper.getInstance(context).addUsersToWorkspace(workspaceId, new String[] { getOwner(context) });
+        long workspaceId = AirDeskDbHelper.getInstance(context).insertWorkspace(name, owner, quota, isPrivate);
+        AirDeskDbHelper.getInstance(context).addTagsToWorkspace(workspaceId, tags);
+        AirDeskDbHelper.getInstance(context).addUserToWorkspace(workspaceId, new String[] { owner });
 
     }
 

@@ -90,12 +90,21 @@ public class AirDeskDbHelper extends SQLiteOpenHelper {
 
         long rowId = db.insert(WorkspaceEntry.TABLE_NAME, null, values);
 
-        String query =   String.format("SELECT %s FROM %s ORDER BY %s DESC LIMIT 1", rowId, WorkspaceEntry.TABLE_NAME, rowId);
-        Cursor c = db.rawQuery(query, null);
-        if (c != null && c.moveToFirst()) {
-            workspaceId = c.getLong(0); //The 0 is the column index, we only have 1 column, so the index is 0
-        }
+        Cursor cursor = db.query(
+                WorkspaceEntry.TABLE_NAME,
+                new String[] { WorkspaceEntry._ID },
+                WorkspaceEntry.COLUMN_WORKSPACE_NAME + "=?",
+                new String[] { name },
+                null,
+                null,
+                null
+        );
 
+        cursor.moveToFirst();
+
+        workspaceId = cursor.getLong(cursor.getColumnIndex(WorkspaceEntry._ID));
+
+        cursor.close();
         db.close();
 
         return workspaceId;

@@ -55,7 +55,13 @@ public class Workspace {
     public void setName(String name) { mName = name; }
     public void setQuota(int quota) { mQuota = quota; }
     public void setIsPrivate(boolean isPrivate) { mIsPrivate = isPrivate; }
-    public void setTags(HashSet<String> tags) { mTags = tags; }
+    public void setTags(String... tags) {
+        if(tags != null){
+            for(int i = 0; i < tags.length; i++){
+                ;
+            }
+        }
+    }
     public void addTag(String tag) { mTags.add(tag); }
     public void removeTag(String tag) { mTags.remove(tag); }
 
