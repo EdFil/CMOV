@@ -18,14 +18,12 @@ import android.view.ViewGroup;
 import android.widget.ListView;
 import android.widget.TextView;
 
-import java.io.File;
 import java.util.ArrayList;
 import java.util.Comparator;
 
 import pt.ulisboa.tecnico.cmov.airdesk.adapter.WorkspaceListAdapter;
-import pt.ulisboa.tecnico.cmov.airdesk.core.workspace.LocalWorkspace;
 import pt.ulisboa.tecnico.cmov.airdesk.core.workspace.Workspace;
-import pt.ulisboa.tecnico.cmov.airdesk.database.AirDeskDbHelper;
+import pt.ulisboa.tecnico.cmov.airdesk.core.workspace.WorkspaceManager;
 import pt.ulisboa.tecnico.cmov.airdesk.dialogFragment.CreateWorkspace;
 
 
@@ -52,6 +50,8 @@ public class AirDeskActivity extends ActionBarActivity implements NavigationDraw
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_air_desk);
+
+        WorkspaceManager.initWorkspaceManager(getApplicationContext());
 
         // Ready the User
         pref = getApplicationContext().getSharedPreferences("UserPref", MODE_PRIVATE); // 0 - for private mode
@@ -112,7 +112,7 @@ public class AirDeskActivity extends ActionBarActivity implements NavigationDraw
 //        }
 
         ListView listView = (ListView) findViewById(R.id.workspacesList);
-        listView.setAdapter(mWorkspaceAdapter);
+        listView.setAdapter(WorkspaceManager.getInstance().getWorkspaceAdapter());
     }
 
     public void onNewWorkspace(View view) {
@@ -135,19 +135,14 @@ public class AirDeskActivity extends ActionBarActivity implements NavigationDraw
     }
 
     public void refreshList(){
-//        Workspace[] workspaces = AirDeskDbHelper.getInstance(this).getAllLocalWorkspaceInfo();
-//        File rootFolder = getDir(WORKSPACES_FOLDER_NAME, MODE_PRIVATE);
-//        mWorkspaceAdapter.clear();
-//        String[] children = rootFolder.list();
-//        for(int i = 0; i <children.length; i++){
-//            mWorkspaceAdapter.add(new LocalWorkspace(children[i]));
-//        }
-//        mWorkspaceAdapter.sort(new Comparator<Workspace>() {
-//            @Override
-//            public int compare(Workspace lhs, Workspace rhs) {
-//                return lhs.getName().compareToIgnoreCase(rhs.getName());
-//            }
-//        });
+        // TODO: Fix this
+        WorkspaceManager.getInstance().reloadWorkspaces();
+        mWorkspaceAdapter.sort(new Comparator<Workspace>() {
+            @Override
+            public int compare(Workspace lhs, Workspace rhs) {
+                return lhs.getName().compareToIgnoreCase(rhs.getName());
+            }
+        });
     }
 
 

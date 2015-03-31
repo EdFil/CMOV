@@ -23,7 +23,7 @@ public class Tag {
 
     @Override
     public String toString(){
-        return "Tag '" + mText + "' from workspace '" + mWorkspace.getName() + "'.";
+        return "Tag '" + mText + "'.";
     }
 
 }

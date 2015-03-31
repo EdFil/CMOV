@@ -5,9 +5,12 @@ import android.content.Context;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
+import android.database.sqlite.SQLiteQueryBuilder;
 
 import java.io.File;
+import java.util.ArrayList;
 import java.util.Collection;
+import java.util.HashMap;
 import java.util.Iterator;
 
 import pt.ulisboa.tecnico.cmov.airdesk.core.tag.Tag;
@@ -60,7 +63,7 @@ public class AirDeskDbHelper extends SQLiteOpenHelper {
 
         final String SQL_CREATE_USER_TABLE = "CREATE TABLE " + UsersEntry.TABLE_NAME + " (" +
                 UsersEntry.COLUMN_WORKSPACE_KEY + " INTEGER NOT NULL, " +
-                UsersEntry.COLUMN_USER_EMAIL + " TEXT UNIQUE NOT NULL, " +
+                UsersEntry.COLUMN_USER_EMAIL + " TEXT NOT NULL, " +
                 UsersEntry.COLUMN_USER_NICK + " TEXT NOT NULL, " +
                 "FOREIGN KEY (" + UsersEntry.COLUMN_WORKSPACE_KEY  + ") REFERENCES " + WorkspaceEntry.TABLE_NAME + "( " + WorkspaceEntry._ID + " )," +
                 "PRIMARY KEY (" + UsersEntry.COLUMN_WORKSPACE_KEY  + ", " +UsersEntry.COLUMN_USER_EMAIL + ") " +
@@ -134,30 +137,30 @@ public class AirDeskDbHelper extends SQLiteOpenHelper {
         db.close();
     }
 
-    public Workspace[] getAllLocalWorkspaceInfo() {
-        Workspace[] workspaces;
-        SQLiteDatabase db = mInstance.getWritableDatabase();
+    public ArrayList<Workspace> getAllLocalWorkspaceInfo() {
+        HashMap<Long, ArrayList<Tag>> tagList = getAllTagsInMap();
+        HashMap<Long, ArrayList<User>> userList= getAllUsersInMap();
 
-        Cursor cursor = db.rawQuery(String.format("SELECT * FROM %s;", WorkspaceEntry.TABLE_NAME), null);
-        workspaces = new Workspace[cursor.getCount()];
-        cursor.moveToFirst();
+        SQLiteDatabase db = mInstance.getReadableDatabase();
 
-        int i = 0;
-        do{
-            workspaces[i++] = new Workspace(
-                    cursor.getString(cursor.getColumnIndex(WorkspaceEntry.COLUMN_WORKSPACE_NAME)),
-                    new User(cursor.getString(cursor.getColumnIndex(WorkspaceEntry.COLUMN_WORKSPACE_OWNER)), ""),
-                    cursor.getLong(cursor.getColumnIndex(WorkspaceEntry.COLUMN_WORKSPACE_QUOTA)),
-                    cursor.getInt(cursor.getColumnIndex(WorkspaceEntry.COLUMN_WORKSPACE_IS_PRIVATE)) == 1 ? true : false,
-                    new Tag[] {},
-                    new User[] {},
-                    new File[] {},
+        Cursor workspaceCursor = db.query(WorkspaceEntry.TABLE_NAME, null, null, null, null, null, null);
+        ArrayList<Workspace> workspaces = new ArrayList<Workspace>();
+
+        while(workspaceCursor.moveToNext()) {
+            long workspaceId = workspaceCursor.getLong(workspaceCursor.getColumnIndex(WorkspaceEntry._ID));
+            workspaces.add(new Workspace(
+                    workspaceCursor.getString(workspaceCursor.getColumnIndex(WorkspaceEntry.COLUMN_WORKSPACE_NAME)),
+                    new User(workspaceCursor.getString(workspaceCursor.getColumnIndex(WorkspaceEntry.COLUMN_WORKSPACE_OWNER)), ""),
+                    workspaceCursor.getLong(workspaceCursor.getColumnIndex(WorkspaceEntry.COLUMN_WORKSPACE_QUOTA)),
+                    workspaceCursor.getInt(workspaceCursor.getColumnIndex(WorkspaceEntry.COLUMN_WORKSPACE_IS_PRIVATE)) == 1 ? true : false,
+                    tagList.containsKey(workspaceId) ? tagList.get(workspaceId) : new ArrayList<Tag>(),
+                    userList.containsKey(workspaceId) ? userList.get(workspaceId) : new ArrayList<User>(),
+                    new ArrayList<File>(),
                     WorkspaceManager.getInstance()
-            );
-        }while(cursor.moveToNext());
+            ));
+            workspaces.get(workspaces.size() - 1).setDatabaseId(workspaceId);
+        }
 
-        cursor.close();
-        db.close();
         return workspaces;
     }
 
@@ -169,6 +172,8 @@ public class AirDeskDbHelper extends SQLiteOpenHelper {
         String query = "INSERT INTO " + TagsEntry.TABLE_NAME + "('" + TagsEntry.COLUMN_WORKSPACE_KEY + "', '" + TagsEntry.COLUMN_TAG_NAME + "') VALUES ";
 
         Iterator<Tag> iterator = tags.iterator();
+        if(!iterator.hasNext())
+            return;
 
         while(iterator.hasNext()){
             Tag tag = iterator.next();
@@ -226,6 +231,8 @@ public class AirDeskDbHelper extends SQLiteOpenHelper {
         String query = "INSERT INTO " + UsersEntry.TABLE_NAME + "('" + UsersEntry.COLUMN_WORKSPACE_KEY + "', '" + UsersEntry.COLUMN_USER_EMAIL + "', " + UsersEntry.COLUMN_USER_NICK + ") VALUES ";
 
         Iterator<User> iterator = users.iterator();
+        if(!iterator.hasNext())
+            return;
 
         while(iterator.hasNext()){
             User user = iterator.next();
@@ -248,6 +255,59 @@ public class AirDeskDbHelper extends SQLiteOpenHelper {
         }
 
         db.close();
+    }
+
+    public static HashMap<Long, ArrayList<Tag>> getAllTagsInMap(){
+        SQLiteDatabase db = mInstance.getReadableDatabase();
+        Cursor cursor = db.query(TagsEntry.TABLE_NAME, null, null, null, null, null, null);
+        int workspaceIdIndex = cursor.getColumnIndex(TagsEntry.COLUMN_WORKSPACE_KEY);
+        int tagNameIndex = cursor.getColumnIndex(TagsEntry.COLUMN_TAG_NAME);
+        HashMap<Long, ArrayList<Tag>> workspaceTags = new HashMap<Long, ArrayList<Tag>>();
+
+        while(cursor.moveToNext()){
+            long workspaceId = cursor.getLong(workspaceIdIndex);
+            String tagName = cursor.getString(tagNameIndex);
+            if(workspaceTags.containsKey(workspaceId))
+                workspaceTags.get(workspaceId).add(new Tag(tagName));
+            else {
+                workspaceTags.put(workspaceId,  new ArrayList<Tag>());
+                workspaceTags.get(workspaceId).add(new Tag(tagName));
+            }
+        }
+
+        cursor.close();
+        db.close();
+
+        return workspaceTags;
+    }
+
+    public static HashMap<Long, ArrayList<User>> getAllUsersInMap(){
+        SQLiteDatabase db = mInstance.getReadableDatabase();
+        // Query to get users
+        Cursor cursor = db.query(UsersEntry.TABLE_NAME, null, null, null, null, null, null);
+        // Get all indices stored
+        int workspaceIdIndex = cursor.getColumnIndex(UsersEntry.COLUMN_WORKSPACE_KEY);
+        int userEmailIndex = cursor.getColumnIndex(UsersEntry.COLUMN_USER_EMAIL);
+        int userNickIndex = cursor.getColumnIndex(UsersEntry.COLUMN_USER_NICK);
+        // Create map
+        HashMap<Long, ArrayList<User>> workspaceUsers = new HashMap<Long, ArrayList<User>>();
+
+        while(cursor.moveToNext()){
+            long workspaceId = cursor.getLong(workspaceIdIndex);
+            String userEmail = cursor.getString(userEmailIndex);
+            String userNick = cursor.getString(userNickIndex);
+            if(workspaceUsers.containsKey(workspaceId))
+                workspaceUsers.get(workspaceId).add(new User(userEmail, userNick));
+            else {
+                workspaceUsers.put(workspaceId, new ArrayList<User>());
+                workspaceUsers.get(workspaceId).add(new User(userEmail, userNick));
+            }
+        }
+
+        cursor.close();
+        db.close();
+
+        return workspaceUsers;
     }
 
 

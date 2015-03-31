@@ -27,15 +27,15 @@ public class Workspace {
     private HashSet<File> mFiles;
     private WorkspaceManager mWorkspaceManager;
 
-    public Workspace(String name, User owner, long quota, boolean isPrivate, Tag[] tags, User[] users, File[] files, WorkspaceManager workspaceManager){
+    public Workspace(String name, User owner, long quota, boolean isPrivate, Collection<Tag> tags, Collection<User> users, Collection<File> files, WorkspaceManager workspaceManager){
         setWorkspaceManager(workspaceManager);
         setName(name);
         setOwner(owner);
         setQuota(quota);
         setIsPrivate(isPrivate);
-        setTags(new HashSet<Tag>(Arrays.asList(tags)));
-        setUsers(new HashSet<User>(Arrays.asList(users)));
-        setFiles(new HashSet<File>(Arrays.asList(files)));
+        setTags(new HashSet<Tag>(tags));
+        setUsers(new HashSet<User>(users));
+        setFiles(new HashSet<File>(files));
     }
 
     // Getters
@@ -84,11 +84,7 @@ public class Workspace {
     }
 
     public void setTags(Collection<Tag> tags) {
-        if(isPrivate())
-            throw new WorkspaceAddTagToPrivateException();
-        if(tags == null)
-            throw new NullPointerException("Tags is null");
-        if(tags.isEmpty())
+        if(!isPrivate() && tags.isEmpty())
             throw new WorkspacePublicNoTagsException();
         mTags = new HashSet<Tag>(tags);
     }
