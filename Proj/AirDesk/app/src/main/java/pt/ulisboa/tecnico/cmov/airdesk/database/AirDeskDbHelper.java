@@ -142,6 +142,30 @@ public class AirDeskDbHelper extends SQLiteOpenHelper {
         db.execSQL(query);
     }
 
+    public String[] getWorkspaceTags(long workspaceId){
+        String[] tags;
+        SQLiteDatabase db = mInstance.getWritableDatabase();
+
+        Cursor cursor = db.query(
+                TagsEntry.TABLE_NAME,
+                new String[] { TagsEntry.COLUMN_TAG_NAME },
+                TagsEntry.COLUMN_WORKSPACE_KEY + "=?",
+                new String[] {String.valueOf(workspaceId)},
+                null,
+                null,
+                null
+        );
+
+        tags = new String[cursor.getCount()];
+        cursor.moveToFirst();
+        int i = 0;
+        do{
+            tags[i++] = cursor.getString(cursor.getColumnIndex(TagsEntry.COLUMN_TAG_NAME));
+        }while(cursor.moveToNext());
+
+        return tags;
+    }
+
     public void removeTagsFromWorkspace(long workspaceId, String[] files) {
         SQLiteDatabase db = mInstance.getWritableDatabase();
         String query = "DELETE FROM " + TagsEntry.TABLE_NAME + " WHERE " + TagsEntry.COLUMN_WORKSPACE_KEY + "='" + workspaceId + "' AND ";

@@ -24,7 +24,8 @@ public class LocalWorkspace extends Workspace {
         String owner = getOwner(context);
         FileManager.createFolder(context, name);
         long workspaceId = AirDeskDbHelper.getInstance(context).insertWorkspace(name, owner, quota, isPrivate);
-        AirDeskDbHelper.getInstance(context).addTagsToWorkspace(workspaceId, tags);
+        if(!isPrivate)
+            AirDeskDbHelper.getInstance(context).addTagsToWorkspace(workspaceId, tags);
         AirDeskDbHelper.getInstance(context).addUserToWorkspace(workspaceId, new String[] { owner });
 
     }

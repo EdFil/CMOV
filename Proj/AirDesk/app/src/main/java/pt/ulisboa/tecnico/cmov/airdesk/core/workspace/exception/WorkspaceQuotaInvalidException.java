@@ -1,5 +1,10 @@
 package pt.ulisboa.tecnico.cmov.airdesk.core.workspace.exception;
 
+import android.content.Context;
+import android.text.format.Formatter;
+
+import pt.ulisboa.tecnico.cmov.airdesk.util.FileManager;
+
 /**
  * Created by edgar on 30-03-2015.
  */
@@ -11,8 +16,8 @@ public class WorkspaceQuotaInvalidException extends WorkspaceException {
         super("Invalid quota");
     }
 
-    public WorkspaceQuotaInvalidException(int maxQuota) {
-        super(String.format(mMessage, maxQuota));
+    public WorkspaceQuotaInvalidException(Context context, long maxQuota) {
+        super(String.format(mMessage, Formatter.formatFileSize(context, maxQuota)));
     }
 
 }

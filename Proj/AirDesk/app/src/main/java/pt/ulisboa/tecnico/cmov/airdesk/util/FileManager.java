@@ -1,7 +1,11 @@
 package pt.ulisboa.tecnico.cmov.airdesk.util;
 
+import android.content.ContentProvider;
 import android.content.Context;
+import android.os.Build;
 import android.os.Environment;
+import android.os.StatFs;
+import android.text.format.Formatter;
 
 import java.io.File;
 import java.io.FileNotFoundException;
@@ -84,6 +88,14 @@ public class FileManager {
             }
         }
         return dir.delete();
+    }
+
+    public static long getAvailableSpace(Context context){
+        File path = Environment.getDataDirectory();
+        StatFs stat = new StatFs(path.getPath());
+        long blockSize = stat.getBlockSize();
+        long availableBlocks = stat.getAvailableBlocks();
+        return availableBlocks * blockSize;
     }
 
 }

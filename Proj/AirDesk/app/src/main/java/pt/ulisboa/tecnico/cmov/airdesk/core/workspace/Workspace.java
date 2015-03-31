@@ -8,6 +8,7 @@ import pt.ulisboa.tecnico.cmov.airdesk.core.MyFile;
 import pt.ulisboa.tecnico.cmov.airdesk.core.user.User;
 import pt.ulisboa.tecnico.cmov.airdesk.core.workspace.exception.WorkspaceAlreadyExistsException;
 import pt.ulisboa.tecnico.cmov.airdesk.core.workspace.exception.WorkspaceNameIsEmptyException;
+import pt.ulisboa.tecnico.cmov.airdesk.core.workspace.exception.WorkspacePublicNoTagsException;
 import pt.ulisboa.tecnico.cmov.airdesk.core.workspace.exception.WorkspaceQuotaInvalidException;
 import pt.ulisboa.tecnico.cmov.airdesk.database.AirDeskDbHelper;
 import pt.ulisboa.tecnico.cmov.airdesk.util.FileManager;
@@ -28,9 +29,13 @@ public class Workspace {
         }
         if(!FileManager.isWorkspaceNameAvailable(context, name))
             throw new WorkspaceAlreadyExistsException();
-        if(quota <= 0 || quota >= 1000) {
-            throw new WorkspaceQuotaInvalidException();
+        long maxSize = FileManager.getAvailableSpace(context);
+        if(quota <= 0 || quota * 1024 * 1024 >= maxSize) {
+            throw new WorkspaceQuotaInvalidException(context, maxSize);
         }
+        if(!isPrivate)
+            if(tags == null || tags.length == 0)
+                throw new WorkspacePublicNoTagsException();
         mName = name;
         mQuota = quota;
         mIsPrivate = isPrivate;
