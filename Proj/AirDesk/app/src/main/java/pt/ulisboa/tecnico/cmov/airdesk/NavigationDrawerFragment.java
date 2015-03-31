@@ -211,6 +211,8 @@ public class NavigationDrawerFragment extends Fragment {
             // Returns the result to the AirDeskActivity
             Intent intent = new Intent(getActivity(), LoginActivity.class);
             getActivity().startActivityForResult(intent, LoginActivity.LOGIN_REQUEST);
+
+            mDrawerListView.setItemChecked(1, true);
         }
     }
 

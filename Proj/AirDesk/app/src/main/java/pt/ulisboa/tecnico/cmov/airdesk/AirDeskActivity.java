@@ -62,7 +62,13 @@ public class AirDeskActivity extends ActionBarActivity implements NavigationDraw
         checkUserLogin();
 
         setSideDrawer();
-        populateAccount(); // goes to LoginActivity
+    }
+
+    @Override
+    protected void onStart() {
+        super.onStart();
+
+        populateAccount(); //TODO devia ir para depois do login...apos garantir que o user esta na bd, populate!
         refreshList();
     }
 
@@ -119,7 +125,7 @@ public class AirDeskActivity extends ActionBarActivity implements NavigationDraw
     @Override
     public void onCreateContextMenu(ContextMenu menu, View v, ContextMenu.ContextMenuInfo menuInfo) {
         super.onCreateContextMenu(menu, v, menuInfo);
-        getMenuInflater().inflate(R.menu.menu_my_workspaces , menu);
+        getMenuInflater().inflate(R.menu.menu_my_workspaces, menu);
     }
 
     // This will be invoked when a menu item is selected
