@@ -9,7 +9,6 @@
         android:id="@+id/tagName"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="ASNDSDK"
         android:textSize="20dp"
         android:layout_weight="5"/>
 
