@@ -9,9 +9,14 @@
         android:id="@+id/tagName"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="ASNDSDK"
         android:textSize="20dp"
-        android:layout_weight="9"/>
+        android:layout_weight="5"/>
+
+    <Button
+        android:id="@+id/removeTagButton"
+        android:layout_width="47dp"
+        android:layout_height="wrap_content"
+        android:background="@android:drawable/ic_menu_close_clear_cancel"/>
 
 
 </LinearLayout>

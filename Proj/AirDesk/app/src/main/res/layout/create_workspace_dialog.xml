@@ -69,7 +69,8 @@
             android:id="@+id/newTag"
             android:layout_weight="5"
             android:layout_width="fill_parent"
-            android:layout_height="wrap_content" />
+            android:layout_height="wrap_content"
+            android:hint="Add your tags here"/>
 
         <Button
             android:id="@+id/addTagButton"

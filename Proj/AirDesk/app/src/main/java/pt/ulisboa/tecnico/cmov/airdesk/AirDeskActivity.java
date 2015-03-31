@@ -1,6 +1,8 @@
 package pt.ulisboa.tecnico.cmov.airdesk;
 
 import android.app.Activity;
+import android.app.AlertDialog;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
@@ -9,20 +11,17 @@ import android.support.v4.app.FragmentManager;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.ActionBarActivity;
-import android.util.Log;
+import android.view.ContextMenu;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.AdapterView.AdapterContextMenuInfo;
 import android.widget.ListView;
 import android.widget.TextView;
+import android.widget.Toast;
 
-import java.util.ArrayList;
-import java.util.Comparator;
-
-import pt.ulisboa.tecnico.cmov.airdesk.adapter.WorkspaceListAdapter;
-import pt.ulisboa.tecnico.cmov.airdesk.core.workspace.Workspace;
 import pt.ulisboa.tecnico.cmov.airdesk.core.workspace.WorkspaceManager;
 import pt.ulisboa.tecnico.cmov.airdesk.dialogFragment.CreateWorkspace;
 
@@ -51,7 +50,6 @@ public class AirDeskActivity extends ActionBarActivity implements NavigationDraw
         // Ready the User
         pref = getApplicationContext().getSharedPreferences("UserPref", MODE_PRIVATE); // 0 - for private mode
         checkUserLogin();
-        Log.d("NICK NAME : ", pref.getString("user_nick", "Ridiculo"));
 
         setSideDrawer();
         populateAccount(); // goes to LoginActivity
@@ -64,11 +62,6 @@ public class AirDeskActivity extends ActionBarActivity implements NavigationDraw
         ListView listView = (ListView) findViewById(R.id.list_fragment);
         View header = getLayoutInflater().inflate(R.layout.drawer_header, null);
         listView.addHeaderView(header);
-
-        // Adding of the footer to the drawer list
-        listView = (ListView) findViewById(R.id.list_fragment);
-        View footer = getLayoutInflater().inflate(R.layout.drawer_logout, null);
-        listView.addFooterView(footer);
 
         updateNickEmail();
 
@@ -101,6 +94,40 @@ public class AirDeskActivity extends ActionBarActivity implements NavigationDraw
     private void populateAccount() {
         ListView listView = (ListView) findViewById(R.id.workspacesList);
         listView.setAdapter(WorkspaceManager.getInstance().getWorkspaceAdapter());
+        // Registering context menu for the listView
+        registerForContextMenu(listView);
+    }
+
+    // This will be invoked when an item in the listView is long pressed
+    @Override
+    public void onCreateContextMenu(ContextMenu menu, View v, ContextMenu.ContextMenuInfo menuInfo) {
+        super.onCreateContextMenu(menu, v, menuInfo);
+        getMenuInflater().inflate(R.menu.menu_my_workspaces , menu);
+    }
+
+    // This will be invoked when a menu item is selected
+    @Override
+    public boolean onContextItemSelected(MenuItem item) {
+
+        AdapterContextMenuInfo info = (AdapterContextMenuInfo) item.getMenuInfo();
+
+        switch(item.getItemId()){
+            case R.id.menu_my_edit:
+                Toast.makeText(this, "TODO Edit", Toast.LENGTH_SHORT).show();
+                break;
+            case R.id.menu_my_details:
+                Toast.makeText(this, "TODO Details", Toast.LENGTH_SHORT).show();
+                break;
+            case R.id.menu_my_delete:
+                Toast.makeText(this, "TODO Delete", Toast.LENGTH_SHORT).show();
+                break;
+            case R.id.menu_my_invite:
+                Toast.makeText(this, "TODO Invite", Toast.LENGTH_SHORT).show();
+                break;
+
+        }
+
+        return true;
     }
 
     public void onNewWorkspace(View view) {
@@ -154,6 +181,12 @@ public class AirDeskActivity extends ActionBarActivity implements NavigationDraw
             case 3:
                 mTitle = getString(R.string.title_section3);
                 break;
+            case 4:
+                mTitle = getString(R.string.title_section4);
+                break;
+            case 5:
+                mTitle = getString(R.string.title_section5);
+                break;
         }
     }
 
@@ -183,11 +216,24 @@ public class AirDeskActivity extends ActionBarActivity implements NavigationDraw
         // Handle action bar item clicks here. The action bar will
         // automatically handle clicks on the Home/Up button, so long
         // as you specify a parent activity in AndroidManifest.xml.
-        int id = item.getItemId();
 
-        //noinspection SimplifiableIfStatement
-        if (id == R.id.action_settings) {
-            return true;
+
+        if(item.getItemId() == R.id.delete_all){
+                new AlertDialog.Builder(this)
+                        .setTitle("Delete All")
+                        .setMessage("Are you sure you want to delete all your workspaces?")
+                        .setPositiveButton(android.R.string.yes, new DialogInterface.OnClickListener() {
+                            public void onClick(DialogInterface dialog, int which) {
+                                Toast.makeText(getBaseContext(), "DELETED", Toast.LENGTH_SHORT).show();
+                            }
+                        })
+                        .setNegativeButton(android.R.string.no, new DialogInterface.OnClickListener() {
+                            public void onClick(DialogInterface dialog, int which) {
+                                // do nothing
+                            }
+                        })
+                        .setIcon(android.R.drawable.ic_dialog_alert)
+                        .show();
         }
 
         return super.onOptionsItemSelected(item);

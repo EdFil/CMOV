@@ -30,7 +30,7 @@ public class AirDeskDbHelper extends SQLiteOpenHelper {
     private static AirDeskDbHelper mInstance;
 
     public static final String DATABASE_NAME = "airdesk.db";
-    public static final int DATABASE_VERSION = 2;
+    public static final int DATABASE_VERSION = 3;
 
     public static synchronized AirDeskDbHelper getInstance(Context context) {
         if (mInstance == null) {
