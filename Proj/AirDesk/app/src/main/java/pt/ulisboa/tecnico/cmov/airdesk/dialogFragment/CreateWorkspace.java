@@ -55,9 +55,9 @@ public class CreateWorkspace extends DialogFragment {
         final View view = inflater.inflate(R.layout.create_workspace_dialog, container, false);
 
         addTagButton = (Button)view.findViewById(R.id.addTagButton);
-        newTagText = (EditText)view.findViewById(R.id.newTag);
         cancelButton = (Button)view.findViewById(R.id.cancelWorkspaceDialog);
         createButton = (Button) view.findViewById(R.id.createWorkspaceDialog);
+        newTagText = (EditText)view.findViewById(R.id.newTag);
         workspaceNameText = (EditText) view.findViewById(R.id.newWorkspaceName);
         quotaValueText = (EditText) view.findViewById(R.id.editQuota);
         privacySwitch = (Switch) view.findViewById(R.id.privateSwitch);
@@ -80,8 +80,9 @@ public class CreateWorkspace extends DialogFragment {
         tagList.setOnItemLongClickListener(new AdapterView.OnItemLongClickListener() {
             @Override
             public boolean onItemLongClick(AdapterView<?> parent, View view, int position, long id) {
-                ArrayAdapter<String> list = (ArrayAdapter<String>) parent.getAdapter();
-                list.remove(list.getItem(position));
+//                ArrayAdapter<String> list = (ArrayAdapter<String>) parent.getAdapter();
+//                list.remove(list.getItem(position));
+                mTagListAdapter.remove(mTagListAdapter.getItem(position));
                 return true;
             }
         });
@@ -118,6 +119,7 @@ public class CreateWorkspace extends DialogFragment {
                 }
             }
         });
+
 
         createButton.setOnClickListener(new View.OnClickListener() {
             @Override

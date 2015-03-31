@@ -7,6 +7,7 @@ import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import java.util.List;
 
@@ -34,6 +35,14 @@ public class TagListAdapter extends ArrayAdapter<String> {
         final TextView title = (TextView) convertView.findViewById(R.id.tagName);
         // Populate the data into the template view using the data object
         title.setText(tag);
+
+        Button removeTagButton = (Button) convertView.findViewById(R.id.removeTagButton);
+        removeTagButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                remove(title.getText().toString());
+            }
+        });
 
         // Return the completed view to render on screen
         return convertView;

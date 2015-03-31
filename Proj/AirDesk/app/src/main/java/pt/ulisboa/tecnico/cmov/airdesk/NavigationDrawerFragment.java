@@ -106,6 +106,7 @@ public class NavigationDrawerFragment extends Fragment {
                         getString(R.string.title_section1),
                         getString(R.string.title_section2),
                         getString(R.string.title_section3),
+                        getString(R.string.title_section4),
                 }));
         mDrawerListView.setItemChecked(mCurrentSelectedPosition, true);
         return mDrawerListView;
@@ -196,10 +197,10 @@ public class NavigationDrawerFragment extends Fragment {
         if (mDrawerLayout != null && position != 0) {
             mDrawerLayout.closeDrawer(mFragmentContainerView);
         }
-        if (mCallbacks != null && position != 4) {
+        if (mCallbacks != null && position != 5) {
             mCallbacks.onNavigationDrawerItemSelected(position);
         }
-        if (mCallbacks != null && position == 4) {
+        if (mCallbacks != null && position == 5) {
             // Put user on Cache.
             SharedPreferences preferences = getActivity().getSharedPreferences("UserPref", Context.MODE_PRIVATE);
             SharedPreferences.Editor editor = preferences.edit();
