@@ -11,7 +11,6 @@ import android.support.v4.app.FragmentManager;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.ActionBarActivity;
-import android.util.Log;
 import android.view.ContextMenu;
 import android.view.LayoutInflater;
 import android.view.Menu;
@@ -23,13 +22,7 @@ import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import java.io.File;
-import java.util.ArrayList;
-import java.util.Comparator;
-
-import pt.ulisboa.tecnico.cmov.airdesk.adapter.WorkspaceListAdapter;
-import pt.ulisboa.tecnico.cmov.airdesk.core.workspace.LocalWorkspace;
-import pt.ulisboa.tecnico.cmov.airdesk.core.workspace.Workspace;
+import pt.ulisboa.tecnico.cmov.airdesk.core.workspace.WorkspaceManager;
 import pt.ulisboa.tecnico.cmov.airdesk.dialogFragment.CreateWorkspace;
 
 
@@ -39,9 +32,6 @@ public class AirDeskActivity extends ActionBarActivity implements NavigationDraw
     public static final String WORKSPACE_MESSAGE = "Workspace_message";
     public static final String WORKSPACES_FOLDER_NAME = "workspaces";
 
-    // Adapter of the list of Workspaces.
-    private WorkspaceListAdapter mWorkspaceAdapter;
-
     // Fragment managing the behaviors, interactions and presentation of the navigation drawer.
     private NavigationDrawerFragment mNavigationDrawerFragment;
 
@@ -50,12 +40,12 @@ public class AirDeskActivity extends ActionBarActivity implements NavigationDraw
 
     SharedPreferences pref;
 
-    public WorkspaceListAdapter getWorkspaceListAdapter () {return mWorkspaceAdapter;}
-
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_air_desk);
+
+        WorkspaceManager.initWorkspaceManager(getApplicationContext());
 
         // Ready the User
         pref = getApplicationContext().getSharedPreferences("UserPref", MODE_PRIVATE); // 0 - for private mode
@@ -108,15 +98,8 @@ public class AirDeskActivity extends ActionBarActivity implements NavigationDraw
     }
 
     private void populateAccount() {
-        mWorkspaceAdapter = new WorkspaceListAdapter(this, new ArrayList<Workspace>());
-//        File rootFolder = getDir(WORKSPACES_FOLDER_NAME, MODE_PRIVATE);
-//        String[] children = rootFolder.list();
-//        for (int i = 0; i < children.length; i++) {
-//            mWorkspaceAdapter.add(new LocalWorkspace(children[i], 10));
-//        }
-
         ListView listView = (ListView) findViewById(R.id.workspacesList);
-        listView.setAdapter(mWorkspaceAdapter);
+        listView.setAdapter(WorkspaceManager.getInstance().getWorkspaceAdapter());
         // Registering context menu for the listView
         registerForContextMenu(listView);
     }
@@ -173,18 +156,14 @@ public class AirDeskActivity extends ActionBarActivity implements NavigationDraw
     }
 
     public void refreshList(){
-        File rootFolder = getDir(WORKSPACES_FOLDER_NAME, MODE_PRIVATE);
-        mWorkspaceAdapter.clear();
-        String[] children = rootFolder.list();
-        for(int i = 0; i <children.length; i++){
-            mWorkspaceAdapter.add(new LocalWorkspace(children[i]));
-        }
-        mWorkspaceAdapter.sort(new Comparator<Workspace>() {
-            @Override
-            public int compare(Workspace lhs, Workspace rhs) {
-                return lhs.getName().compareToIgnoreCase(rhs.getName());
-            }
-        });
+        // TODO: Fix this
+        WorkspaceManager.getInstance().reloadWorkspaces();
+//        mWorkspaceAdapter.sort(new Comparator<Workspace>() {
+//            @Override
+//            public int compare(Workspace lhs, Workspace rhs) {
+//                return lhs.getName().compareToIgnoreCase(rhs.getName());
+//            }
+//        });
     }
 
 

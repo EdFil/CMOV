@@ -7,19 +7,6 @@ import android.provider.BaseColumns;
  */
 public class AirDeskContract {
 
-
-
-
-    /* Inner class that defines the table contents of the location table */
-    public static final class FileEntry implements BaseColumns {
-        // Table name
-        public static final String TABLE_NAME = "file";
-        // Foreign Key into the workspace table
-        public static final String COLUMN_WORKSPACE_KEY = "workspace_id";
-        // Name of the file
-        public static final String COLUMN_FILE_NAME = "file_name";
-    }
-
     /* Inner class that defines the table contents of the Workspace table */
     public static final class WorkspaceEntry implements BaseColumns {
         // Table Name
@@ -35,13 +22,23 @@ public class AirDeskContract {
 
     }
 
+    /* Inner class that defines the table contents of the location table */
+    public static final class FileEntry implements BaseColumns {
+        // Table name
+        public static final String TABLE_NAME = "file";
+        // Foreign Key into the workspace table
+        public static final String COLUMN_WORKSPACE_KEY = "workspace_id";
+        // Name of the file
+        public static final String COLUMN_FILE_NAME = "file_name";
+    }
+
     /* Inner class that defines the table contents of the Tag table */
     public static final class TagsEntry {
         // Table Name
         public static final String TABLE_NAME = "tag";
         // Name of the foreign workspace
         public static final String COLUMN_WORKSPACE_KEY = "workspace_id";
-        // Name of the workspace
+        // Name of the tag
         public static final String COLUMN_TAG_NAME = "tag_name";
     }
 
@@ -51,7 +48,9 @@ public class AirDeskContract {
         public static final String TABLE_NAME = "user";
         // Name of the foreign workspace
         public static final String COLUMN_WORKSPACE_KEY = "workspace_id";
-        // Name of the workspace
+        // Unique email of the user
         public static final String COLUMN_USER_EMAIL = "user_email";
+        // User nick name
+        public static final String COLUMN_USER_NICK = "user_nick";
     }
 }

@@ -1,69 +1,127 @@
 package pt.ulisboa.tecnico.cmov.airdesk.core.workspace;
 
-import android.content.Context;
-
+import java.io.File;
+import java.util.Arrays;
+import java.util.Collection;
 import java.util.HashSet;
 
-import pt.ulisboa.tecnico.cmov.airdesk.core.MyFile;
+import pt.ulisboa.tecnico.cmov.airdesk.core.tag.Tag;
 import pt.ulisboa.tecnico.cmov.airdesk.core.user.User;
-import pt.ulisboa.tecnico.cmov.airdesk.core.workspace.exception.WorkspaceAlreadyExistsException;
+import pt.ulisboa.tecnico.cmov.airdesk.core.workspace.exception.WorkspaceAddTagToPrivateException;
+import pt.ulisboa.tecnico.cmov.airdesk.core.workspace.exception.WorkspaceExceedsMaxSpaceException;
 import pt.ulisboa.tecnico.cmov.airdesk.core.workspace.exception.WorkspaceNameIsEmptyException;
-import pt.ulisboa.tecnico.cmov.airdesk.core.workspace.exception.WorkspaceQuotaInvalidException;
-import pt.ulisboa.tecnico.cmov.airdesk.database.AirDeskDbHelper;
-import pt.ulisboa.tecnico.cmov.airdesk.util.FileManager;
+import pt.ulisboa.tecnico.cmov.airdesk.core.workspace.exception.WorkspaceNegativeQuotaException;
+import pt.ulisboa.tecnico.cmov.airdesk.core.workspace.exception.WorkspacePublicNoTagsException;
+import pt.ulisboa.tecnico.cmov.airdesk.core.workspace.exception.WorkspaceQuotaIsZeroException;
+import pt.ulisboa.tecnico.cmov.airdesk.core.workspace.exception.WorkspaceRemoveOwnerException;
 
 public class Workspace {
 
     private String mName;
     private User mOwner;
-    private int mQuota;
+    private long mQuota;
     private boolean mIsPrivate;
-    private HashSet<String> mTags;
-    private HashSet<MyFile> mFiles;
-    private HashSet<User> mUser;
+    private long mDatabaseId;
+    private HashSet<Tag> mTags;
+    private HashSet<User> mUsers;
+    private HashSet<File> mFiles;
+    private WorkspaceManager mWorkspaceManager;
 
-    public Workspace(Context context, String name, int quota, boolean isPrivate, String[] tags){
-        if(name.isEmpty()) {
-            throw new WorkspaceNameIsEmptyException();
-        }
-        if(!FileManager.isWorkspaceNameAvailable(context, name))
-            throw new WorkspaceAlreadyExistsException();
-        if(quota <= 0 || quota >= 1000) {
-            throw new WorkspaceQuotaInvalidException();
-        }
-        mName = name;
-        mQuota = quota;
-        mIsPrivate = isPrivate;
-        mTags = new HashSet<String>();
-        mFiles = new HashSet<MyFile>();
-        mUser = new HashSet<User>();
+    public Workspace(String name, User owner, long quota, boolean isPrivate, Collection<Tag> tags, Collection<User> users, Collection<File> files, WorkspaceManager workspaceManager){
+        setWorkspaceManager(workspaceManager);
+        setName(name);
+        setOwner(owner);
+        setQuota(quota);
+        setIsPrivate(isPrivate);
+        setTags(new HashSet<Tag>(tags));
+        setUsers(new HashSet<User>(users));
+        setFiles(new HashSet<File>(files));
     }
 
-    public Workspace(String workspaceName) {
-        mName = workspaceName;
-    }
-
+    // Getters
     public String getName() { return mName; }
-    public int getQuota() { return mQuota; }
+    public User getOwner() { return mOwner; }
+    public long getQuota() { return mQuota; }
     public boolean isPrivate() { return mIsPrivate; }
-    public String[] getTags() {
-        String[] myArray = new String[mTags.size()];
-        return mTags.toArray(myArray);
+    public long getDatabaseId() { return mDatabaseId; }
+    public HashSet<Tag> getTags() { return mTags; }
+    public HashSet<User> getUsers() { return mUsers; }
+    public HashSet<File> getFiles() { return mFiles; }
+
+    // Setters
+    public void setName(String name) throws WorkspaceNameIsEmptyException, NullPointerException {
+        if(name == null)
+            throw new NullPointerException("Workspace cannot be null");
+        if(name.isEmpty())
+            throw new WorkspaceNameIsEmptyException();
+        // TODO: Check if name already exists
+        mName = name;
     }
 
+    public void setOwner(User owner) throws NullPointerException{
+        if(owner == null)
+            throw new NullPointerException("Owner cannot be null");
+        mOwner = owner;
+    }
 
-    public void setName(String name) { mName = name; }
-    public void setQuota(int quota) { mQuota = quota; }
-    public void setIsPrivate(boolean isPrivate) { mIsPrivate = isPrivate; }
-    public void setTags(String... tags) {
-        if(tags != null){
-            for(int i = 0; i < tags.length; i++){
-                ;
-            }
+    public void setQuota(long quota) throws WorkspaceNegativeQuotaException{
+        if(quota < 0)
+            throw new WorkspaceNegativeQuotaException();
+        if(quota == 0)
+            throw new WorkspaceQuotaIsZeroException();
+        long maxQuota = mWorkspaceManager.getSpaceAvailableInternalStorage();
+        if(quota > maxQuota)
+            throw new WorkspaceExceedsMaxSpaceException(mWorkspaceManager.getContext(), maxQuota);
+        mQuota = quota;
+    }
+
+    public void setIsPrivate(boolean isPrivate) {
+        mIsPrivate = isPrivate;
+    }
+
+    public void setDatabaseId(long databaseId){
+        mDatabaseId = databaseId;
+    }
+
+    public void setTags(Collection<Tag> tags) {
+        if(!isPrivate() && tags.isEmpty())
+            throw new WorkspacePublicNoTagsException();
+        mTags = new HashSet<Tag>(tags);
+    }
+
+    public void setUsers(Collection<User> users) {
+        if(users == null)
+            throw new NullPointerException("Users cannot be null");
+        mUsers = new HashSet<User>(users);
+        if(!getUsers().contains(getOwner())){
+            getUsers().add(getOwner());
         }
     }
-    public void addTag(String tag) { mTags.add(tag); }
-    public void removeTag(String tag) { mTags.remove(tag); }
 
+    public void setFiles(Collection<File> files) {
+        if(files == null)
+            throw new NullPointerException("Files cannot be null");
+        mFiles = new HashSet<File>(files);
+    }
 
+    public void setWorkspaceManager(WorkspaceManager workspaceManager){
+        if(workspaceManager == null)
+            throw new NullPointerException("Workspace Manager cannot be null");
+        mWorkspaceManager = workspaceManager;
+    }
+
+    // Class functions
+    public void addTag(Tag tag) { mTags.add(tag); }
+    public void removeTag(Tag tag) { mTags.remove(tag); }
+
+    public void addUser(User user) { mUsers.add(user); }
+    public void removeUser(User user) {
+        if(user.equals(getOwner()))
+            throw new WorkspaceRemoveOwnerException();
+        mUsers.remove(user);
+    }
+
+    public void addFile(File file) { mFiles.add(file); }
+    public void removeFile(File file) { mFiles.remove(file); }
+    
 }

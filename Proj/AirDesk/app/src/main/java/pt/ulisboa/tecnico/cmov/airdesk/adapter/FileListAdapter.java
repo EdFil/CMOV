@@ -7,22 +7,22 @@ import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
 import android.widget.TextView;
 
+import java.io.File;
 import java.util.List;
 
 import pt.ulisboa.tecnico.cmov.airdesk.R;
-import pt.ulisboa.tecnico.cmov.airdesk.core.MyFile;
 
-public class FileListAdapter extends ArrayAdapter<MyFile> {
+public class FileListAdapter extends ArrayAdapter<File> {
 
 
-    public FileListAdapter(Context context, List<MyFile> notes) {
+    public FileListAdapter(Context context, List<File> notes) {
         super(context, 0, notes);
     }
 
     @Override
     public View getView(int position, View convertView, ViewGroup parent) {
         // Get the data item for this position
-        MyFile file = getItem(position);
+        File file = getItem(position);
         // Check if an existing view is being reused, otherwise inflate the view
         if (convertView == null) {
             convertView = LayoutInflater.from(getContext()).inflate(R.layout.workspace_list_item, parent, false);
