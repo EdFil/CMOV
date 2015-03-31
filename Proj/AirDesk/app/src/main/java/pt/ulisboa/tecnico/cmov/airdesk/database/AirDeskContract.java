@@ -7,6 +7,9 @@ import android.provider.BaseColumns;
  */
 public class AirDeskContract {
 
+
+
+
     /* Inner class that defines the table contents of the location table */
     public static final class FileEntry implements BaseColumns {
         // Table name

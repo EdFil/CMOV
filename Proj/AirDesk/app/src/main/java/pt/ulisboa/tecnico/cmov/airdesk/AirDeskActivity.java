@@ -143,6 +143,7 @@ public class AirDeskActivity extends ActionBarActivity implements NavigationDraw
 
     public void refreshList(){
         File rootFolder = getDir(WORKSPACES_FOLDER_NAME, MODE_PRIVATE);
+        mWorkspaceAdapter.clear();
         String[] children = rootFolder.list();
         for(int i = 0; i <children.length; i++){
             mWorkspaceAdapter.add(new LocalWorkspace(children[i]));
