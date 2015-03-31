@@ -33,9 +33,6 @@ public class AirDeskActivity extends ActionBarActivity implements NavigationDraw
     public static final String WORKSPACE_MESSAGE = "Workspace_message";
     public static final String WORKSPACES_FOLDER_NAME = "workspaces";
 
-    // Adapter of the list of Workspaces.
-    private WorkspaceListAdapter mWorkspaceAdapter;
-
     // Fragment managing the behaviors, interactions and presentation of the navigation drawer.
     private NavigationDrawerFragment mNavigationDrawerFragment;
 
@@ -43,8 +40,6 @@ public class AirDeskActivity extends ActionBarActivity implements NavigationDraw
     private CharSequence mTitle;
 
     SharedPreferences pref;
-
-    public WorkspaceListAdapter getWorkspaceListAdapter () {return mWorkspaceAdapter;}
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -104,13 +99,6 @@ public class AirDeskActivity extends ActionBarActivity implements NavigationDraw
     }
 
     private void populateAccount() {
-        mWorkspaceAdapter = new WorkspaceListAdapter(this, new ArrayList<Workspace>());
-//        File rootFolder = getDir(WORKSPACES_FOLDER_NAME, MODE_PRIVATE);
-//        String[] children = rootFolder.list();
-//        for (int i = 0; i < children.length; i++) {
-//            mWorkspaceAdapter.add(new LocalWorkspace(children[i], 10));
-//        }
-
         ListView listView = (ListView) findViewById(R.id.workspacesList);
         listView.setAdapter(WorkspaceManager.getInstance().getWorkspaceAdapter());
     }
@@ -137,12 +125,12 @@ public class AirDeskActivity extends ActionBarActivity implements NavigationDraw
     public void refreshList(){
         // TODO: Fix this
         WorkspaceManager.getInstance().reloadWorkspaces();
-        mWorkspaceAdapter.sort(new Comparator<Workspace>() {
-            @Override
-            public int compare(Workspace lhs, Workspace rhs) {
-                return lhs.getName().compareToIgnoreCase(rhs.getName());
-            }
-        });
+//        mWorkspaceAdapter.sort(new Comparator<Workspace>() {
+//            @Override
+//            public int compare(Workspace lhs, Workspace rhs) {
+//                return lhs.getName().compareToIgnoreCase(rhs.getName());
+//            }
+//        });
     }
 
 
