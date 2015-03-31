@@ -11,6 +11,7 @@ import android.util.Log;
 
 import org.json.JSONException;
 
+import pt.ulisboa.tecnico.cmov.airdesk.core.workspace.Workspace;
 import pt.ulisboa.tecnico.cmov.airdesk.database.AirDeskContract.WorkspaceEntry;
 import pt.ulisboa.tecnico.cmov.airdesk.database.AirDeskDbHelper;
 
@@ -37,6 +38,8 @@ public class DatabaseTest extends AndroidTestCase {
     }
 
     public void testCustom(){
+        WorkspaceMa
+
         AirDeskDbHelper.getInstance(mContext).insertWorkspace("WS", "Ed", 10, true);
         AirDeskDbHelper.getInstance(mContext).addTagsToWorkspace(1, new String[] {"Fun", "Sport", "OMG"});
         String[] tags = AirDeskDbHelper.getInstance(mContext).getWorkspaceTags(1);
