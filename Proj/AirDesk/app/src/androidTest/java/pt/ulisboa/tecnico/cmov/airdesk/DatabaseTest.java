@@ -11,9 +11,15 @@ import android.util.Log;
 
 import org.json.JSONException;
 
+import java.io.File;
+
+import pt.ulisboa.tecnico.cmov.airdesk.core.tag.Tag;
+import pt.ulisboa.tecnico.cmov.airdesk.core.user.User;
 import pt.ulisboa.tecnico.cmov.airdesk.core.workspace.Workspace;
+import pt.ulisboa.tecnico.cmov.airdesk.core.workspace.WorkspaceManager;
 import pt.ulisboa.tecnico.cmov.airdesk.database.AirDeskContract.WorkspaceEntry;
 import pt.ulisboa.tecnico.cmov.airdesk.database.AirDeskDbHelper;
+import pt.ulisboa.tecnico.cmov.airdesk.util.FileManager;
 
 
 public class DatabaseTest extends AndroidTestCase {
@@ -38,14 +44,12 @@ public class DatabaseTest extends AndroidTestCase {
     }
 
     public void testCustom(){
-        WorkspaceMa
-
-        AirDeskDbHelper.getInstance(mContext).insertWorkspace("WS", "Ed", 10, true);
-        AirDeskDbHelper.getInstance(mContext).addTagsToWorkspace(1, new String[] {"Fun", "Sport", "OMG"});
-        String[] tags = AirDeskDbHelper.getInstance(mContext).getWorkspaceTags(1);
-        for(int i = 0; i < tags.length; i++){
-            Log.d(TAG, tags[i]);
-        }
+        FileManager.deleteFolder(mContext, "Test_Workspace");
+        Tag[] tags = new Tag[] { new Tag("Fun"), new Tag("Help") };
+        User[] users = new User[] { new User("edgar@email.com", "EdFil") };
+        File[] files = new File[] {  };
+        WorkspaceManager.initWorkspaceManager(mContext);
+        WorkspaceManager.getInstance().addNewWorkspace("Test_Workspace", "Edgar", 120102, false, tags, users, files);
     }
 
 //    public void testInsertReadDb() throws JSONException {

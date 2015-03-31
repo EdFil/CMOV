@@ -10,8 +10,7 @@ public class Tag {
     private Workspace mWorkspace;
     private String mText;
 
-    public Tag(Workspace workspace, String text) {
-        mWorkspace = workspace;
+    public Tag(String text) {
         mText = text;
     }
 

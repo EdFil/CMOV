@@ -27,7 +27,6 @@ import pt.ulisboa.tecnico.cmov.airdesk.core.workspace.LocalWorkspace;
 import pt.ulisboa.tecnico.cmov.airdesk.core.workspace.Workspace;
 import pt.ulisboa.tecnico.cmov.airdesk.database.AirDeskDbHelper;
 import pt.ulisboa.tecnico.cmov.airdesk.dialogFragment.CreateWorkspace;
-import pt.ulisboa.tecnico.cmov.airdesk.util.FileManager;
 
 
 public class AirDeskActivity extends ActionBarActivity implements NavigationDrawerFragment.NavigationDrawerCallbacks {
@@ -136,19 +135,19 @@ public class AirDeskActivity extends ActionBarActivity implements NavigationDraw
     }
 
     public void refreshList(){
-        Workspace[] workspaces = AirDeskDbHelper.getInstance(this).getAllLocalWorkspaceInfo();
-        File rootFolder = getDir(WORKSPACES_FOLDER_NAME, MODE_PRIVATE);
-        mWorkspaceAdapter.clear();
-        String[] children = rootFolder.list();
-        for(int i = 0; i <children.length; i++){
-            mWorkspaceAdapter.add(new LocalWorkspace(children[i]));
-        }
-        mWorkspaceAdapter.sort(new Comparator<Workspace>() {
-            @Override
-            public int compare(Workspace lhs, Workspace rhs) {
-                return lhs.getName().compareToIgnoreCase(rhs.getName());
-            }
-        });
+//        Workspace[] workspaces = AirDeskDbHelper.getInstance(this).getAllLocalWorkspaceInfo();
+//        File rootFolder = getDir(WORKSPACES_FOLDER_NAME, MODE_PRIVATE);
+//        mWorkspaceAdapter.clear();
+//        String[] children = rootFolder.list();
+//        for(int i = 0; i <children.length; i++){
+//            mWorkspaceAdapter.add(new LocalWorkspace(children[i]));
+//        }
+//        mWorkspaceAdapter.sort(new Comparator<Workspace>() {
+//            @Override
+//            public int compare(Workspace lhs, Workspace rhs) {
+//                return lhs.getName().compareToIgnoreCase(rhs.getName());
+//            }
+//        });
     }
 
 

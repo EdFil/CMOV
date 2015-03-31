@@ -77,7 +77,6 @@ public class AirDeskDbHelper extends SQLiteOpenHelper {
         db.execSQL(SQL_CREATE_WORKSPACE_TABLE);
         db.execSQL(SQL_CREATE_TAG_TABLE);
         db.execSQL(SQL_CREATE_USER_TABLE);
-        db.close();
     }
 
     @Override
@@ -93,7 +92,7 @@ public class AirDeskDbHelper extends SQLiteOpenHelper {
 
         ContentValues values = new ContentValues();
         values.put(WorkspaceEntry.COLUMN_WORKSPACE_NAME, workspace.getName());
-        values.put(WorkspaceEntry.COLUMN_WORKSPACE_OWNER, workspace.getOwner().getNick());
+        values.put(WorkspaceEntry.COLUMN_WORKSPACE_OWNER, workspace.getOwner().getEmail());
         values.put(WorkspaceEntry.COLUMN_WORKSPACE_QUOTA, workspace.getQuota());
         values.put(WorkspaceEntry.COLUMN_WORKSPACE_IS_PRIVATE, workspace.isPrivate() ? 1 : 0);
 
@@ -224,7 +223,7 @@ public class AirDeskDbHelper extends SQLiteOpenHelper {
             return;
         SQLiteDatabase db = mInstance.getWritableDatabase();
         // INSERT INTO 'tablename' ('column1', 'column2') VALUES
-        String query = "INSERT INTO " + UsersEntry.TABLE_NAME + "('" + UsersEntry.COLUMN_WORKSPACE_KEY + "', '" + UsersEntry.COLUMN_USER_EMAIL + "') VALUES ";
+        String query = "INSERT INTO " + UsersEntry.TABLE_NAME + "('" + UsersEntry.COLUMN_WORKSPACE_KEY + "', '" + UsersEntry.COLUMN_USER_EMAIL + "', " + UsersEntry.COLUMN_USER_NICK + ") VALUES ";
 
         Iterator<User> iterator = users.iterator();
 

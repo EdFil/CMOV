@@ -28,6 +28,7 @@ public class Workspace {
     private WorkspaceManager mWorkspaceManager;
 
     public Workspace(String name, User owner, long quota, boolean isPrivate, Tag[] tags, User[] users, File[] files, WorkspaceManager workspaceManager){
+        setWorkspaceManager(workspaceManager);
         setName(name);
         setOwner(owner);
         setQuota(quota);
@@ -35,7 +36,6 @@ public class Workspace {
         setTags(new HashSet<Tag>(Arrays.asList(tags)));
         setUsers(new HashSet<User>(Arrays.asList(users)));
         setFiles(new HashSet<File>(Arrays.asList(files)));
-        setWorkspaceManager(workspaceManager);
     }
 
     // Getters
