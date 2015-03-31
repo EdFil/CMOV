@@ -5,6 +5,7 @@
     <string name="title_section2">Foreign Workspaces</string>
     <string name="title_section3">Search Workspaces</string>
     <string name="title_section4">Manage Account</string>
+    <string name="title_section5">Logout</string>
     
     <string name="menu_edit">Edit</string>
     <string name="menu_delete">Delete</string>

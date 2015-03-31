@@ -73,11 +73,6 @@ public class AirDeskActivity extends ActionBarActivity implements NavigationDraw
         View header = getLayoutInflater().inflate(R.layout.drawer_header, null);
         listView.addHeaderView(header);
 
-        // Adding of the footer to the drawer list
-        listView = (ListView) findViewById(R.id.list_fragment);
-        View footer = getLayoutInflater().inflate(R.layout.drawer_logout, null);
-        listView.addFooterView(footer);
-
         updateNickEmail();
 
         // Get the reference of the Drawer Fragment.
@@ -209,6 +204,9 @@ public class AirDeskActivity extends ActionBarActivity implements NavigationDraw
                 break;
             case 4:
                 mTitle = getString(R.string.title_section4);
+                break;
+            case 5:
+                mTitle = getString(R.string.title_section5);
                 break;
         }
     }
