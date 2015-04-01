@@ -30,6 +30,12 @@ public class AirDeskContract {
         public static final String COLUMN_WORKSPACE_KEY = "workspace_id";
         // Name of the file
         public static final String COLUMN_FILE_NAME = "file_name";
+        // File size
+        public static final String COLUMN_FILE_SIZE = "file_size";
+        // Last Edit Date
+        public static final String COLUMN_FILE_LAST_EDIT = "file_last_edit";
+        // Last Access Date
+        public static final String COLUMN_FILE_LAST_ACCESS = "file_last_access";
     }
 
     /* Inner class that defines the table contents of the Tag table */
@@ -54,3 +60,4 @@ public class AirDeskContract {
         public static final String COLUMN_USER_NICK = "user_nick";
     }
 }
+

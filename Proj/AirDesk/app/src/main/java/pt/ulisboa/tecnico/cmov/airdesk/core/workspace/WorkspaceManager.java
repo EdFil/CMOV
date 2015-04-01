@@ -65,6 +65,12 @@ public class WorkspaceManager {
         mWorkspaceListAdapter.add(newWorkspace);
     }
 
+    public void deleteWorkspace(Workspace workspace){
+        AirDeskDbHelper.getInstance(getContext()).deleteWorkspace(workspace);
+        FileManager.deleteFolder(getContext(), workspace.getName());
+        mWorkspaceListAdapter.remove(workspace);
+    }
+
     public void loadExistingWorkspace(String name, User owner, long quota, boolean isPrivate, Collection<Tag> tags, Collection<User> users, Collection<File> files) {
         mWorkspaceListAdapter.add(new Workspace(name, owner, quota, isPrivate, tags, users, files, this));
     }
@@ -85,5 +91,11 @@ public class WorkspaceManager {
         mWorkspaceListAdapter.clear();
         for(Workspace workspace : AirDeskDbHelper.getInstance(getContext()).getAllLocalWorkspaceInfo())
             mWorkspaceListAdapter.add(workspace);
+    }
+
+    public void deleteAllWorkspaces() {
+        int i = mWorkspaceListAdapter.getCount() - 1;
+        while(i >= 0)
+            deleteWorkspace(mWorkspaceListAdapter.getItem(i--));
     }
 }

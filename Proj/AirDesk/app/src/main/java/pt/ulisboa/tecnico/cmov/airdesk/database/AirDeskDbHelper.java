@@ -5,7 +5,6 @@ import android.content.Context;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
-import android.database.sqlite.SQLiteQueryBuilder;
 
 import java.io.File;
 import java.util.ArrayList;
@@ -17,6 +16,7 @@ import pt.ulisboa.tecnico.cmov.airdesk.core.tag.Tag;
 import pt.ulisboa.tecnico.cmov.airdesk.core.user.User;
 import pt.ulisboa.tecnico.cmov.airdesk.core.workspace.Workspace;
 import pt.ulisboa.tecnico.cmov.airdesk.core.workspace.WorkspaceManager;
+import pt.ulisboa.tecnico.cmov.airdesk.database.AirDeskContract.FileEntry;
 import pt.ulisboa.tecnico.cmov.airdesk.database.AirDeskContract.TagsEntry;
 import pt.ulisboa.tecnico.cmov.airdesk.database.AirDeskContract.UsersEntry;
 import pt.ulisboa.tecnico.cmov.airdesk.database.AirDeskContract.WorkspaceEntry;
@@ -69,17 +69,20 @@ public class AirDeskDbHelper extends SQLiteOpenHelper {
                 "PRIMARY KEY (" + UsersEntry.COLUMN_WORKSPACE_KEY  + ", " +UsersEntry.COLUMN_USER_EMAIL + ") " +
                 " );";
 
-//        final String SQL_CREATE_FILE_TABLE = "CREATE TABLE " + FileEntry.TABLE_NAME + " (" +
-//                FileEntry._ID + " INTEGER PRIMARY KEY AUTOINCREMENT," +
-//                WorkspaceEntry.COLUMN_WORKSPACE_NAME + " TEXT UNIQUE NOT NULL, " +
-//                WorkspaceEntry.COLUMN_WORKSPACE_OWNER + " TEXT NOT NULL, " +
-//                WorkspaceEntry.COLUMN_WORKSPACE_QUOTA + " INTEGER NOT NULL, " +
-//                WorkspaceEntry.COLUMN_WORKSPACE_IS_PRIVATE + " INTEGER NOT NULL, " +
-//                " );";
+        final String SQL_CREATE_FILE_TABLE = "CREATE TABLE " + FileEntry.TABLE_NAME + " (" +
+                FileEntry.COLUMN_WORKSPACE_KEY + " INTEGER NOT NULL," +
+                FileEntry.COLUMN_FILE_NAME + " TEXT NOT NULL," +
+                FileEntry.COLUMN_FILE_SIZE + " INTEGER NOT NULL," +
+                FileEntry.COLUMN_FILE_LAST_ACCESS + " TEXT NOT NULL," +
+                FileEntry.COLUMN_FILE_LAST_EDIT + " TEXT NOT NULL," +
+                "FOREIGN KEY (" + FileEntry.COLUMN_WORKSPACE_KEY  + ") REFERENCES " + WorkspaceEntry.TABLE_NAME + "( " + WorkspaceEntry._ID + " )," +
+                "PRIMARY KEY (" + FileEntry.COLUMN_WORKSPACE_KEY  + ", " + FileEntry.COLUMN_FILE_NAME + ") " +
+                " );";
 
         db.execSQL(SQL_CREATE_WORKSPACE_TABLE);
         db.execSQL(SQL_CREATE_TAG_TABLE);
         db.execSQL(SQL_CREATE_USER_TABLE);
+        db.execSQL(SQL_CREATE_FILE_TABLE);
     }
 
     @Override
@@ -87,6 +90,7 @@ public class AirDeskDbHelper extends SQLiteOpenHelper {
         db.execSQL("DROP TABLE IF EXISTS " + WorkspaceEntry.TABLE_NAME);
         db.execSQL("DROP TABLE IF EXISTS " + UsersEntry.TABLE_NAME);
         db.execSQL("DROP TABLE IF EXISTS " + TagsEntry.TABLE_NAME);
+        db.execSQL("DROP TABLE IF EXISTS " + FileEntry.TABLE_NAME);
         onCreate(db);
     }
 
@@ -127,6 +131,9 @@ public class AirDeskDbHelper extends SQLiteOpenHelper {
 
         // Delete all user association
         db.delete(UsersEntry.TABLE_NAME, UsersEntry.COLUMN_WORKSPACE_KEY + "='" + workspace.getDatabaseId() + "'", null);
+
+        // TODO: Delete files
+        // db.delete(UsersEntry.TABLE_NAME, FileEntry.COLUMN_WORKSPACE_KEY + "='" + workspace.getDatabaseId() + "'", null);
 
         // Delete Workspace
         String whereClause = WorkspaceEntry._ID + "=?";
@@ -279,6 +286,40 @@ public class AirDeskDbHelper extends SQLiteOpenHelper {
         db.close();
 
         return workspaceTags;
+    }
+
+    public void addFilesToWorkspace(Workspace workspace, Collection<File> files) {
+        if(files == null)
+            return;
+        SQLiteDatabase db = mInstance.getWritableDatabase();
+        // INSERT INTO 'tablename' ('column1', 'column2') VALUES
+        String query = "INSERT INTO " + FileEntry.TABLE_NAME + "('" + FileEntry.COLUMN_WORKSPACE_KEY + "', '" + FileEntry.COLUMN_FILE_NAME + "', " + FileEntry.COLUMN_FILE_SIZE + "', " + FileEntry.COLUMN_FILE_LAST_ACCESS + "', " + FileEntry.COLUMN_FILE_LAST_EDIT + ") VALUES ";
+
+        Iterator<File> iterator = files.iterator();
+        if(!iterator.hasNext())
+            return;
+
+        while(iterator.hasNext()){
+            File file = iterator.next();
+            // Values ('data1', 'data2'), or ('data1', 'data2');
+            query += "('" + workspace.getDatabaseId() + "', '" + file.getName() + "', '" + file.length() + "', '" + "date(now)" + "', '" + "date(now)" + "')" + (iterator.hasNext() ? "," : ";");
+        }
+
+        db.execSQL(query);
+        db.close();
+    }
+
+    public void removeFilesToWorkspace(Workspace workspace, Collection<File> files) {
+        SQLiteDatabase db = mInstance.getWritableDatabase();
+        String query = "DELETE FROM " + UsersEntry.TABLE_NAME + " WHERE " + UsersEntry.COLUMN_WORKSPACE_KEY + "='" + workspace.getDatabaseId() + "' AND ";
+
+        Iterator<File> iterator = files.iterator();
+
+        while(iterator.hasNext()){
+            db.execSQL(query + UsersEntry.COLUMN_USER_EMAIL + "='" + iterator.next().getName() + "';");
+        }
+
+        db.close();
     }
 
     public static HashMap<Long, ArrayList<User>> getAllUsersInMap(){

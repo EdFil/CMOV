@@ -3,6 +3,7 @@ package pt.ulisboa.tecnico.cmov.airdesk.fragment;
 import android.app.Activity;
 import android.support.v4.app.Fragment;
 import android.os.Bundle;
+import android.view.ContextMenu;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -42,7 +43,6 @@ public class WorkspaceFragment extends Fragment {
 
         ListView listView = (ListView) rootView.findViewById(R.id.workspacesList);
         listView.setAdapter(WorkspaceManager.getInstance().getWorkspaceAdapter());
-
         // Registering context menu for the listView
         registerForContextMenu(listView);
 

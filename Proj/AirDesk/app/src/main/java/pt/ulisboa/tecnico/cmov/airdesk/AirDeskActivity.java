@@ -22,6 +22,7 @@ import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import pt.ulisboa.tecnico.cmov.airdesk.core.workspace.Workspace;
 import pt.ulisboa.tecnico.cmov.airdesk.core.workspace.WorkspaceManager;
 import pt.ulisboa.tecnico.cmov.airdesk.fragment.CreateWorkspaceFragment;
 import pt.ulisboa.tecnico.cmov.airdesk.fragment.WorkspaceFragment;
@@ -126,7 +127,8 @@ public class AirDeskActivity extends ActionBarActivity implements NavigationDraw
                 Toast.makeText(this, "TODO Details", Toast.LENGTH_SHORT).show();
                 break;
             case R.id.menu_my_delete:
-                Toast.makeText(this, "TODO Delete", Toast.LENGTH_SHORT).show();
+                Workspace selectedWorkspace = (Workspace)((ListView)info.targetView.getParent()).getAdapter().getItem(info.position);
+                WorkspaceManager.getInstance().deleteWorkspace(selectedWorkspace);
                 break;
             case R.id.menu_my_invite:
                 Toast.makeText(this, "TODO Invite", Toast.LENGTH_SHORT).show();
@@ -242,6 +244,7 @@ public class AirDeskActivity extends ActionBarActivity implements NavigationDraw
                         .setMessage("Are you sure you want to delete all your workspaces?")
                         .setPositiveButton(android.R.string.yes, new DialogInterface.OnClickListener() {
                             public void onClick(DialogInterface dialog, int which) {
+                                WorkspaceManager.getInstance().deleteAllWorkspaces();
                                 Toast.makeText(getBaseContext(), "DELETED", Toast.LENGTH_SHORT).show();
                             }
                         })

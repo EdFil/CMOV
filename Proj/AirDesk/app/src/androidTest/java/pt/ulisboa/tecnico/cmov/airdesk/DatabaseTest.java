@@ -39,6 +39,11 @@ public class DatabaseTest extends AndroidTestCase {
         mContext.deleteDatabase(AirDeskDbHelper.DATABASE_NAME);
     }
 
+    public void testCustom(){
+//        ArrayList<File> files = new ArrayList<>(Arrays.asList(new File[] { new File() }));
+//        AirDeskDbHelper.getInstance(mContext).addFilesToWorkspace();
+    }
+
     public void testCreateDb() {
         mContext.deleteDatabase(AirDeskDbHelper.DATABASE_NAME);
         SQLiteDatabase db = AirDeskDbHelper.getInstance(mContext).getWritableDatabase();
