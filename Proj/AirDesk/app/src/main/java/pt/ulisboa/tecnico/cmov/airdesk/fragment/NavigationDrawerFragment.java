@@ -1,4 +1,4 @@
-package pt.ulisboa.tecnico.cmov.airdesk;
+package pt.ulisboa.tecnico.cmov.airdesk.fragment;
 
 import android.content.Context;
 import android.content.Intent;
@@ -24,6 +24,9 @@ import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.ListView;
 import android.widget.Toast;
+
+import pt.ulisboa.tecnico.cmov.airdesk.LoginActivity;
+import pt.ulisboa.tecnico.cmov.airdesk.R;
 
 /**
  * Fragment used for managing interactions for and presentation of a navigation drawer.
@@ -265,11 +268,6 @@ public class NavigationDrawerFragment extends Fragment {
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         if (mDrawerToggle.onOptionsItemSelected(item)) {
-            return true;
-        }
-
-        if (item.getItemId() == R.id.refresh) {
-            ((AirDeskActivity)getActivity()).refreshList();
             return true;
         }
 

@@ -6,6 +6,7 @@ import android.widget.ListAdapter;
 import java.io.File;
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Comparator;
 import java.util.List;
 
 import pt.ulisboa.tecnico.cmov.airdesk.adapter.WorkspaceListAdapter;
@@ -91,7 +92,15 @@ public class WorkspaceManager {
         mWorkspaceListAdapter.clear();
         for(Workspace workspace : AirDeskDbHelper.getInstance(getContext()).getAllLocalWorkspaceInfo())
             mWorkspaceListAdapter.add(workspace);
+        mWorkspaceListAdapter.sort(new Comparator<Workspace>() {
+            @Override
+            public int compare(Workspace lhs, Workspace rhs) {
+                return lhs.getName().compareToIgnoreCase(rhs.getName());
+            }
+        });
     }
+
+
 
     public void deleteAllWorkspaces() {
         int i = mWorkspaceListAdapter.getCount() - 1;
