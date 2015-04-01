@@ -3,6 +3,8 @@ package pt.ulisboa.tecnico.cmov.airdesk.fragment;
 import android.app.DialogFragment;
 import android.content.SharedPreferences;
 import android.os.Bundle;
+import android.text.InputFilter;
+import android.text.Spanned;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -47,10 +49,10 @@ public class CreateWorkspaceFragment extends DialogFragment {
     }
 
     @Override
-    public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
+    public View onCreateView(LayoutInflater inflater, final ViewGroup container, Bundle savedInstanceState) {
         mTagCache = new ArrayList<String>();
         getDialog().setTitle("Create new Workspace");
-        final View view = inflater.inflate(R.layout.create_workspace_dialog, container, false);
+        final View view = inflater.inflate(R.layout.fragment_create_workspace, container, false);
 
         addTagButton = (Button)view.findViewById(R.id.addTagButton);
         cancelButton = (Button)view.findViewById(R.id.cancelWorkspaceDialog);
@@ -71,6 +73,18 @@ public class CreateWorkspaceFragment extends DialogFragment {
             }
         });
 
+        workspaceNameText.setFilters(new InputFilter[]{new InputFilter() {
+            @Override
+            public CharSequence filter(CharSequence source, int start, int end, Spanned dest, int dstart, int dend) {
+                for (int i = start; i < end; i++) {
+                    if (!Character.isLetterOrDigit(source.charAt(i))) {
+                        Toast.makeText(getActivity(), "Invalid character " + source, Toast.LENGTH_SHORT).show();
+                        return "";
+                    }
+                }
+                return null;
+            }
+        }});
 
 
         mTagListAdapter = new TagListAdapter(view.getContext(), new ArrayList<String>());

@@ -23,7 +23,7 @@
         android:layout_below="@+id/textWorkspace"
         android:gravity="center_horizontal"
         android:hint="Your workspace name here"
-        android:inputType="text" />
+        android:inputType="textPhonetic" />
 
     <TextView
         android:id="@+id/textQuota"

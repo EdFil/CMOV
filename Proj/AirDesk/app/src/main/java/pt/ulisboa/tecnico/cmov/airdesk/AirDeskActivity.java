@@ -31,8 +31,6 @@ import pt.ulisboa.tecnico.cmov.airdesk.fragment.WorkspaceFragment;
 public class AirDeskActivity extends ActionBarActivity implements NavigationDrawerFragment.NavigationDrawerCallbacks {
 
     public static final String TAG = AirDeskActivity.class.getSimpleName();
-    public static final String WORKSPACE_MESSAGE = "Workspace_message";
-    public static final String WORKSPACES_FOLDER_NAME = "workspaces";
 
     // Fragment managing the behaviors, interactions and presentation of the navigation drawer.
     private NavigationDrawerFragment mNavigationDrawerFragment;
@@ -40,38 +38,29 @@ public class AirDeskActivity extends ActionBarActivity implements NavigationDraw
     // Used to store the last screen title. For use in {@link #restoreActionBar()}.
     private CharSequence mTitle;
 
-    SharedPreferences pref;
-
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_air_desk);
-
+        // Init the manager of the workspaces so it has the context of the application
         WorkspaceManager.initWorkspaceManager(getApplicationContext());
-
-        // Ready the User
-        pref = getApplicationContext().getSharedPreferences("UserPref", MODE_PRIVATE); // 0 - for private mode
         checkUserLogin();
-
-        setSideDrawer();
+        setNavigationDrawer();
     }
 
     @Override
     protected void onStart() {
         super.onStart();
-
-        populateAccount(); //TODO devia ir para depois do login...apos garantir que o user esta na bd, populate!
         refreshList();
     }
 
-    private void setSideDrawer() {
-
+    private void setNavigationDrawer() {
         // Adding of the header to the drawer list
         ListView listView = (ListView) findViewById(R.id.list_fragment);
         View header = getLayoutInflater().inflate(R.layout.drawer_header, null);
         listView.addHeaderView(header);
 
-        updateNickEmail();
+        refreshNickEmailAfterLogin();
 
         // Get the reference of the Drawer Fragment.
         mNavigationDrawerFragment = (NavigationDrawerFragment) getSupportFragmentManager().findFragmentById(R.id.navigation_drawer);
@@ -81,8 +70,9 @@ public class AirDeskActivity extends ActionBarActivity implements NavigationDraw
         mNavigationDrawerFragment.setUp(R.id.navigation_drawer, (DrawerLayout) findViewById(R.id.drawer_layout));
     }
 
-    private void updateNickEmail() {
+    private void refreshNickEmailAfterLogin() {
         // Update the nickname and the email of the user in the drawer
+        SharedPreferences pref = getSharedPreferences("UserPref", MODE_PRIVATE);
         TextView nick = (TextView) findViewById(R.id.nick);
         TextView email = (TextView) findViewById(R.id.email);
         nick.setText(pref.getString("user_nick", "Nickname"));
@@ -90,57 +80,14 @@ public class AirDeskActivity extends ActionBarActivity implements NavigationDraw
     }
 
 
-
-
+    // Check if user is logged in and acts upon it
     private void checkUserLogin() {
+        // Ready the User
+        SharedPreferences pref = getSharedPreferences("UserPref", MODE_PRIVATE);
         if(!pref.contains("user_email")){
             Intent intent = new Intent(this, LoginActivity.class);
             startActivityForResult(intent, LoginActivity.LOGIN_REQUEST);
         }
-    }
-
-    private void populateAccount() {
-//        ListView listView = (ListView) findViewById(R.id.workspacesList);
-//        listView.setAdapter(WorkspaceManager.getInstance().getWorkspaceAdapter());
-//        // Registering context menu for the listView
-//        registerForContextMenu(listView);
-    }
-
-    // This will be invoked when an item in the listView is long pressed
-    @Override
-    public void onCreateContextMenu(ContextMenu menu, View v, ContextMenu.ContextMenuInfo menuInfo) {
-        super.onCreateContextMenu(menu, v, menuInfo);
-        getMenuInflater().inflate(R.menu.menu_my_workspaces, menu);
-    }
-
-    // This will be invoked when a menu item is selected
-    @Override
-    public boolean onContextItemSelected(MenuItem item) {
-
-        AdapterContextMenuInfo info = (AdapterContextMenuInfo) item.getMenuInfo();
-
-        switch(item.getItemId()){
-            case R.id.menu_my_edit:
-                Toast.makeText(this, "TODO Edit", Toast.LENGTH_SHORT).show();
-                break;
-            case R.id.menu_my_details:
-                Toast.makeText(this, "TODO Details", Toast.LENGTH_SHORT).show();
-                break;
-            case R.id.menu_my_delete:
-                Workspace selectedWorkspace = (Workspace)((ListView)info.targetView.getParent()).getAdapter().getItem(info.position);
-                WorkspaceManager.getInstance().deleteWorkspace(selectedWorkspace);
-                break;
-            case R.id.menu_my_invite:
-                Toast.makeText(this, "TODO Invite", Toast.LENGTH_SHORT).show();
-                break;
-
-        }
-
-        return true;
-    }
-
-    public void onNewWorkspace(View view) {
-        CreateWorkspaceFragment.newInstance().show(getFragmentManager(), "Create Workspace");
     }
 
     @Override
@@ -149,7 +96,7 @@ public class AirDeskActivity extends ActionBarActivity implements NavigationDraw
         if (requestCode == LoginActivity.LOGIN_REQUEST) {
             // Make sure the request was successful
             if (resultCode == RESULT_OK) {
-                updateNickEmail();
+                refreshNickEmailAfterLogin();
             }
             if (resultCode == RESULT_CANCELED) {
                 finish();
@@ -159,14 +106,7 @@ public class AirDeskActivity extends ActionBarActivity implements NavigationDraw
     }
 
     public void refreshList(){
-        // TODO: Fix this
         WorkspaceManager.getInstance().reloadWorkspaces();
-//        mWorkspaceAdapter.sort(new Comparator<Workspace>() {
-//            @Override
-//            public int compare(Workspace lhs, Workspace rhs) {
-//                return lhs.getName().compareToIgnoreCase(rhs.getName());
-//            }
-//        });
     }
 
 
@@ -210,6 +150,7 @@ public class AirDeskActivity extends ActionBarActivity implements NavigationDraw
         }
     }
 
+    // Called to recreate action bar
     public void restoreActionBar() {
         ActionBar actionBar = getSupportActionBar();
         actionBar.setNavigationMode(ActionBar.NAVIGATION_MODE_STANDARD);
