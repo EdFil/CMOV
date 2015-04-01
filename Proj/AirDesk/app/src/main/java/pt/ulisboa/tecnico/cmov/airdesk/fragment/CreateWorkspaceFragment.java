@@ -1,15 +1,12 @@
-package pt.ulisboa.tecnico.cmov.airdesk.dialogFragment;
+package pt.ulisboa.tecnico.cmov.airdesk.fragment;
 
 import android.app.DialogFragment;
 import android.content.SharedPreferences;
-import android.graphics.drawable.Drawable;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
-import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.CompoundButton;
 import android.widget.EditText;
@@ -18,27 +15,22 @@ import android.widget.ListView;
 import android.widget.Switch;
 import android.widget.TextView;
 import android.widget.Toast;
-import android.widget.ViewSwitcher;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 
-import pt.ulisboa.tecnico.cmov.airdesk.AirDeskActivity;
 import pt.ulisboa.tecnico.cmov.airdesk.R;
 import pt.ulisboa.tecnico.cmov.airdesk.adapter.TagListAdapter;
 import pt.ulisboa.tecnico.cmov.airdesk.adapter.WorkspaceListAdapter;
 import pt.ulisboa.tecnico.cmov.airdesk.core.tag.Tag;
 import pt.ulisboa.tecnico.cmov.airdesk.core.user.User;
-import pt.ulisboa.tecnico.cmov.airdesk.core.workspace.LocalWorkspace;
-import pt.ulisboa.tecnico.cmov.airdesk.core.workspace.Workspace;
 import pt.ulisboa.tecnico.cmov.airdesk.core.workspace.WorkspaceManager;
 import pt.ulisboa.tecnico.cmov.airdesk.core.workspace.exception.WorkspaceException;
 
 /**
  * Created by edgar on 30-03-2015.
  */
-public class CreateWorkspace extends DialogFragment {
+public class CreateWorkspaceFragment extends DialogFragment {
 
     List<String> mTagCache;
     TagListAdapter mTagListAdapter;
@@ -50,8 +42,8 @@ public class CreateWorkspace extends DialogFragment {
     ListView tagList;
 
 
-    public static CreateWorkspace newInstance() {
-        return new CreateWorkspace();
+    public static CreateWorkspaceFragment newInstance() {
+        return new CreateWorkspaceFragment();
     }
 
     @Override

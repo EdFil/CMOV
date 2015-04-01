@@ -90,6 +90,12 @@ public class NavigationDrawerFragment extends Fragment {
     }
 
     @Override
+    public void onStart() {
+        super.onStart();
+        selectItem(mCurrentSelectedPosition);
+    }
+
+    @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         mDrawerListView = (ListView) inflater.inflate(R.layout.fragment_navigation_drawer, container, false);
         mDrawerListView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
@@ -212,7 +218,7 @@ public class NavigationDrawerFragment extends Fragment {
             Intent intent = new Intent(getActivity(), LoginActivity.class);
             getActivity().startActivityForResult(intent, LoginActivity.LOGIN_REQUEST);
 
-            mDrawerListView.setItemChecked(1, true);
+            mCurrentSelectedPosition = 1;
         }
     }
 

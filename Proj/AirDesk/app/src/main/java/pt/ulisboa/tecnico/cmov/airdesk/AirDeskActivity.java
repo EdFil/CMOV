@@ -23,7 +23,8 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import pt.ulisboa.tecnico.cmov.airdesk.core.workspace.WorkspaceManager;
-import pt.ulisboa.tecnico.cmov.airdesk.dialogFragment.CreateWorkspace;
+import pt.ulisboa.tecnico.cmov.airdesk.fragment.CreateWorkspaceFragment;
+import pt.ulisboa.tecnico.cmov.airdesk.fragment.WorkspaceFragment;
 
 
 public class AirDeskActivity extends ActionBarActivity implements NavigationDrawerFragment.NavigationDrawerCallbacks {
@@ -98,10 +99,10 @@ public class AirDeskActivity extends ActionBarActivity implements NavigationDraw
     }
 
     private void populateAccount() {
-        ListView listView = (ListView) findViewById(R.id.workspacesList);
-        listView.setAdapter(WorkspaceManager.getInstance().getWorkspaceAdapter());
-        // Registering context menu for the listView
-        registerForContextMenu(listView);
+//        ListView listView = (ListView) findViewById(R.id.workspacesList);
+//        listView.setAdapter(WorkspaceManager.getInstance().getWorkspaceAdapter());
+//        // Registering context menu for the listView
+//        registerForContextMenu(listView);
     }
 
     // This will be invoked when an item in the listView is long pressed
@@ -137,7 +138,7 @@ public class AirDeskActivity extends ActionBarActivity implements NavigationDraw
     }
 
     public void onNewWorkspace(View view) {
-        CreateWorkspace.newInstance().show(getFragmentManager(), "Create Workspace");
+        CreateWorkspaceFragment.newInstance().show(getFragmentManager(), "Create Workspace");
     }
 
     @Override
@@ -170,10 +171,21 @@ public class AirDeskActivity extends ActionBarActivity implements NavigationDraw
     @Override
     public void onNavigationDrawerItemSelected(int position) {
             // update the main content by replacing fragments
-            FragmentManager fragmentManager = getSupportFragmentManager();
-            fragmentManager.beginTransaction()
-                    .replace(R.id.container, PlaceholderFragment.newInstance(position))
-                    .commit();
+        FragmentManager fragmentManager = getSupportFragmentManager();
+        switch (position) {
+            case 0:
+                break;
+            case 1:
+                fragmentManager.beginTransaction().replace(R.id.container, WorkspaceFragment.newInstance()).commit();
+                break;
+            default:
+                fragmentManager.beginTransaction()
+                        .replace(R.id.container, PlaceholderFragment.newInstance(position))
+                        .commit();
+
+        }
+
+
     }
 
     public void onSectionAttached(int number) {
