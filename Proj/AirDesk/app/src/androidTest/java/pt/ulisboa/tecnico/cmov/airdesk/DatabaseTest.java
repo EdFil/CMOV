@@ -40,6 +40,8 @@ public class DatabaseTest extends AndroidTestCase {
     }
 
     public void testCustom(){
+//          FileManager.createFolder(mContext, "Folder");
+//          FileManager.createFile(mContext, "Folder", "File");
 //        ArrayList<File> files = new ArrayList<>(Arrays.asList(new File[] { new File() }));
 //        AirDeskDbHelper.getInstance(mContext).addFilesToWorkspace();
     }

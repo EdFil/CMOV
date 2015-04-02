@@ -30,7 +30,7 @@ public class AirDeskDbHelper extends SQLiteOpenHelper {
     private static AirDeskDbHelper mInstance;
 
     public static final String DATABASE_NAME = "airdesk.db";
-    public static final int DATABASE_VERSION = 3;
+    public static final int DATABASE_VERSION = 18;
 
     public static synchronized AirDeskDbHelper getInstance(Context context) {
         if (mInstance == null) {
@@ -73,8 +73,7 @@ public class AirDeskDbHelper extends SQLiteOpenHelper {
                 FileEntry.COLUMN_WORKSPACE_KEY + " INTEGER NOT NULL," +
                 FileEntry.COLUMN_FILE_NAME + " TEXT NOT NULL," +
                 FileEntry.COLUMN_FILE_SIZE + " INTEGER NOT NULL," +
-                FileEntry.COLUMN_FILE_LAST_ACCESS + " TEXT NOT NULL," +
-                FileEntry.COLUMN_FILE_LAST_EDIT + " TEXT NOT NULL," +
+                FileEntry.COLUMN_FILE_LAST_EDIT + " INTEGER NOT NULL," +
                 "FOREIGN KEY (" + FileEntry.COLUMN_WORKSPACE_KEY  + ") REFERENCES " + WorkspaceEntry.TABLE_NAME + "( " + WorkspaceEntry._ID + " )," +
                 "PRIMARY KEY (" + FileEntry.COLUMN_WORKSPACE_KEY  + ", " + FileEntry.COLUMN_FILE_NAME + ") " +
                 " );";
@@ -120,6 +119,30 @@ public class AirDeskDbHelper extends SQLiteOpenHelper {
         workspace.setDatabaseId(cursor.getLong(cursor.getColumnIndex(WorkspaceEntry._ID)));
 
         cursor.close();
+        db.close();
+    }
+
+    public void removeFileFromWorkspace(Workspace workspace, File file){
+        SQLiteDatabase db = mInstance.getWritableDatabase();
+        String whereClause = String.format("%s=? AND %s=?;", FileEntry.COLUMN_WORKSPACE_KEY, FileEntry.COLUMN_FILE_NAME);
+        String[] whereArgs = new String[] { workspace.getName(), file.getName() };
+        db.delete(FileEntry.TABLE_NAME, whereClause, whereArgs);
+        db.close();
+    }
+
+    public void removeTagFromWorkspace(Workspace workspace, Tag tag){
+        SQLiteDatabase db = mInstance.getWritableDatabase();
+        String whereClause = String.format("%s=? AND %s=?;", TagsEntry.COLUMN_WORKSPACE_KEY, TagsEntry.COLUMN_TAG_NAME);
+        String[] whereArgs = new String[] { workspace.getName(), tag.getName() };
+        db.delete(TagsEntry.TABLE_NAME, whereClause, whereArgs);
+        db.close();
+    }
+
+    public void removeUserFromWorkspace(Workspace workspace, User user){
+        SQLiteDatabase db = mInstance.getWritableDatabase();
+        String whereClause = String.format("%s=? AND %s=?;", UsersEntry.COLUMN_WORKSPACE_KEY, UsersEntry.COLUMN_USER_EMAIL);
+        String[] whereArgs = new String[] { workspace.getName(), user.getEmail() };
+        db.delete(UsersEntry.TABLE_NAME, whereClause, whereArgs);
         db.close();
     }
 
@@ -293,7 +316,7 @@ public class AirDeskDbHelper extends SQLiteOpenHelper {
             return;
         SQLiteDatabase db = mInstance.getWritableDatabase();
         // INSERT INTO 'tablename' ('column1', 'column2') VALUES
-        String query = "INSERT INTO " + FileEntry.TABLE_NAME + "('" + FileEntry.COLUMN_WORKSPACE_KEY + "', '" + FileEntry.COLUMN_FILE_NAME + "', " + FileEntry.COLUMN_FILE_SIZE + "', " + FileEntry.COLUMN_FILE_LAST_ACCESS + "', " + FileEntry.COLUMN_FILE_LAST_EDIT + ") VALUES ";
+        String query = "INSERT INTO " + FileEntry.TABLE_NAME + "('" + FileEntry.COLUMN_WORKSPACE_KEY + "', '" + FileEntry.COLUMN_FILE_NAME + "', '" + FileEntry.COLUMN_FILE_SIZE + "', " + FileEntry.COLUMN_FILE_LAST_EDIT + ") VALUES ";
 
         Iterator<File> iterator = files.iterator();
         if(!iterator.hasNext())
@@ -302,7 +325,7 @@ public class AirDeskDbHelper extends SQLiteOpenHelper {
         while(iterator.hasNext()){
             File file = iterator.next();
             // Values ('data1', 'data2'), or ('data1', 'data2');
-            query += "('" + workspace.getDatabaseId() + "', '" + file.getName() + "', '" + file.length() + "', '" + "date(now)" + "', '" + "date(now)" + "')" + (iterator.hasNext() ? "," : ";");
+            query += "('" + workspace.getDatabaseId() + "', '" + file.getName() + "', '" + file.length() + "', '" + file.lastModified() + "')" + (iterator.hasNext() ? "," : ";");
         }
 
         db.execSQL(query);

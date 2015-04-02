@@ -7,6 +7,7 @@ import android.os.StatFs;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
+import java.io.IOException;
 
 /**
  * Created by edgar on 22-03-2015.
@@ -23,6 +24,7 @@ public class FileManager {
         return !newFolder.exists();
     }
 
+
     public static boolean createFolder(Context context, String folderName){
         File rootFolder = context.getDir(WORKSPACES_FOLDER_NAME, Context.MODE_PRIVATE);
         File newFolder = new File(rootFolder, folderName); //Getting a folder within the dir.
@@ -37,15 +39,20 @@ public class FileManager {
         deleteDir(new File(rootFolder.toString(), folderName));
     }
 
-    public static void createFile(Context context, String folderName, String fileName){
+    public static File fileNameToFile(Context context, String workspaceName, String fileName) {
+        File rootFolder = context.getDir(WORKSPACES_FOLDER_NAME, Context.MODE_PRIVATE);
+        return new File(rootFolder.toString() + "/" + workspaceName, fileName);
+    }
+
+    public static File createFile(Context context, String folderName, String fileName){
         File rootFolder = context.getDir(WORKSPACES_FOLDER_NAME, Context.MODE_PRIVATE);
         File newFile = new File(rootFolder.toString() + "/" + folderName, fileName); //Getting a file within the dir.
         try {
-            FileOutputStream out = new FileOutputStream(newFile); //Use the stream as usual to write into the file.
-
-        } catch (FileNotFoundException e) {
+            newFile.createNewFile();
+        } catch (IOException e) {
             e.printStackTrace();
         }
+        return newFile;
     }
 
     public static void deleteFile(Context context, String folderName, String fileName){
