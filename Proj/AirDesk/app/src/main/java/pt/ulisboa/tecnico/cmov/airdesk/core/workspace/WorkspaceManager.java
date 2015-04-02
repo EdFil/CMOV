@@ -1,10 +1,10 @@
 package pt.ulisboa.tecnico.cmov.airdesk.core.workspace;
 
 import android.content.Context;
+import android.database.sqlite.SQLiteConstraintException;
 import android.widget.ListAdapter;
 
 import java.io.File;
-import java.lang.reflect.Array;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
@@ -76,13 +76,14 @@ public class WorkspaceManager {
     }
 
     public void addFileToWorkspace(String fileName, Workspace workspace) {
-        for(int i = 0; i < mWorkspaceListAdapter.getCount(); i++)
-            if(mWorkspaceListAdapter.getItem(i).getName().equals(fileName))
-                throw new FileAlreadyExistsException(fileName);
         // Create folder in internal storage
-        File file = FileManager.createFile(getContext(), workspace.getName(), fileName);
-        workspace.addFile(file);
-        AirDeskDbHelper.getInstance(getContext()).addFilesToWorkspace(workspace, Arrays.asList(new File[] { file }));
+        try {
+            File file = FileManager.createFile(getContext(), workspace.getName(), fileName);
+            AirDeskDbHelper.getInstance(getContext()).addFilesToWorkspace(workspace, Arrays.asList(new File[]{file}));
+            workspace.addFile(file);
+        } catch (SQLiteConstraintException e) {
+            throw new FileAlreadyExistsException(fileName);
+        }
     }
 
     public void removeFileFromWorkspace(File file, Workspace workspace) {
@@ -141,9 +142,6 @@ public class WorkspaceManager {
                 return lhs.getName().compareToIgnoreCase(rhs.getName());
             }
         });
-        // TODO: REMOVE
-        if(mWorkspaceListAdapter.getCount() > 0)
-            addFileToWorkspace("TestFile", mWorkspaceListAdapter.getItem(0));
     }
 
 

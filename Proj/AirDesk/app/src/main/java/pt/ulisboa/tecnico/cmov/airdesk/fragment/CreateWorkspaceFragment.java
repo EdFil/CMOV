@@ -77,8 +77,7 @@ public class CreateWorkspaceFragment extends DialogFragment {
             @Override
             public CharSequence filter(CharSequence source, int start, int end, Spanned dest, int dstart, int dend) {
                 for (int i = start; i < end; i++) {
-                    if (!Character.isLetterOrDigit(source.charAt(i))) {
-                        Toast.makeText(getActivity(), "Invalid character " + source, Toast.LENGTH_SHORT).show();
+                    if (!Character.isLetterOrDigit(source.charAt(i)) && !Character.isSpaceChar(source.charAt(i))) {
                         return "";
                     }
                 }
