@@ -26,8 +26,6 @@ public class FileActivity extends ActionBarActivity {
     public static final String LOG_TAG = FileActivity.class.getSimpleName();
     private static final String LINE_SEP = System.getProperty("line.separator");
 
-    private Handler mHandler;
-}
     private TextView textToView;
     private ImageView edit;
 
