@@ -24,7 +24,13 @@
         </activity>
         <activity
             android:name=".FileActivity"
-            android:label="@string/title_activity_file" >
+            android:label="@string/title_activity_file"
+            android:screenOrientation="portrait" >
+        </activity>
+        <activity
+            android:name=".WorkspaceDetailsActivity"
+            android:label="@string/title_activity_Workspace_Details"
+            android:screenOrientation="portrait" >
         </activity>
     </application>
 

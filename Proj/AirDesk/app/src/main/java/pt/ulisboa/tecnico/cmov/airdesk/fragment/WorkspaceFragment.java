@@ -19,6 +19,7 @@ import android.widget.Toast;
 import pt.ulisboa.tecnico.cmov.airdesk.AirDeskActivity;
 import pt.ulisboa.tecnico.cmov.airdesk.FileActivity;
 import pt.ulisboa.tecnico.cmov.airdesk.R;
+import pt.ulisboa.tecnico.cmov.airdesk.WorkspaceDetailsActivity;
 import pt.ulisboa.tecnico.cmov.airdesk.adapter.WorkspaceListAdapter;
 import pt.ulisboa.tecnico.cmov.airdesk.core.workspace.Workspace;
 import pt.ulisboa.tecnico.cmov.airdesk.core.workspace.WorkspaceManager;
@@ -103,7 +104,9 @@ public class WorkspaceFragment extends Fragment {
                 Toast.makeText(getActivity(), "TODO Edit", Toast.LENGTH_SHORT).show();
                 break;
             case R.id.menu_my_details:
-                Toast.makeText(getActivity(), "TODO Details", Toast.LENGTH_SHORT).show();
+                Intent intent = new Intent(getActivity(), WorkspaceDetailsActivity.class);
+                // TODO: Add workspace info
+                getActivity().startActivity(new Intent(getActivity(), WorkspaceDetailsActivity.class));
                 break;
             case R.id.menu_my_delete:
                 Workspace selectedWorkspace = (Workspace)((ListView)info.targetView.getParent()).getAdapter().getItem(info.position);
