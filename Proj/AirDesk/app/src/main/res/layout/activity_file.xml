@@ -1,5 +1,5 @@
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:tools="http://schemas.android.com/tools"
+<LinearLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:paddingLeft="@dimen/activity_horizontal_margin"
@@ -7,20 +7,70 @@
     android:paddingTop="@dimen/activity_vertical_margin"
     android:paddingBottom="@dimen/activity_vertical_margin"
     android:orientation="vertical"
-    tools:context="pt.ulisboa.tecnico.cmov.airdesk.FileActivity">
+    android:gravity="right" >
 
-    <EditText
-        android:hint="Write here!"
-        android:gravity="top|left"
+    <TextView
+        android:id="@+id/textFile"
         android:layout_width="match_parent"
         android:layout_height="0dp"
-        android:layout_weight="1"/>
+        android:layout_weight="1"
 
-    <Button
-        android:id="@+id/internal_storage_write_button"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="Write" />
+        android:clickable="true"
+
+        android:inputType="textMultiLine"
+        android:singleLine="false"
+
+        android:gravity="top"
+        />
+
+    <ImageView
+        android:id="@+id/editTextFile"
+
+        android:src="@android:drawable/ic_menu_edit"
+
+        android:textColor="#FFFF"
 
 
+        android:layout_width="60dp"
+        android:layout_height="60dp"
+        android:background="@drawable/button_background"
+
+        android:padding="7dp"
+        android:layout_marginBottom="16dp"
+
+        android:onClick="onClickEdit"/>
+
+    <EditText
+        android:id="@+id/editedTextFile"
+
+        android:visibility="gone"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight="1"
+
+        android:clickable="true"
+
+        android:inputType="textMultiLine"
+        android:singleLine="false"
+
+        android:gravity="top"
+        />
+
+    <ImageView
+        android:visibility="gone"
+        android:id="@+id/saveTextFile"
+
+        android:src="@android:drawable/ic_menu_save"
+
+        android:textColor="#FFFF"
+
+
+        android:layout_width="60dp"
+        android:layout_height="60dp"
+        android:background="@drawable/button_background"
+
+        android:padding="7dp"
+        android:layout_marginBottom="16dp"
+
+        android:onClick="onClickSave"/>
 </LinearLayout>

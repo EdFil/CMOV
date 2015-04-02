@@ -1,11 +1,9 @@
 package pt.ulisboa.tecnico.cmov.airdesk.fragment;
 
 import android.app.Activity;
-import android.app.AlertDialog;
-import android.content.DialogInterface;
 import android.content.Intent;
-import android.support.v4.app.Fragment;
 import android.os.Bundle;
+import android.support.v4.app.Fragment;
 import android.view.ContextMenu;
 import android.view.LayoutInflater;
 import android.view.MenuItem;
@@ -19,14 +17,14 @@ import android.widget.Toast;
 import pt.ulisboa.tecnico.cmov.airdesk.AirDeskActivity;
 import pt.ulisboa.tecnico.cmov.airdesk.FileActivity;
 import pt.ulisboa.tecnico.cmov.airdesk.R;
-import pt.ulisboa.tecnico.cmov.airdesk.adapter.WorkspaceListAdapter;
+import pt.ulisboa.tecnico.cmov.airdesk.adapter.FileListAdapter;
 import pt.ulisboa.tecnico.cmov.airdesk.core.workspace.Workspace;
 import pt.ulisboa.tecnico.cmov.airdesk.core.workspace.WorkspaceManager;
 
 /**
  * Created by Diogo on 01-Apr-15.
  */
-public class WorkspaceFragment extends Fragment {
+public class FileFragment extends Fragment {
 
     /**
      * The fragment argument representing the section number for this
@@ -38,34 +36,29 @@ public class WorkspaceFragment extends Fragment {
      * Returns a new instance of this fragment for the given section
      * number.
      */
-    public static WorkspaceFragment newInstance() {
-        WorkspaceFragment fragment = new WorkspaceFragment();
+    public static FileFragment newInstance() {
+        FileFragment fragment = new FileFragment();
         return fragment;
     }
 
-
     Button createNewWorkspaceButton;
-    WorkspaceListAdapter workspaceListAdapter;
+    FileListAdapter fileListAdapter;
 
-    public WorkspaceFragment() {
+    public FileFragment() {
     }
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-        workspaceListAdapter = (WorkspaceListAdapter) WorkspaceManager.getInstance().getWorkspaceAdapter();
+        fileListAdapter = (FileListAdapter) WorkspaceManager.getInstance().getWorkspaceAdapter();
 
         View workspaceFragmentView = inflater.inflate(R.layout.fragment_air_desk, container, false);
 
         ListView listView = (ListView) workspaceFragmentView.findViewById(R.id.workspacesList);
-        listView.setAdapter(workspaceListAdapter);
+        listView.setAdapter(fileListAdapter);
         listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-
-                // INTENT to open a new file in the respective activity
-                Intent intent = new Intent(getActivity(), FileActivity.class);
-                intent.putExtra("textFile", "fileText.txt");
-                startActivity(intent);
+                startActivity(new Intent(getActivity(), FileActivity.class));
             }
         });
 
@@ -123,7 +116,5 @@ public class WorkspaceFragment extends Fragment {
         super.onAttach(activity);
         ((AirDeskActivity) activity).onSectionAttached(1);
     }
-
-
 
 }

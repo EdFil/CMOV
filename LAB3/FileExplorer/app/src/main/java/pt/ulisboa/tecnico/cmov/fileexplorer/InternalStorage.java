@@ -22,6 +22,7 @@ import java.util.Scanner;
 
 public class InternalStorage extends Activity {
 
+    public static final String LOG_TAG = "FileExplorer";
     private static final String LINE_SEP = System.getProperty("line.separator");
 
     private Handler mHandler;
@@ -78,7 +79,7 @@ public class InternalStorage extends Activity {
                 FileOutputStream fos = null;
                 try {
                     // note that there are many modes you can use
-                    fos = openFileOutput("test.txt", Context.MODE_PRIVATE);
+                    fos = openFileOutput("outro.txt", Context.MODE_PRIVATE);
                     fos.write(input.getText().toString().getBytes());
 //                    Toast.makeText(getApplicationContext(), "File written", Toast.LENGTH_SHORT).show();
 
@@ -93,9 +94,9 @@ public class InternalStorage extends Activity {
 //                    input.setText("");
 //                    output.setText("");
                 } catch (FileNotFoundException e) {
-                    Log.e(Constants.LOG_TAG, "File not found", e);
+                    Log.e(LOG_TAG, "File not found", e);
                 } catch (IOException e) {
-                    Log.e(Constants.LOG_TAG, "IO problem", e);
+                    Log.e(LOG_TAG, "IO problem", e);
                 } finally {
                     try {
                         fos.close();
@@ -125,7 +126,7 @@ public class InternalStorage extends Activity {
                     //Toast.makeText(getApplicationContext(), "File read", Toast.LENGTH_SHORT).show();
                     bundle.putString("toast", "File read");
                 } catch (FileNotFoundException e) {
-                    Log.e(Constants.LOG_TAG, "File not found", e);
+                    Log.e(LOG_TAG, "File not found", e);
                 } finally {
                     if (fis != null) {
                         try {
