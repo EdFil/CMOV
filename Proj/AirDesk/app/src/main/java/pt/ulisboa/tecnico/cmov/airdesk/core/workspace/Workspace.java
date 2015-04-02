@@ -87,6 +87,9 @@ public class Workspace {
         if(!isPrivate() && tags.isEmpty())
             throw new WorkspacePublicNoTagsException();
         mTags = new HashSet<Tag>(tags);
+        for(Tag tag : mTags){
+            tag.setWorkspace(this);
+        }
     }
 
     public void setUsers(Collection<User> users) {

@@ -31,6 +31,7 @@ public class DatabaseTest extends AndroidTestCase {
     @Override
     public void setUp(){
         setContext(new RenamingDelegatingContext(getContext(), "test_"));
+        mContext.deleteDatabase(AirDeskDbHelper.DATABASE_NAME);
         WorkspaceManager.initWorkspaceManager(mContext);
     }
 
@@ -40,10 +41,29 @@ public class DatabaseTest extends AndroidTestCase {
     }
 
     public void testCustom(){
-//          FileManager.createFolder(mContext, "Folder");
-//          FileManager.createFile(mContext, "Folder", "File");
-//        ArrayList<File> files = new ArrayList<>(Arrays.asList(new File[] { new File() }));
-//        AirDeskDbHelper.getInstance(mContext).addFilesToWorkspace();
+        User owner = new User("Edgar@email.com", "Edgar");
+        Workspace workspace = WorkspaceManager.getInstance().addNewWorkspace("Workspace", owner, 100, true, new ArrayList<Tag>());
+        WorkspaceManager.getInstance().addFileToWorkspace("File 1", workspace);
+        WorkspaceManager.getInstance().addFileToWorkspace("File 2", workspace);
+        WorkspaceManager.getInstance().addTagToWorkspace("Tag 1", workspace);
+        WorkspaceManager.getInstance().addTagToWorkspace("Tag 2", workspace);
+        WorkspaceManager.getInstance().addTagToWorkspace("Tag 3", workspace);
+        WorkspaceManager.getInstance().addUserToWorkspace("user1@email.com", "User 1", workspace);
+        WorkspaceManager.getInstance().addUserToWorkspace("user2@email.com", "User 2", workspace);
+        WorkspaceManager.getInstance().addUserToWorkspace("user3@email.com", "User 3", workspace);
+        WorkspaceManager.getInstance().addUserToWorkspace("user4@email.com", "User 4", workspace);
+
+        Workspace workspace2 = WorkspaceManager.getInstance().addNewWorkspace("Workspace 2", owner, 1, true, new ArrayList<Tag>());
+        WorkspaceManager.getInstance().addFileToWorkspace("File 1", workspace2);
+        WorkspaceManager.getInstance().addFileToWorkspace("File 2", workspace2);
+        WorkspaceManager.getInstance().addTagToWorkspace("Tag 1", workspace2);
+        WorkspaceManager.getInstance().addTagToWorkspace("Tag 2", workspace2);
+        WorkspaceManager.getInstance().addTagToWorkspace("Tag 3", workspace2);
+        WorkspaceManager.getInstance().addUserToWorkspace("user1@email.com", "User 1", workspace2);
+        WorkspaceManager.getInstance().addUserToWorkspace("user2@email.com", "User 2", workspace2);
+        WorkspaceManager.getInstance().addUserToWorkspace("user3@email.com", "User 3", workspace2);
+        WorkspaceManager.getInstance().addUserToWorkspace("user4@email.com", "User 4", workspace2);
+        WorkspaceManager.getInstance().deleteWorkspace(workspace2);
     }
 
     public void testCreateDb() {

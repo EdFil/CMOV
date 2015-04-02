@@ -51,7 +51,7 @@ public class WorkspaceManager {
         mWorkspaceListAdapter = new WorkspaceListAdapter(getContext(), new ArrayList<Workspace>());
     }
 
-    public void addNewWorkspace(String name, User owner, long quota, boolean isPrivate, Collection<Tag> tags) {
+    public Workspace addNewWorkspace(String name, User owner, long quota, boolean isPrivate, Collection<Tag> tags) {
         if(name.isEmpty())
             throw new WorkspaceNameIsEmptyException();
         if(!FileManager.isWorkspaceNameAvailable(getContext(), name))
@@ -66,6 +66,7 @@ public class WorkspaceManager {
         AirDeskDbHelper.getInstance(getContext()).addUsersToWorkspace(newWorkspace, newWorkspace.getUsers());
         // TODO: Add files to workspace
         mWorkspaceListAdapter.add(newWorkspace);
+        return newWorkspace;
     }
 
     public void deleteWorkspace(Workspace workspace){

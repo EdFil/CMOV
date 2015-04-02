@@ -30,7 +30,7 @@ public class AirDeskDbHelper extends SQLiteOpenHelper {
     private static AirDeskDbHelper mInstance;
 
     public static final String DATABASE_NAME = "airdesk.db";
-    public static final int DATABASE_VERSION = 18;
+    public static final int DATABASE_VERSION = 19;
 
     public static synchronized AirDeskDbHelper getInstance(Context context) {
         if (mInstance == null) {
@@ -133,7 +133,7 @@ public class AirDeskDbHelper extends SQLiteOpenHelper {
     public void removeTagFromWorkspace(Workspace workspace, Tag tag){
         SQLiteDatabase db = mInstance.getWritableDatabase();
         String whereClause = String.format("%s=? AND %s=?;", TagsEntry.COLUMN_WORKSPACE_KEY, TagsEntry.COLUMN_TAG_NAME);
-        String[] whereArgs = new String[] { workspace.getName(), tag.getName() };
+        String[] whereArgs = new String[] { workspace.getName(), tag.getText() };
         db.delete(TagsEntry.TABLE_NAME, whereClause, whereArgs);
         db.close();
     }
@@ -155,8 +155,8 @@ public class AirDeskDbHelper extends SQLiteOpenHelper {
         // Delete all user association
         db.delete(UsersEntry.TABLE_NAME, UsersEntry.COLUMN_WORKSPACE_KEY + "='" + workspace.getDatabaseId() + "'", null);
 
-        // TODO: Delete files
-        // db.delete(UsersEntry.TABLE_NAME, FileEntry.COLUMN_WORKSPACE_KEY + "='" + workspace.getDatabaseId() + "'", null);
+        // Delete all file associations
+        db.delete(FileEntry.TABLE_NAME, FileEntry.COLUMN_WORKSPACE_KEY + "='" + workspace.getDatabaseId() + "'", null);
 
         // Delete Workspace
         String whereClause = WorkspaceEntry._ID + "=?";

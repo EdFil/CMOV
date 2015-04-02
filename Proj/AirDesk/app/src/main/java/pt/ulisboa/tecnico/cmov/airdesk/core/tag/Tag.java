@@ -11,7 +11,11 @@ public class Tag {
     private String mText;
 
     public Tag(String text) {
+        this(text, null);
+    }
+    public Tag(String text, Workspace workspace) {
         mText = text;
+        mWorkspace = workspace;
     }
 
     // Getters
@@ -20,10 +24,12 @@ public class Tag {
 
     // Setters
     public void setText(String text) { mText = text; }
+    public void setWorkspace(Workspace workspace) {
+        mWorkspace = workspace;
+    }
 
     @Override
     public String toString(){
         return "Tag '" + mText + "'.";
     }
-
 }
