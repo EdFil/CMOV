@@ -19,10 +19,13 @@ import pt.ulisboa.tecnico.cmov.airdesk.FileActivity;
 import pt.ulisboa.tecnico.cmov.airdesk.R;
 import pt.ulisboa.tecnico.cmov.airdesk.WorkspaceDetailsActivity;
 import pt.ulisboa.tecnico.cmov.airdesk.adapter.WorkspaceListAdapter;
+import pt.ulisboa.tecnico.cmov.airdesk.core.tag.Tag;
 import pt.ulisboa.tecnico.cmov.airdesk.core.workspace.Workspace;
 import pt.ulisboa.tecnico.cmov.airdesk.core.workspace.WorkspaceManager;
 
 public class WorkspaceFragment extends Fragment {
+
+    public static final String WORKSPACE_INDEX_TAG = "worspace_index";
 
     public WorkspaceFragment() {}
 
@@ -87,6 +90,7 @@ public class WorkspaceFragment extends Fragment {
                 break;
             case R.id.menu_my_details:
                 Intent intent = new Intent(getActivity(), WorkspaceDetailsActivity.class);
+                intent.putExtra(WORKSPACE_INDEX_TAG, info.position);
                 // TODO: Add workspace info
                 getActivity().startActivity(intent);
                 break;

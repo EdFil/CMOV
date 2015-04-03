@@ -8,6 +8,14 @@ import android.widget.TableLayout;
 import android.widget.TableRow;
 import android.widget.TextView;
 
+import java.io.File;
+
+import pt.ulisboa.tecnico.cmov.airdesk.core.tag.Tag;
+import pt.ulisboa.tecnico.cmov.airdesk.core.user.User;
+import pt.ulisboa.tecnico.cmov.airdesk.core.workspace.Workspace;
+import pt.ulisboa.tecnico.cmov.airdesk.core.workspace.WorkspaceManager;
+import pt.ulisboa.tecnico.cmov.airdesk.fragment.WorkspaceFragment;
+
 public class WorkspaceDetailsActivity extends ActionBarActivity {
 
     private static final int NUM_COLUMNS_PER_ROW = 4;
@@ -25,7 +33,10 @@ public class WorkspaceDetailsActivity extends ActionBarActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_workspace_details);
-        setTitle("[Workspace name here]");
+
+        int workspaceIndex = getIntent().getIntExtra(WorkspaceFragment.WORKSPACE_INDEX_TAG, -1);
+
+        Workspace workspace = WorkspaceManager.getInstance().getWorkspaceAtIndex(workspaceIndex);
 
         mOwnerInformation = (TextView) findViewById(R.id.ownerInformation);
         mQuotaInformation = (TextView) findViewById(R.id.quotaIndormation);
@@ -36,11 +47,22 @@ public class WorkspaceDetailsActivity extends ActionBarActivity {
         mUsersTableLayout = (TableLayout) findViewById(R.id.usersTable);
         mUsersTableLayout.setStretchAllColumns(true);
 
-        addTagToTable("Tag 1");addTagToTable("Tag 2");addTagToTable("Tag 3");addTagToTable("Tag 4");
-        addTagToTable("Tag 5");addTagToTable("Tag 6");addTagToTable("Tag 7");
+        setTitle(workspace.getName());
 
-        addUserToTable("User 1");addUserToTable("User 2");addUserToTable("User 3");addUserToTable("User 4");
-        addUserToTable("User 5");addUserToTable("User 6");addUserToTable("User 7");addUserToTable("User 8");
+        mOwnerInformation.setText(workspace.getOwner().getEmail());
+
+        long bytesUsed = 0;
+        for(File file : workspace.getFiles())
+            bytesUsed += file.length();
+
+        mQuotaInformation.setText("Used " + bytesUsed + " out of " + workspace.getQuota());
+        mPrivacyInformation.setText(workspace.isPrivate() ? "True" : "False");
+
+        for(Tag tag : workspace.getTags())
+            addTagToTable(tag.getText());
+
+        for(User user : workspace.getUsers())
+            addUserToTable(user.getEmail());
     }
 
     private void addTagToTable(String tag) {

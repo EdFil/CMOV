@@ -1,9 +1,14 @@
 package pt.ulisboa.tecnico.cmov.airdesk.core.workspace;
 
+import android.os.Parcel;
+import android.os.Parcelable;
+
 import java.io.File;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.HashSet;
+import java.util.List;
 
 import pt.ulisboa.tecnico.cmov.airdesk.core.tag.Tag;
 import pt.ulisboa.tecnico.cmov.airdesk.core.user.User;
@@ -15,16 +20,16 @@ import pt.ulisboa.tecnico.cmov.airdesk.core.workspace.exception.WorkspacePublicN
 import pt.ulisboa.tecnico.cmov.airdesk.core.workspace.exception.WorkspaceQuotaIsZeroException;
 import pt.ulisboa.tecnico.cmov.airdesk.core.workspace.exception.WorkspaceRemoveOwnerException;
 
-public class Workspace {
+public class Workspace implements Parcelable {
 
     private String mName;
     private User mOwner;
     private long mQuota;
     private boolean mIsPrivate;
     private long mDatabaseId;
-    private HashSet<Tag> mTags;
-    private HashSet<User> mUsers;
-    private HashSet<File> mFiles;
+    private List<Tag> mTags;
+    private List<User> mUsers;
+    private List<File> mFiles;
     private WorkspaceManager mWorkspaceManager;
 
     public Workspace(String name, User owner, long quota, boolean isPrivate, Collection<Tag> tags, Collection<User> users, Collection<File> files, WorkspaceManager workspaceManager){
@@ -33,9 +38,9 @@ public class Workspace {
         setOwner(owner);
         setQuota(quota);
         setIsPrivate(isPrivate);
-        setTags(new HashSet<Tag>(tags));
-        setUsers(new HashSet<User>(users));
-        setFiles(new HashSet<File>(files));
+        setTags(new ArrayList<Tag>(tags));
+        setUsers(new ArrayList<User>(users));
+        setFiles(new ArrayList<File>(files));
     }
 
     // Getters
@@ -44,9 +49,9 @@ public class Workspace {
     public long getQuota() { return mQuota; }
     public boolean isPrivate() { return mIsPrivate; }
     public long getDatabaseId() { return mDatabaseId; }
-    public HashSet<Tag> getTags() { return mTags; }
-    public HashSet<User> getUsers() { return mUsers; }
-    public HashSet<File> getFiles() { return mFiles; }
+    public List<Tag> getTags() { return mTags; }
+    public List<User> getUsers() { return mUsers; }
+    public List<File> getFiles() { return mFiles; }
 
     // Setters
     public void setName(String name) throws WorkspaceNameIsEmptyException, NullPointerException {
@@ -86,7 +91,7 @@ public class Workspace {
     public void setTags(Collection<Tag> tags) {
         if(!isPrivate() && tags.isEmpty())
             throw new WorkspacePublicNoTagsException();
-        mTags = new HashSet<Tag>(tags);
+        mTags = new ArrayList<Tag>(tags);
         for(Tag tag : mTags){
             tag.setWorkspace(this);
         }
@@ -95,7 +100,7 @@ public class Workspace {
     public void setUsers(Collection<User> users) {
         if(users == null)
             throw new NullPointerException("Users cannot be null");
-        mUsers = new HashSet<User>(users);
+        mUsers = new ArrayList<User>(users);
         if(!getUsers().contains(getOwner())){
             getUsers().add(getOwner());
         }
@@ -104,7 +109,7 @@ public class Workspace {
     public void setFiles(Collection<File> files) {
         if(files == null)
             throw new NullPointerException("Files cannot be null");
-        mFiles = new HashSet<File>(files);
+        mFiles = new ArrayList<File>(files);
     }
 
     public void setWorkspaceManager(WorkspaceManager workspaceManager){
@@ -126,5 +131,53 @@ public class Workspace {
 
     public void addFile(File file) { mFiles.add(file); }
     public void removeFile(File file) { mFiles.remove(file); }
-    
+
+
+
+
+
+    // ---------------------
+    // Stuff for Parcelable
+    // ---------------------
+
+
+    private Workspace(Parcel in){
+        mName = in.readString();
+        mOwner = in.readParcelable(User.class.getClassLoader());
+        mQuota = in.readLong();
+        mIsPrivate = in.readInt() == 1;
+        mDatabaseId = in.readLong();
+        in.readList((mTags = new ArrayList<Tag>()), Tag.class.getClassLoader());
+        in.readList((mUsers = new ArrayList<User>()), User.class.getClassLoader());
+        in.readList((mFiles = new ArrayList<File>()), File.class.getClassLoader());
+        mWorkspaceManager = WorkspaceManager.getInstance();
+    }
+
+    @Override
+    public int describeContents() {
+        return 0;
+    }
+
+    @Override
+    public void writeToParcel(Parcel dest, int flags) {
+        dest.writeString(mName);
+        dest.writeParcelable(mOwner, PARCELABLE_WRITE_RETURN_VALUE);
+        dest.writeLong(mQuota);
+        dest.writeInt(mIsPrivate ? 1 : 0);
+        dest.writeLong(mDatabaseId);
+        dest.writeList(mTags);
+        dest.writeList(mUsers);
+        dest.writeList(mFiles);
+    }
+
+    // this is used to regenerate your object. All Parcelables must have a CREATOR that implements these two methods
+    public static final Parcelable.Creator<Workspace> CREATOR = new Parcelable.Creator<Workspace>() {
+        public Workspace createFromParcel(Parcel in) {
+            return new Workspace(in);
+        }
+
+        public Workspace[] newArray(int size) {
+            return new Workspace[size];
+        }
+    };
 }

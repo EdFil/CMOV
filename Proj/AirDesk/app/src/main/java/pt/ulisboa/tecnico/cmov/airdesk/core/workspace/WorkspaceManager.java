@@ -151,4 +151,8 @@ public class WorkspaceManager {
         while(i >= 0)
             deleteWorkspace(mWorkspaceListAdapter.getItem(i--));
     }
+
+    public Workspace getWorkspaceAtIndex(int workspaceIndex) {
+        return mWorkspaceListAdapter.getItem(workspaceIndex);
+    }
 }
