@@ -1,34 +1,25 @@
 package pt.ulisboa.tecnico.cmov.airdesk;
 
-import android.app.ExpandableListActivity;
-import android.content.SharedPreferences;
+import android.app.ActionBar;
 import android.os.Bundle;
 import android.support.v7.app.ActionBarActivity;
 import android.view.MenuItem;
-import android.view.View;
-import android.widget.Button;
-import android.widget.EditText;
-import android.widget.ExpandableListAdapter;
-import android.widget.ExpandableListView;
-import android.widget.SimpleExpandableListAdapter;
+import android.widget.TableLayout;
+import android.widget.TableRow;
 import android.widget.TextView;
-
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
 
 public class WorkspaceDetailsActivity extends ActionBarActivity {
 
+    private static final int NUM_COLUMNS_PER_ROW = 4;
+
     public static final int LOGIN_REQUEST = 1;
-    private static final String NAME = "NAME";
-    private static final String IS_EVEN = "IS_EVEN";
 
-    private String group[] = {"Tags" , "Users", "Files"};
-    private String[][] child = { { "Tag 1", "Tag 2" }, { "User 1", "User 2" }, { "File 1", "File 2" } };
+    TextView mOwnerInformation;
+    TextView mQuotaInformation;
+    TextView mPrivacyInformation;
 
-    ExpandableListView mExpandableListView;
-    ExpandableListAdapter mTagListAdapter;
+    TableLayout mTagsTableLayout;
+    TableLayout mUsersTableLayout;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -36,38 +27,55 @@ public class WorkspaceDetailsActivity extends ActionBarActivity {
         setContentView(R.layout.activity_workspace_details);
         setTitle("[Workspace name here]");
 
-        Bundle bundle = getIntent().getExtras();
+        mOwnerInformation = (TextView) findViewById(R.id.ownerInformation);
+        mQuotaInformation = (TextView) findViewById(R.id.quotaIndormation);
+        mPrivacyInformation = (TextView) findViewById(R.id.privateInformation);
 
-        mExpandableListView = (ExpandableListView) findViewById(R.id.expandableTagsList);
+        mTagsTableLayout = (TableLayout) findViewById(R.id.tagsTable);
+        mTagsTableLayout.setStretchAllColumns(true);
+        mUsersTableLayout = (TableLayout) findViewById(R.id.usersTable);
+        mUsersTableLayout.setStretchAllColumns(true);
 
-        List<Map<String, String>> groupData = new ArrayList<Map<String, String>>();
-        List<List<Map<String, String>>> childData = new ArrayList<List<Map<String, String>>>();
-        for (int i = 0; i < group.length; i++) {
-            Map<String, String> curGroupMap = new HashMap<String, String>();
-            groupData.add(curGroupMap);
-            curGroupMap.put(NAME, group[i]);
+        addTagToTable("Tag 1");addTagToTable("Tag 2");addTagToTable("Tag 3");addTagToTable("Tag 4");
+        addTagToTable("Tag 5");addTagToTable("Tag 6");addTagToTable("Tag 7");
 
-            List<Map<String, String>> children = new ArrayList<Map<String, String>>();
-            for (int j = 0; j < child[i].length; j++) {
-                Map<String, String> curChildMap = new HashMap<String, String>();
-                children.add(curChildMap);
-                curChildMap.put(NAME, child[i][j]);
-            }
-            childData.add(children);
+        addUserToTable("User 1");addUserToTable("User 2");addUserToTable("User 3");addUserToTable("User 4");
+        addUserToTable("User 5");addUserToTable("User 6");addUserToTable("User 7");addUserToTable("User 8");
+    }
+
+    private void addTagToTable(String tag) {
+        TextView tagText = new TextView(this);
+        tagText.setText(tag);
+        tagText.setTextAppearance(this, android.R.style.TextAppearance_DeviceDefault_Medium);
+        TableRow rowToInsertTag;
+        int numRows = mTagsTableLayout.getChildCount();
+        if(numRows == 0 || ((TableRow)mTagsTableLayout.getChildAt(numRows - 1)).getChildCount() >= NUM_COLUMNS_PER_ROW) {
+            rowToInsertTag = new TableRow(this);
+            mTagsTableLayout.addView(rowToInsertTag);
+        } else {
+            rowToInsertTag = (TableRow)mTagsTableLayout.getChildAt(numRows - 1);
         }
+        rowToInsertTag.addView(tagText, ActionBar.LayoutParams.WRAP_CONTENT);
+    }
 
-        // Set up our adapter
-        mTagListAdapter = new SimpleExpandableListAdapter(this, groupData,
-                android.R.layout.simple_selectable_list_item,
-                new String[] { NAME }, new int[] { android.R.id.text1 },
-                childData, android.R.layout.simple_expandable_list_item_2,
-                new String[] { NAME }, new int[] { android.R.id.text1 });
-        mExpandableListView.setAdapter(mTagListAdapter);
+    private void addUserToTable(String tag) {
+        TextView userText = new TextView(this);
+        userText.setText(tag);
+        userText.setTextAppearance(this, android.R.style.TextAppearance_DeviceDefault_Medium);
+        TableRow rowToInsertTag;
+        int numRows = mUsersTableLayout.getChildCount();
+        if(numRows == 0 || ((TableRow)mUsersTableLayout.getChildAt(numRows - 1)).getChildCount() >= NUM_COLUMNS_PER_ROW) {
+            rowToInsertTag = new TableRow(this);
+            mUsersTableLayout.addView(rowToInsertTag);
+        } else {
+            rowToInsertTag = (TableRow)mUsersTableLayout.getChildAt(numRows - 1);
+        }
+        rowToInsertTag.addView(userText, ActionBar.LayoutParams.WRAP_CONTENT);
     }
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
-        // Handle action bar item clicks here. The action bar will
+        // Handle action bar item clicks here. The action bar wil
         // automatically handle clicks on the Home/Up button, so long
         // as you specify a parent activity in AndroidManifest.xml.
         int id = item.getItemId();
