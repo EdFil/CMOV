@@ -19,13 +19,10 @@ import pt.ulisboa.tecnico.cmov.airdesk.FileActivity;
 import pt.ulisboa.tecnico.cmov.airdesk.R;
 import pt.ulisboa.tecnico.cmov.airdesk.WorkspaceDetailsActivity;
 import pt.ulisboa.tecnico.cmov.airdesk.adapter.WorkspaceListAdapter;
-import pt.ulisboa.tecnico.cmov.airdesk.core.tag.Tag;
 import pt.ulisboa.tecnico.cmov.airdesk.core.workspace.Workspace;
 import pt.ulisboa.tecnico.cmov.airdesk.core.workspace.WorkspaceManager;
 
 public class WorkspaceFragment extends Fragment {
-
-    public static final String WORKSPACE_INDEX_TAG = "worspace_index";
 
     public WorkspaceFragment() {}
 
@@ -84,14 +81,18 @@ public class WorkspaceFragment extends Fragment {
 
         AdapterView.AdapterContextMenuInfo info = (AdapterView.AdapterContextMenuInfo) item.getMenuInfo();
 
+        Intent intent;
         switch(item.getItemId()){
             case R.id.menu_my_edit:
-                Toast.makeText(getActivity(), "TODO Edit", Toast.LENGTH_SHORT).show();
+                intent = new Intent(getActivity(), WorkspaceDetailsActivity.class);
+                intent.putExtra(WorkspaceDetailsActivity.EDIT_MODE, true);
+                intent.putExtra(WorkspaceDetailsActivity.WORKSPACE_INDEX_TAG, info.position);
+                getActivity().startActivity(intent);
                 break;
             case R.id.menu_my_details:
-                Intent intent = new Intent(getActivity(), WorkspaceDetailsActivity.class);
-                intent.putExtra(WORKSPACE_INDEX_TAG, info.position);
-                // TODO: Add workspace info
+                intent = new Intent(getActivity(), WorkspaceDetailsActivity.class);
+                intent.putExtra(WorkspaceDetailsActivity.EDIT_MODE, false);
+                intent.putExtra(WorkspaceDetailsActivity.WORKSPACE_INDEX_TAG, info.position);
                 getActivity().startActivity(intent);
                 break;
             case R.id.menu_my_delete:
