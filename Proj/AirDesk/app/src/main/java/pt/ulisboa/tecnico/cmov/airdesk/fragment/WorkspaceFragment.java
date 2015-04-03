@@ -1,11 +1,9 @@
 package pt.ulisboa.tecnico.cmov.airdesk.fragment;
 
 import android.app.Activity;
-import android.app.AlertDialog;
-import android.content.DialogInterface;
 import android.content.Intent;
-import android.support.v4.app.Fragment;
 import android.os.Bundle;
+import android.support.v4.app.Fragment;
 import android.view.ContextMenu;
 import android.view.LayoutInflater;
 import android.view.MenuItem;
@@ -24,36 +22,21 @@ import pt.ulisboa.tecnico.cmov.airdesk.adapter.WorkspaceListAdapter;
 import pt.ulisboa.tecnico.cmov.airdesk.core.workspace.Workspace;
 import pt.ulisboa.tecnico.cmov.airdesk.core.workspace.WorkspaceManager;
 
-/**
- * Created by Diogo on 01-Apr-15.
- */
 public class WorkspaceFragment extends Fragment {
 
-    /**
-     * The fragment argument representing the section number for this
-     * fragment.
-     */
-    private static final String ARG_SECTION_NUMBER = "section_number";
+    public WorkspaceFragment() {}
 
     /**
      * Returns a new instance of this fragment for the given section
      * number.
      */
     public static WorkspaceFragment newInstance() {
-        WorkspaceFragment fragment = new WorkspaceFragment();
-        return fragment;
-    }
-
-
-    Button createNewWorkspaceButton;
-    WorkspaceListAdapter workspaceListAdapter;
-
-    public WorkspaceFragment() {
+        return new WorkspaceFragment();
     }
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-        workspaceListAdapter = (WorkspaceListAdapter) WorkspaceManager.getInstance().getWorkspaceAdapter();
+        WorkspaceListAdapter workspaceListAdapter = (WorkspaceListAdapter) WorkspaceManager.getInstance().getWorkspaceAdapter();
 
         View workspaceFragmentView = inflater.inflate(R.layout.fragment_air_desk, container, false);
 
@@ -72,9 +55,8 @@ public class WorkspaceFragment extends Fragment {
 
         registerForContextMenu(listView);
 
-
         // Setup create new workspace button
-        createNewWorkspaceButton = (Button) workspaceFragmentView.findViewById(R.id.createNewWorkspaceButton);
+        Button createNewWorkspaceButton = (Button) workspaceFragmentView.findViewById(R.id.createNewWorkspaceButton);
         createNewWorkspaceButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View buttonView) {
@@ -106,7 +88,7 @@ public class WorkspaceFragment extends Fragment {
             case R.id.menu_my_details:
                 Intent intent = new Intent(getActivity(), WorkspaceDetailsActivity.class);
                 // TODO: Add workspace info
-                getActivity().startActivity(new Intent(getActivity(), WorkspaceDetailsActivity.class));
+                getActivity().startActivity(intent);
                 break;
             case R.id.menu_my_delete:
                 Workspace selectedWorkspace = (Workspace)((ListView)info.targetView.getParent()).getAdapter().getItem(info.position);
@@ -115,9 +97,7 @@ public class WorkspaceFragment extends Fragment {
             case R.id.menu_my_invite:
                 Toast.makeText(getActivity(), "TODO Invite", Toast.LENGTH_SHORT).show();
                 break;
-
         }
-
         return true;
     }
 
@@ -126,7 +106,4 @@ public class WorkspaceFragment extends Fragment {
         super.onAttach(activity);
         ((AirDeskActivity) activity).onSectionAttached(1);
     }
-
-
-
 }

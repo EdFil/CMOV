@@ -121,10 +121,7 @@ public class AirDeskActivity extends ActionBarActivity implements NavigationDraw
                 fragmentManager.beginTransaction()
                         .replace(R.id.container, PlaceholderFragment.newInstance(position))
                         .commit();
-
         }
-
-
     }
 
     public void onSectionAttached(int number) {

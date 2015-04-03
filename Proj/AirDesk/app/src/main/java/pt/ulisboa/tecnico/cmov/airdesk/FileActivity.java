@@ -3,7 +3,6 @@ package pt.ulisboa.tecnico.cmov.airdesk;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
-import android.os.Handler;
 import android.support.v7.app.ActionBarActivity;
 import android.util.Log;
 import android.view.Menu;
