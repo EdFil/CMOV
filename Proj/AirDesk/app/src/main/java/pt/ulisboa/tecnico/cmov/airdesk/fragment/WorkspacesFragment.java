@@ -4,6 +4,8 @@ import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
+import android.support.v4.app.FragmentManager;
+import android.support.v4.app.FragmentTransaction;
 import android.view.ContextMenu;
 import android.view.LayoutInflater;
 import android.view.MenuItem;
@@ -15,62 +17,56 @@ import android.widget.ListView;
 import android.widget.Toast;
 
 import pt.ulisboa.tecnico.cmov.airdesk.AirDeskActivity;
-import pt.ulisboa.tecnico.cmov.airdesk.FileActivity;
 import pt.ulisboa.tecnico.cmov.airdesk.R;
-import pt.ulisboa.tecnico.cmov.airdesk.adapter.FileListAdapter;
+import pt.ulisboa.tecnico.cmov.airdesk.WorkspaceDetailsActivity;
+import pt.ulisboa.tecnico.cmov.airdesk.adapter.WorkspaceListAdapter;
 import pt.ulisboa.tecnico.cmov.airdesk.core.workspace.Workspace;
 import pt.ulisboa.tecnico.cmov.airdesk.core.workspace.WorkspaceManager;
 
-/**
- * Created by Diogo on 01-Apr-15.
- */
-public class FileFragment extends Fragment {
+public class WorkspacesFragment extends Fragment {
 
-    /**
-     * The fragment argument representing the section number for this
-     * fragment.
-     */
-    private static final String ARG_SECTION_NUMBER = "section_number";
+    public WorkspacesFragment() {}
 
-    /**
-     * Returns a new instance of this fragment for the given section
-     * number.
-     */
-    public static FileFragment newInstance() {
-        FileFragment fragment = new FileFragment();
-        return fragment;
-    }
-
-    Button createNewWorkspaceButton;
-    FileListAdapter fileListAdapter;
-
-    public FileFragment() {
+    public static WorkspacesFragment newInstance() {
+        return new WorkspacesFragment();
     }
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-        fileListAdapter = (FileListAdapter) WorkspaceManager.getInstance().getWorkspaceAdapter();
+        WorkspaceListAdapter workspaceListAdapter = (WorkspaceListAdapter) WorkspaceManager.getInstance().getWorkspaceListAdapter();
 
-        View workspaceFragmentView = inflater.inflate(R.layout.fragment_air_desk, container, false);
+        View workspaceFragmentView = inflater.inflate(R.layout.fragment_workspaces, container, false);
 
-        ListView listView = (ListView) workspaceFragmentView.findViewById(R.id.workspacesList);
-        listView.setAdapter(fileListAdapter);
+        ListView listView = (ListView) workspaceFragmentView.findViewById(R.id.myWorkspacesList);
+        listView.setAdapter(workspaceListAdapter);
         listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                startActivity(new Intent(getActivity(), FileActivity.class));
+
+                FragmentManager fragmentManager = getActivity().getSupportFragmentManager();
+                FragmentTransaction transaction = fragmentManager.beginTransaction();
+
+                FilesFragment filesFragment = new FilesFragment();
+                Bundle bundle = new Bundle();
+                bundle.putParcelable("Workspace", (Workspace) parent.getItemAtPosition(position));
+                filesFragment.setArguments(bundle);
+
+                transaction.replace(R.id.container, filesFragment);
+                transaction.addToBackStack(null);
+
+                // Commit the transaction
+                transaction.commit();
             }
         });
 
         registerForContextMenu(listView);
 
-
         // Setup create new workspace button
-        createNewWorkspaceButton = (Button) workspaceFragmentView.findViewById(R.id.createNewWorkspaceButton);
+        Button createNewWorkspaceButton = (Button) workspaceFragmentView.findViewById(R.id.newButton);
         createNewWorkspaceButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View buttonView) {
-                CreateWorkspaceFragment.newInstance().show(getActivity().getFragmentManager(), "Create Workspace");
+                NewWorkspaceFragment.newInstance().show(getActivity().getFragmentManager(), "Create Workspace");
             }
         });
 
@@ -91,12 +87,19 @@ public class FileFragment extends Fragment {
 
         AdapterView.AdapterContextMenuInfo info = (AdapterView.AdapterContextMenuInfo) item.getMenuInfo();
 
+        Intent intent;
         switch(item.getItemId()){
             case R.id.menu_my_edit:
-                Toast.makeText(getActivity(), "TODO Edit", Toast.LENGTH_SHORT).show();
+                intent = new Intent(getActivity(), WorkspaceDetailsActivity.class);
+                intent.putExtra(WorkspaceDetailsActivity.EDIT_MODE, true);
+                intent.putExtra(WorkspaceDetailsActivity.WORKSPACE_INDEX_TAG, info.position);
+                getActivity().startActivity(intent);
                 break;
             case R.id.menu_my_details:
-                Toast.makeText(getActivity(), "TODO Details", Toast.LENGTH_SHORT).show();
+                intent = new Intent(getActivity(), WorkspaceDetailsActivity.class);
+                intent.putExtra(WorkspaceDetailsActivity.EDIT_MODE, false);
+                intent.putExtra(WorkspaceDetailsActivity.WORKSPACE_INDEX_TAG, info.position);
+                getActivity().startActivity(intent);
                 break;
             case R.id.menu_my_delete:
                 Workspace selectedWorkspace = (Workspace)((ListView)info.targetView.getParent()).getAdapter().getItem(info.position);
@@ -105,9 +108,7 @@ public class FileFragment extends Fragment {
             case R.id.menu_my_invite:
                 Toast.makeText(getActivity(), "TODO Invite", Toast.LENGTH_SHORT).show();
                 break;
-
         }
-
         return true;
     }
 
@@ -116,5 +117,4 @@ public class FileFragment extends Fragment {
         super.onAttach(activity);
         ((AirDeskActivity) activity).onSectionAttached(1);
     }
-
 }

@@ -29,7 +29,7 @@ import pt.ulisboa.tecnico.cmov.airdesk.core.user.User;
 import pt.ulisboa.tecnico.cmov.airdesk.core.workspace.WorkspaceManager;
 import pt.ulisboa.tecnico.cmov.airdesk.core.workspace.exception.WorkspaceException;
 
-public class CreateWorkspaceFragment extends DialogFragment {
+public class NewWorkspaceFragment extends DialogFragment {
 
     List<String> mTagCache;
     TagListAdapter mTagListAdapter;
@@ -42,8 +42,8 @@ public class CreateWorkspaceFragment extends DialogFragment {
     TextView tags;
 
 
-    public static CreateWorkspaceFragment newInstance() {
-        return new CreateWorkspaceFragment();
+    public static NewWorkspaceFragment newInstance() {
+        return new NewWorkspaceFragment();
     }
 
     @Override
@@ -55,7 +55,7 @@ public class CreateWorkspaceFragment extends DialogFragment {
 
         mTagCache = new ArrayList<String>();
 //        getDialog().setTitle("Create new Workspace");
-        final View view = inflater.inflate(R.layout.fragment_create_workspace, container, false);
+        final View view = inflater.inflate(R.layout.fragment_new_workspace, container, false);
         view.getContext();
         addTagButton = (Button)view.findViewById(R.id.addTagButton);
         cancelButton = (Button)view.findViewById(R.id.cancelWorkspaceDialog);
@@ -151,7 +151,7 @@ public class CreateWorkspaceFragment extends DialogFragment {
                     tags.add(new Tag(((TextView)(tagList.getChildAt(i)).findViewById(R.id.tagName)).getText().toString()));
 
                 try {
-                    // Create User in database
+                    // Get user account where the workspace is going to be inserted to
                     SharedPreferences pref = v.getContext().getSharedPreferences("UserPref", Context.MODE_PRIVATE);
                     User owner = new User(pref.getString("user_email", null), pref.getString("user_nick", null));
 

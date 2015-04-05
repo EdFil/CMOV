@@ -22,8 +22,7 @@ import android.widget.Toast;
 
 import pt.ulisboa.tecnico.cmov.airdesk.core.workspace.WorkspaceManager;
 import pt.ulisboa.tecnico.cmov.airdesk.fragment.NavigationDrawerFragment;
-import pt.ulisboa.tecnico.cmov.airdesk.fragment.WorkspaceFragment;
-
+import pt.ulisboa.tecnico.cmov.airdesk.fragment.WorkspacesFragment;
 
 public class AirDeskActivity extends ActionBarActivity implements NavigationDrawerFragment.NavigationDrawerCallbacks {
 
@@ -112,15 +111,22 @@ public class AirDeskActivity extends ActionBarActivity implements NavigationDraw
             // update the main content by replacing fragments
         FragmentManager fragmentManager = getSupportFragmentManager();
         switch (position) {
+            // Account information : Nickname and Email
             case 0:
                 break;
+            // MyWorkspaces : Owned workspace list fragment
             case 1:
-                fragmentManager.beginTransaction().replace(R.id.container, WorkspaceFragment.newInstance()).commit();
+                fragmentManager.beginTransaction().replace(R.id.container, WorkspacesFragment.newInstance()).commit();
+                break;
+            // Foreign Workspaces : Workspaces accessible but not owned
+            case 2:
+                fragmentManager.beginTransaction().replace(R.id.container, WorkspacesFragment.newInstance()).commit();
+                break;
+            // Search Workspace
+            case 3:
                 break;
             default:
-                fragmentManager.beginTransaction()
-                        .replace(R.id.container, PlaceholderFragment.newInstance(position))
-                        .commit();
+                fragmentManager.beginTransaction().replace(R.id.container, PlaceholderFragment.newInstance(position)).commit();
         }
     }
 
@@ -225,9 +231,8 @@ public class AirDeskActivity extends ActionBarActivity implements NavigationDraw
         }
 
         @Override
-        public View onCreateView(LayoutInflater inflater, ViewGroup container,
-                                 Bundle savedInstanceState) {
-            View rootView = inflater.inflate(R.layout.fragment_air_desk, container, false);
+        public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
+            View rootView = inflater.inflate(R.layout.fragment_workspaces, container, false);
             return rootView;
         }
 

@@ -1,6 +1,7 @@
 package pt.ulisboa.tecnico.cmov.airdesk.fragment;
 
 import android.app.Activity;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
@@ -14,58 +15,89 @@ import android.widget.Button;
 import android.widget.ListView;
 import android.widget.Toast;
 
+import java.io.File;
+import java.util.List;
+
 import pt.ulisboa.tecnico.cmov.airdesk.AirDeskActivity;
 import pt.ulisboa.tecnico.cmov.airdesk.FileActivity;
 import pt.ulisboa.tecnico.cmov.airdesk.R;
 import pt.ulisboa.tecnico.cmov.airdesk.WorkspaceDetailsActivity;
-import pt.ulisboa.tecnico.cmov.airdesk.adapter.WorkspaceListAdapter;
+import pt.ulisboa.tecnico.cmov.airdesk.adapter.FileListAdapter;
 import pt.ulisboa.tecnico.cmov.airdesk.core.workspace.Workspace;
 import pt.ulisboa.tecnico.cmov.airdesk.core.workspace.WorkspaceManager;
 
-public class WorkspaceFragment extends Fragment {
+public class FilesFragment extends Fragment {
 
-    public WorkspaceFragment() {}
+    public static final String TAG = FilesFragment.class.getSimpleName();
 
-    /**
-     * Returns a new instance of this fragment for the given section
-     * number.
-     */
-    public static WorkspaceFragment newInstance() {
-        return new WorkspaceFragment();
+    Workspace mWorkspace;
+    List<File> mFiles;
+    FileListAdapter mFileListAdapter;
+
+    public FilesFragment() {}
+
+    public FilesFragment newInstance(Workspace workspace) {
+        setWorkspace(workspace);
+        return new FilesFragment();
+    }
+
+    private void setWorkspace(Workspace workspace) {
+        mWorkspace = workspace;
     }
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-        WorkspaceListAdapter workspaceListAdapter = (WorkspaceListAdapter) WorkspaceManager.getInstance().getWorkspaceAdapter();
 
-        View workspaceFragmentView = inflater.inflate(R.layout.fragment_air_desk, container, false);
+        View fileFragmentView = inflater.inflate(R.layout.fragment_files, container, false);
 
-        ListView listView = (ListView) workspaceFragmentView.findViewById(R.id.workspacesList);
-        listView.setAdapter(workspaceListAdapter);
+
+        WorkspaceManager manager = WorkspaceManager.getInstance();
+
+        // Get the WORKSPACE selected in order to retrieve the respective files
+        Bundle bundle = getArguments();
+        mWorkspace = bundle.getParcelable("Workspace");
+
+        // Request the MANAGER for the FILES (and its ADAPTER) of the WORKSPACE
+        mFiles = manager.getFilesFromWorkspace(mWorkspace);
+        mFileListAdapter = new FileListAdapter(container.getContext(), mFiles);
+
+        ListView listView = (ListView) fileFragmentView.findViewById(R.id.filesList);
+        listView.setAdapter(mFileListAdapter);
+
+//        manager.addFileToWorkspace("wtv", mWorkspace);
+//        mFileListAdapter.notifyDataSetChanged();
+
+
         listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-
-                // INTENT to open a new file in the respective activity
-                Intent intent = new Intent(getActivity(), FileActivity.class);
-                intent.putExtra("textFile", "fileText.txt");
-                startActivity(intent);
+                // TODO : get the filme name to send it to the opener
+                openFileActivity("fileText.txt");
             }
         });
 
         registerForContextMenu(listView);
 
-        // Setup create new workspace button
-        Button createNewWorkspaceButton = (Button) workspaceFragmentView.findViewById(R.id.createNewWorkspaceButton);
-        createNewWorkspaceButton.setOnClickListener(new View.OnClickListener() {
+
+        Button newButton = (Button) fileFragmentView.findViewById(R.id.newButton);
+        newButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View buttonView) {
-                CreateWorkspaceFragment.newInstance().show(getActivity().getFragmentManager(), "Create Workspace");
+                NewFileFragment newFileFragment = new NewFileFragment();
+                Bundle bundle = new Bundle();
+                bundle.putParcelable("Workspace", mWorkspace);
+                newFileFragment.setArguments(bundle);
+                newFileFragment.show(getActivity().getFragmentManager(), "New File");
             }
         });
 
+        return fileFragmentView;
+    }
 
-        return workspaceFragmentView;
+    private void openFileActivity(String fileName) {
+        Intent intent = new Intent(getActivity(), FileActivity.class);
+        intent.putExtra("textFile", fileName);
+        startActivity(intent);
     }
 
     // This will be invoked when an item in the listView is long pressed

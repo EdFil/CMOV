@@ -11,14 +11,24 @@
     <ListView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:id="@+id/workspacesList"
+        android:id="@+id/myWorkspacesList"
         android:layout_alignParentTop="true"
         android:layout_centerHorizontal="true"
         android:clickable="true"
         />
 
+    <ListView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:id="@+id/foreignWorkspacesList"
+        android:layout_alignParentTop="true"
+        android:layout_centerHorizontal="true"
+        android:clickable="true"
+        android:visibility="gone"
+        />
+
     <Button
-        android:id="@+id/createNewWorkspaceButton"
+        android:id="@+id/newButton"
 
         android:text="+"
         android:textColor="#FFFF"

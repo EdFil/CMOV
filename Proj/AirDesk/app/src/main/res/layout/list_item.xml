@@ -6,10 +6,10 @@
     android:layout_height="match_parent">
 
     <TextView
-        android:id="@+id/workspaceName"
+        android:id="@+id/itemName"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="Workspace Name Placeholder"
+        android:text="Item Name Placeholder"
         android:autoText="false"
         style="@style/TextAppearance.AppCompat.Title"
         android:gravity="center_vertical|center_horizontal"

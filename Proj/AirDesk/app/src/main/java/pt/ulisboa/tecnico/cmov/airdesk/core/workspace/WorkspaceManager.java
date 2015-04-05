@@ -9,6 +9,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.Comparator;
+import java.util.List;
 
 import pt.ulisboa.tecnico.cmov.airdesk.adapter.WorkspaceListAdapter;
 import pt.ulisboa.tecnico.cmov.airdesk.core.file.exception.FileAlreadyExistsException;
@@ -19,9 +20,6 @@ import pt.ulisboa.tecnico.cmov.airdesk.core.workspace.exception.WorkspaceNameIsE
 import pt.ulisboa.tecnico.cmov.airdesk.database.AirDeskDbHelper;
 import pt.ulisboa.tecnico.cmov.airdesk.util.FileManager;
 
-/**
- * Created by edgar on 31-03-2015.
- */
 public class WorkspaceManager {
 
     // ------------------------
@@ -46,6 +44,7 @@ public class WorkspaceManager {
     private Context mContext = null;
     private WorkspaceListAdapter mWorkspaceListAdapter;
 
+
     protected WorkspaceManager(Context context){
         mContext = context;
         mWorkspaceListAdapter = new WorkspaceListAdapter(getContext(), new ArrayList<Workspace>());
@@ -54,17 +53,20 @@ public class WorkspaceManager {
     public Workspace addNewWorkspace(String name, User owner, long quota, boolean isPrivate, Collection<Tag> tags) {
         if(name.isEmpty())
             throw new WorkspaceNameIsEmptyException();
+
         if(!FileManager.isWorkspaceNameAvailable(getContext(), name))
             throw new WorkspaceAlreadyExistsException();
-        ArrayList<File> files = new ArrayList<File>();
-        ArrayList<User> users = new ArrayList<User>();
+
+        ArrayList<File> files = new ArrayList<>();
+        ArrayList<User> users = new ArrayList<>();
         users.add(owner);
+
         Workspace newWorkspace = new Workspace(name, owner, quota, isPrivate, tags, users, files, this);
         FileManager.createFolder(getContext(), name);
         AirDeskDbHelper.getInstance(getContext()).insertWorkspace(newWorkspace);
         AirDeskDbHelper.getInstance(getContext()).addTagsToWorkspace(newWorkspace, newWorkspace.getTags());
         AirDeskDbHelper.getInstance(getContext()).addUsersToWorkspace(newWorkspace, newWorkspace.getUsers());
-        // TODO: Add files to workspace
+
         mWorkspaceListAdapter.add(newWorkspace);
         return newWorkspace;
     }
@@ -75,12 +77,17 @@ public class WorkspaceManager {
         mWorkspaceListAdapter.remove(workspace);
     }
 
+    public List<File> getFilesFromWorkspace(Workspace workspace) {
+        return workspace.getFiles();
+    }
+
     public void addFileToWorkspace(String fileName, Workspace workspace) {
         // Create folder in internal storage
         try {
             File file = FileManager.createFile(getContext(), workspace.getName(), fileName);
             AirDeskDbHelper.getInstance(getContext()).addFilesToWorkspace(workspace, Arrays.asList(new File[]{file}));
             workspace.addFile(file);
+            return;
         } catch (SQLiteConstraintException e) {
             throw new FileAlreadyExistsException(fileName);
         }
@@ -128,10 +135,12 @@ public class WorkspaceManager {
         return FileManager.getAvailableSpace(mContext);
     }
 
-    public ListAdapter getWorkspaceAdapter() {
+    public ListAdapter getWorkspaceListAdapter() {
         return mWorkspaceListAdapter;
     }
 
+
+    // TODO : não devia estar no fragmento dos workspaces?
     public void reloadWorkspaces() {
         mWorkspaceListAdapter.clear();
         for(Workspace workspace : AirDeskDbHelper.getInstance(getContext()).getAllLocalWorkspaceInfo())

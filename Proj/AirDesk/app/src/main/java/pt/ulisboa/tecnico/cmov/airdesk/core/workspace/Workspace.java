@@ -5,14 +5,11 @@ import android.os.Parcelable;
 
 import java.io.File;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Collection;
-import java.util.HashSet;
 import java.util.List;
 
 import pt.ulisboa.tecnico.cmov.airdesk.core.tag.Tag;
 import pt.ulisboa.tecnico.cmov.airdesk.core.user.User;
-import pt.ulisboa.tecnico.cmov.airdesk.core.workspace.exception.WorkspaceAddTagToPrivateException;
 import pt.ulisboa.tecnico.cmov.airdesk.core.workspace.exception.WorkspaceExceedsMaxSpaceException;
 import pt.ulisboa.tecnico.cmov.airdesk.core.workspace.exception.WorkspaceNameIsEmptyException;
 import pt.ulisboa.tecnico.cmov.airdesk.core.workspace.exception.WorkspaceNegativeQuotaException;
