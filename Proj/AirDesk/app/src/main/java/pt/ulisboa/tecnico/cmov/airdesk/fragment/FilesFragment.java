@@ -16,6 +16,7 @@ import android.widget.ListView;
 import android.widget.Toast;
 
 import java.io.File;
+import java.util.Comparator;
 import java.util.List;
 
 import pt.ulisboa.tecnico.cmov.airdesk.AirDeskActivity;
@@ -25,6 +26,7 @@ import pt.ulisboa.tecnico.cmov.airdesk.WorkspaceDetailsActivity;
 import pt.ulisboa.tecnico.cmov.airdesk.adapter.FileListAdapter;
 import pt.ulisboa.tecnico.cmov.airdesk.core.workspace.Workspace;
 import pt.ulisboa.tecnico.cmov.airdesk.core.workspace.WorkspaceManager;
+import pt.ulisboa.tecnico.cmov.airdesk.database.AirDeskDbHelper;
 
 public class FilesFragment extends Fragment {
 
@@ -32,7 +34,7 @@ public class FilesFragment extends Fragment {
 
     Workspace mWorkspace;
     List<File> mFiles;
-    FileListAdapter mFileListAdapter;
+
 
     public FilesFragment() {}
 
@@ -50,29 +52,28 @@ public class FilesFragment extends Fragment {
 
         View fileFragmentView = inflater.inflate(R.layout.fragment_files, container, false);
 
-
+        // Get manager
         WorkspaceManager manager = WorkspaceManager.getInstance();
 
-        // Get the WORKSPACE selected in order to retrieve the respective files
+        // Get the WORKSPACE of the files
         Bundle bundle = getArguments();
         mWorkspace = bundle.getParcelable("Workspace");
 
         // Request the MANAGER for the FILES (and its ADAPTER) of the WORKSPACE
         mFiles = manager.getFilesFromWorkspace(mWorkspace);
-        mFileListAdapter = new FileListAdapter(container.getContext(), mFiles);
+        FileListAdapter mFileListAdapter = new FileListAdapter(container.getContext(), mFiles);
+        manager.setFileListAdapter(mFileListAdapter);
+
 
         ListView listView = (ListView) fileFragmentView.findViewById(R.id.filesList);
         listView.setAdapter(mFileListAdapter);
-
-//        manager.addFileToWorkspace("wtv", mWorkspace);
-//        mFileListAdapter.notifyDataSetChanged();
-
 
         listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
                 // TODO : get the filme name to send it to the opener
-                openFileActivity("fileText.txt");
+                File file = (File) parent.getItemAtPosition(position);
+                openFileActivity(file.getName());
             }
         });
 

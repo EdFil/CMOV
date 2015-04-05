@@ -33,15 +33,13 @@
 
         <Button
             android:id="@+id/cancelFile"
-            android:layout_width="0dp"
-            android:layout_weight="1"
+            android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="Cancel" />
 
         <Button
             android:id="@+id/createFile"
-            android:layout_width="0dp"
-            android:layout_weight="1"
+            android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:paddingLeft="@dimen/activity_horizontal_margin"
             android:text="Create"

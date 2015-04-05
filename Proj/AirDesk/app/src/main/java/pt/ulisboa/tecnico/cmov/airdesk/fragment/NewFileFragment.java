@@ -10,6 +10,9 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.Toast;
 
+import java.io.File;
+import java.util.List;
+
 import pt.ulisboa.tecnico.cmov.airdesk.R;
 import pt.ulisboa.tecnico.cmov.airdesk.core.workspace.Workspace;
 import pt.ulisboa.tecnico.cmov.airdesk.core.workspace.WorkspaceManager;
@@ -75,4 +78,12 @@ public class NewFileFragment extends DialogFragment {
         return view;
     }
 
+    @Override
+    public void onDetach() {
+        super.onDetach();
+
+        // Update the list of files
+        WorkspaceManager.getInstance().updateFileList();
+
+    }
 }

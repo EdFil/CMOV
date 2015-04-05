@@ -11,6 +11,7 @@ import java.util.Collection;
 import java.util.Comparator;
 import java.util.List;
 
+import pt.ulisboa.tecnico.cmov.airdesk.adapter.FileListAdapter;
 import pt.ulisboa.tecnico.cmov.airdesk.adapter.WorkspaceListAdapter;
 import pt.ulisboa.tecnico.cmov.airdesk.core.file.exception.FileAlreadyExistsException;
 import pt.ulisboa.tecnico.cmov.airdesk.core.tag.Tag;
@@ -43,11 +44,27 @@ public class WorkspaceManager {
 
     private Context mContext = null;
     private WorkspaceListAdapter mWorkspaceListAdapter;
+    private FileListAdapter mFileListAdapter;
+
+    public FileListAdapter getFileListAdapter() {
+        return mFileListAdapter;
+    }
+
+    public void setFileListAdapter(FileListAdapter fileListAdapter) {
+        mFileListAdapter = fileListAdapter;
+    }
+
+    public void updateFileList() {
+        mFileListAdapter.notifyDataSetChanged();
+    }
+
+
 
 
     protected WorkspaceManager(Context context){
         mContext = context;
         mWorkspaceListAdapter = new WorkspaceListAdapter(getContext(), new ArrayList<Workspace>());
+        mFileListAdapter = new FileListAdapter(getContext(), new ArrayList<File>());
     }
 
     public Workspace addNewWorkspace(String name, User owner, long quota, boolean isPrivate, Collection<Tag> tags) {
@@ -142,9 +159,13 @@ public class WorkspaceManager {
 
     // TODO : não devia estar no fragmento dos workspaces?
     public void reloadWorkspaces() {
+        AirDeskDbHelper db = AirDeskDbHelper.getInstance(getContext());
         mWorkspaceListAdapter.clear();
-        for(Workspace workspace : AirDeskDbHelper.getInstance(getContext()).getAllLocalWorkspaceInfo())
+        for(Workspace workspace : db.getAllLocalWorkspaceInfo()) {
             mWorkspaceListAdapter.add(workspace);
+            for(File file : db.getFilesFromWorkspace())
+                mFileListAdapter.add(file);
+        }
         mWorkspaceListAdapter.sort(new Comparator<Workspace>() {
             @Override
             public int compare(Workspace lhs, Workspace rhs) {

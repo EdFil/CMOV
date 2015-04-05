@@ -31,6 +31,7 @@ public class AirDeskDbHelper extends SQLiteOpenHelper {
 
     public static final String DATABASE_NAME = "airdesk.db";
     public static final int DATABASE_VERSION = 19;
+    private File[] filesFromWorkspace;
 
     public static synchronized AirDeskDbHelper getInstance(Context context) {
         if (mInstance == null) {
@@ -192,6 +193,22 @@ public class AirDeskDbHelper extends SQLiteOpenHelper {
         }
 
         return workspaces;
+    }
+
+    public ArrayList<File> getFilesFromWorkspace() {
+
+        ArrayList<File> files = new ArrayList<>();
+
+//        SQLiteDatabase db = mInstance.getReadableDatabase();
+//        Cursor fileCursor = db.query(FileEntry.TABLE_NAME, null, null, null, null, null, null);
+//
+//        while(fileCursor.moveToNext()) {
+//            long fileId = fileCursor.getLong(fileCursor.getColumnIndex(FileEntry._ID));
+//            files.add(new File());
+//
+//        }
+
+        return files;
     }
 
     public void addTagsToWorkspace(Workspace workspace, Collection<Tag> tags){
@@ -373,6 +390,4 @@ public class AirDeskDbHelper extends SQLiteOpenHelper {
 
         return workspaceUsers;
     }
-
-
 }
