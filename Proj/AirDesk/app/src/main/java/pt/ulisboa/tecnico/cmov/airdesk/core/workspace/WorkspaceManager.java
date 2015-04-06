@@ -163,8 +163,6 @@ public class WorkspaceManager {
         mWorkspaceListAdapter.clear();
         for(Workspace workspace : db.getAllLocalWorkspaceInfo()) {
             mWorkspaceListAdapter.add(workspace);
-            for(File file : db.getFilesFromWorkspace())
-                mFileListAdapter.add(file);
         }
         mWorkspaceListAdapter.sort(new Comparator<Workspace>() {
             @Override

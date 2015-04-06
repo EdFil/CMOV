@@ -19,6 +19,8 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.util.Scanner;
 
+import pt.ulisboa.tecnico.cmov.airdesk.core.workspace.WorkspaceManager;
+
 
 public class FileActivity extends ActionBarActivity {
 
@@ -46,6 +48,7 @@ public class FileActivity extends ActionBarActivity {
 
         Intent intent = getIntent();
         fileName = intent.getStringExtra("textFile");
+
         Toast.makeText(getApplicationContext(), "Filename : " + fileName, Toast.LENGTH_SHORT).show();
 
         String fileText = read();

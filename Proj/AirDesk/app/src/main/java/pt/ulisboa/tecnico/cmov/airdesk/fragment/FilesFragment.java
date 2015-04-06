@@ -73,7 +73,7 @@ public class FilesFragment extends Fragment {
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
                 // TODO : get the filme name to send it to the opener
                 File file = (File) parent.getItemAtPosition(position);
-                openFileActivity(file.getName());
+                openFileActivity(file.getName() + ".txt");
             }
         });
 
@@ -93,6 +93,12 @@ public class FilesFragment extends Fragment {
         });
 
         return fileFragmentView;
+    }
+
+    @Override
+    public void onStart() {
+        super.onStart();
+        WorkspaceManager.getInstance().updateFileList();
     }
 
     private void openFileActivity(String fileName) {

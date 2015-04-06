@@ -32,6 +32,7 @@ public class AirDeskDbHelper extends SQLiteOpenHelper {
     public static final String DATABASE_NAME = "airdesk.db";
     public static final int DATABASE_VERSION = 19;
     private File[] filesFromWorkspace;
+    private HashMap<Long, ArrayList<File>> allFilesInMap;
 
     public static synchronized AirDeskDbHelper getInstance(Context context) {
         if (mInstance == null) {
@@ -170,14 +171,15 @@ public class AirDeskDbHelper extends SQLiteOpenHelper {
 
     public ArrayList<Workspace> getAllLocalWorkspaceInfo() {
         HashMap<Long, ArrayList<Tag>> tagList = getAllTagsInMap();
-        HashMap<Long, ArrayList<User>> userList= getAllUsersInMap();
+        HashMap<Long, ArrayList<User>> userList = getAllUsersInMap();
+        HashMap<Long, ArrayList<File>> fileList = getAllFilesInMap();
 
         SQLiteDatabase db = mInstance.getReadableDatabase();
 
         Cursor workspaceCursor = db.query(WorkspaceEntry.TABLE_NAME, null, null, null, null, null, null);
         ArrayList<Workspace> workspaces = new ArrayList<Workspace>();
 
-        while(workspaceCursor.moveToNext()) {
+        while (workspaceCursor.moveToNext()) {
             long workspaceId = workspaceCursor.getLong(workspaceCursor.getColumnIndex(WorkspaceEntry._ID));
             workspaces.add(new Workspace(
                     workspaceCursor.getString(workspaceCursor.getColumnIndex(WorkspaceEntry.COLUMN_WORKSPACE_NAME)),
@@ -186,29 +188,13 @@ public class AirDeskDbHelper extends SQLiteOpenHelper {
                     workspaceCursor.getInt(workspaceCursor.getColumnIndex(WorkspaceEntry.COLUMN_WORKSPACE_IS_PRIVATE)) == 1 ? true : false,
                     tagList.containsKey(workspaceId) ? tagList.get(workspaceId) : new ArrayList<Tag>(),
                     userList.containsKey(workspaceId) ? userList.get(workspaceId) : new ArrayList<User>(),
-                    new ArrayList<File>(),
+                    fileList.containsKey(workspaceId) ? fileList.get(workspaceId) : new ArrayList<File>(),
                     WorkspaceManager.getInstance()
             ));
             workspaces.get(workspaces.size() - 1).setDatabaseId(workspaceId);
         }
 
         return workspaces;
-    }
-
-    public ArrayList<File> getFilesFromWorkspace() {
-
-        ArrayList<File> files = new ArrayList<>();
-
-//        SQLiteDatabase db = mInstance.getReadableDatabase();
-//        Cursor fileCursor = db.query(FileEntry.TABLE_NAME, null, null, null, null, null, null);
-//
-//        while(fileCursor.moveToNext()) {
-//            long fileId = fileCursor.getLong(fileCursor.getColumnIndex(FileEntry._ID));
-//            files.add(new File());
-//
-//        }
-
-        return files;
     }
 
     public void addTagsToWorkspace(Workspace workspace, Collection<Tag> tags){
@@ -389,5 +375,29 @@ public class AirDeskDbHelper extends SQLiteOpenHelper {
         db.close();
 
         return workspaceUsers;
+    }
+
+    public HashMap<Long,ArrayList<File>> getAllFilesInMap() {
+        SQLiteDatabase db = mInstance.getReadableDatabase();
+        Cursor cursor = db.query(FileEntry.TABLE_NAME, null, null, null, null, null, null);
+        int workspaceIdIndex = cursor.getColumnIndex(FileEntry.COLUMN_WORKSPACE_KEY);
+        int fileNameIndex = cursor.getColumnIndex(FileEntry.COLUMN_FILE_NAME);
+        HashMap<Long, ArrayList<File>> workspaceFiles = new HashMap<Long, ArrayList<File>>();
+
+        while(cursor.moveToNext()){
+            long workspaceId = cursor.getLong(workspaceIdIndex);
+            String fileName = cursor.getString(fileNameIndex);
+            if(workspaceFiles.containsKey(workspaceId))
+                workspaceFiles.get(workspaceId).add(new File(fileName));
+            else {
+                workspaceFiles.put(workspaceId,  new ArrayList<File>());
+                workspaceFiles.get(workspaceId).add(new File(fileName));
+            }
+        }
+
+        cursor.close();
+        db.close();
+
+        return workspaceFiles;
     }
 }
