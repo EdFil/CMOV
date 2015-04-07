@@ -101,7 +101,6 @@ public class AirDeskActivity extends ActionBarActivity implements NavigationDraw
             }
             if (resultCode == RESULT_CANCELED) {
                 finish();
-                //checkUserLogin();
             }
         }
     }
@@ -244,8 +243,7 @@ public class AirDeskActivity extends ActionBarActivity implements NavigationDraw
         @Override
         public void onAttach(Activity activity) {
             super.onAttach(activity);
-            ((AirDeskActivity) activity).onSectionAttached(
-                    getArguments().getInt(ARG_SECTION_NUMBER));
+            ((AirDeskActivity) activity).onSectionAttached(getArguments().getInt(ARG_SECTION_NUMBER));
         }
     }
 

@@ -50,8 +50,9 @@ public class FileActivity extends ActionBarActivity {
         Intent intent = getIntent();
         file = (File) intent.getSerializableExtra("textFile");
 
-        // Establish back button
+        // Action bar back button e name
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+        getSupportActionBar().setTitle(file.getName());
 
         Toast.makeText(getApplicationContext(), "Filename : " + file.getName(), Toast.LENGTH_SHORT).show();
 

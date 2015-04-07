@@ -30,20 +30,12 @@ public class FilesFragment extends Fragment {
 
     public static final String TAG = FilesFragment.class.getSimpleName();
 
+    FileListAdapter mFileListAdapter;
+
     Workspace mWorkspace;
     List<File> mFiles;
 
-
     public FilesFragment() {}
-
-    public FilesFragment newInstance(Workspace workspace) {
-        setWorkspace(workspace);
-        return new FilesFragment();
-    }
-
-    private void setWorkspace(Workspace workspace) {
-        mWorkspace = workspace;
-    }
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
@@ -57,13 +49,12 @@ public class FilesFragment extends Fragment {
         Bundle bundle = getArguments();
         mWorkspace = bundle.getParcelable("Workspace");
 
-
         // Define action bar title as the Workspace Name
         ((AirDeskActivity) getActivity()).getSupportActionBar().setTitle(mWorkspace.getName());
 
         // Request the MANAGER for the FILES (and its ADAPTER) of the WORKSPACE
         mFiles = manager.getFilesFromWorkspace(mWorkspace);
-        FileListAdapter mFileListAdapter = new FileListAdapter(container.getContext(), mFiles);
+        mFileListAdapter = new FileListAdapter(container.getContext(), mFiles);
         manager.setFileListAdapter(mFileListAdapter);
 
 
@@ -103,7 +94,7 @@ public class FilesFragment extends Fragment {
     @Override
     public void onStart() {
         super.onStart();
-        WorkspaceManager.getInstance().updateFileList();
+        mFileListAdapter.notifyDataSetChanged();
     }
 
 //    private void openFileActivity(String fileName) {

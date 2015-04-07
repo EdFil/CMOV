@@ -44,22 +44,6 @@ public class WorkspaceManager {
 
     private Context mContext = null;
     private WorkspaceListAdapter mWorkspaceListAdapter;
-    private FileListAdapter mFileListAdapter;
-
-    public FileListAdapter getFileListAdapter() {
-        return mFileListAdapter;
-    }
-
-    public void setFileListAdapter(FileListAdapter fileListAdapter) {
-        mFileListAdapter = fileListAdapter;
-    }
-
-    public void updateFileList() {
-        mFileListAdapter.notifyDataSetChanged();
-    }
-
-
-
 
     protected WorkspaceManager(Context context){
         mContext = context;

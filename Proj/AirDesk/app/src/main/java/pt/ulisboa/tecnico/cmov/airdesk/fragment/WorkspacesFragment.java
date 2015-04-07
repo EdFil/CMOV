@@ -70,7 +70,6 @@ public class WorkspacesFragment extends Fragment {
             }
         });
 
-
         return workspaceFragmentView;
     }
 
