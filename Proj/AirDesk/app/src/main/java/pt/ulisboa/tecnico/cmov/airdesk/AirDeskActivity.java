@@ -21,10 +21,15 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import pt.ulisboa.tecnico.cmov.airdesk.core.workspace.WorkspaceManager;
+import pt.ulisboa.tecnico.cmov.airdesk.fragment.FilesFragment;
 import pt.ulisboa.tecnico.cmov.airdesk.fragment.NavigationDrawerFragment;
+import pt.ulisboa.tecnico.cmov.airdesk.fragment.NewFileFragment;
 import pt.ulisboa.tecnico.cmov.airdesk.fragment.WorkspacesFragment;
 
-public class AirDeskActivity extends ActionBarActivity implements NavigationDrawerFragment.NavigationDrawerCallbacks {
+public class AirDeskActivity extends ActionBarActivity
+        implements NavigationDrawerFragment.NavigationDrawerCallbacks,
+                   NewFileFragment.OnNewFileFragmentListener
+    {
 
     public static final String TAG = AirDeskActivity.class.getSimpleName();
 
@@ -209,7 +214,21 @@ public class AirDeskActivity extends ActionBarActivity implements NavigationDraw
         return super.onOptionsItemSelected(item);
     }
 
-    /**
+
+
+        //////////////////////////////////////////////////////////
+        // Methods dealing with FILE FRAGMENTS
+        //////////////////////////////////////////////////////////
+
+        @Override
+        public void updateFileList() {
+            FilesFragment articleFrag = (FilesFragment) getSupportFragmentManager().findFragmentById(R.id.container);
+
+            if (articleFrag != null)
+                articleFrag.updateFileList();
+        }
+
+        /**
      * A placeholder fragment containing a simple view.
      */
     public static class PlaceholderFragment extends Fragment {

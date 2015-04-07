@@ -55,8 +55,6 @@ public class FilesFragment extends Fragment {
         // Request the MANAGER for the FILES (and its ADAPTER) of the WORKSPACE
         mFiles = manager.getFilesFromWorkspace(mWorkspace);
         mFileListAdapter = new FileListAdapter(container.getContext(), mFiles);
-        manager.setFileListAdapter(mFileListAdapter);
-
 
         ListView listView = (ListView) fileFragmentView.findViewById(R.id.filesList);
         listView.setAdapter(mFileListAdapter);
@@ -73,8 +71,8 @@ public class FilesFragment extends Fragment {
             }
         });
 
+        // regista a lista de ficheiros para ser selecionado
         registerForContextMenu(listView);
-
 
         Button newButton = (Button) fileFragmentView.findViewById(R.id.newButton);
         newButton.setOnClickListener(new View.OnClickListener() {
@@ -96,13 +94,6 @@ public class FilesFragment extends Fragment {
         super.onStart();
         mFileListAdapter.notifyDataSetChanged();
     }
-
-//    private void openFileActivity(String fileName) {
-//        FileManager.fileNameToFile(getActivity(), mWorkspace.getName(), file.getName())
-//        Intent intent = new Intent(getActivity(), FileActivity.class);
-//        intent.putExtra("textFile", fileName);
-//        startActivity(intent);
-//    }
 
     // This will be invoked when an item in the listView is long pressed
     @Override
@@ -146,5 +137,9 @@ public class FilesFragment extends Fragment {
     public void onAttach(Activity activity) {
         super.onAttach(activity);
         ((AirDeskActivity) activity).onSectionAttached(1);
+    }
+
+    public void updateFileList() {
+        mFileListAdapter.notifyDataSetChanged();
     }
 }

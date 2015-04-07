@@ -1,5 +1,6 @@
 package pt.ulisboa.tecnico.cmov.airdesk.fragment;
 
+import android.app.Activity;
 import android.app.DialogFragment;
 import android.os.Bundle;
 import android.view.LayoutInflater;
@@ -18,6 +19,14 @@ import pt.ulisboa.tecnico.cmov.airdesk.core.workspace.Workspace;
 import pt.ulisboa.tecnico.cmov.airdesk.core.workspace.WorkspaceManager;
 
 public class NewFileFragment extends DialogFragment {
+
+    OnNewFileFragmentListener mCallback;
+
+    // AirDeskActivity must implement this interface
+    public interface OnNewFileFragmentListener {
+        public void updateFileList();
+    }
+
 
     Workspace mWorkspace;
 
@@ -61,8 +70,13 @@ public class NewFileFragment extends DialogFragment {
             @Override
             public void onClick(View v) {
                 String fileName = newFileNameText.getText().toString().trim();
+
                     // Create workspace with associated user (owner) in database
                 WorkspaceManager.getInstance().addFileToWorkspace(fileName, mWorkspace);
+
+                // request the activity to update the FilesFragment's files
+                mCallback.updateFileList();
+
                 Toast.makeText(v.getContext(), "File created", Toast.LENGTH_SHORT).show();
 
                 // Close dialog fragment
@@ -75,11 +89,15 @@ public class NewFileFragment extends DialogFragment {
     }
 
     @Override
-    public void onDetach() {
-        super.onDetach();
+    public void onAttach(Activity activity) {
+        super.onAttach(activity);
 
-        // Update the list of files
-        WorkspaceManager.getInstance().updateFileList();
-
+        // This makes sure that the container activity has implemented
+        // the callback interface. If not, it throws an exception
+        try {
+            mCallback = (OnNewFileFragmentListener) activity;
+        } catch (ClassCastException e) {
+            throw new ClassCastException(activity.toString() + " must implement OnHeadlineSelectedListener");
+        }
     }
 }
