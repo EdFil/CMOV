@@ -57,6 +57,10 @@ public class FilesFragment extends Fragment {
         Bundle bundle = getArguments();
         mWorkspace = bundle.getParcelable("Workspace");
 
+
+        // Define action bar title as the Workspace Name
+        ((AirDeskActivity) getActivity()).getSupportActionBar().setTitle(mWorkspace.getName());
+
         // Request the MANAGER for the FILES (and its ADAPTER) of the WORKSPACE
         mFiles = manager.getFilesFromWorkspace(mWorkspace);
         FileListAdapter mFileListAdapter = new FileListAdapter(container.getContext(), mFiles);
@@ -69,13 +73,12 @@ public class FilesFragment extends Fragment {
         listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                // TODO : get the filme name to send it to the opener
+                // Send file to the File activity
                 File file = (File) parent.getItemAtPosition(position);
                 file = FileManager.fileNameToFile(getActivity(), mWorkspace.getName(), file.getName());
                 Intent intent = new Intent(getActivity(), FileActivity.class);
                 intent.putExtra("textFile", file);
                 startActivity(intent);
-                //openFileActivity(file.getName());
             }
         });
 

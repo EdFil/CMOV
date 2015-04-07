@@ -34,10 +34,7 @@ public class NewFileFragment extends DialogFragment {
 
         View view = inflater.inflate(R.layout.fragment_new_file, container, false);
 
-//        getDialog().setTitle("Create new Workspace");
         getDialog().getWindow().requestFeature(Window.FEATURE_NO_TITLE);
-//        getDialog().setCanceledOnTouchOutside(true);
-//        setStyle(DialogFragment.STYLE_NO_FRAME, R.style.Base_Theme_AppCompat_Dialog_FixedSize);
 
         // Get the WORKSPACE selected in order to retrieve the respective files
         Bundle bundle = getArguments();

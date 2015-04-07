@@ -50,6 +50,11 @@ public class AirDeskActivity extends ActionBarActivity implements NavigationDraw
         refreshList();
     }
 
+    public void updateActionBarTitle() {
+        getSupportActionBar().setTitle(mTitle);
+    }
+
+
     private void setNavigationDrawer() {
         // Adding of the header to the drawer list
         ListView listView = (ListView) findViewById(R.id.list_fragment);

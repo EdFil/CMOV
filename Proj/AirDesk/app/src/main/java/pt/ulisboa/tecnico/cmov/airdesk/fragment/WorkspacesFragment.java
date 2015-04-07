@@ -74,6 +74,12 @@ public class WorkspacesFragment extends Fragment {
         return workspaceFragmentView;
     }
 
+    @Override
+    public void onStart() {
+        super.onStart();
+        ((AirDeskActivity) getActivity()).updateActionBarTitle();
+    }
+
     // This will be invoked when an item in the listView is long pressed
     @Override
     public void onCreateContextMenu(ContextMenu menu, View v, ContextMenu.ContextMenuInfo menuInfo) {

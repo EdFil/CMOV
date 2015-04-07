@@ -64,7 +64,6 @@ public class WorkspaceManager {
     protected WorkspaceManager(Context context){
         mContext = context;
         mWorkspaceListAdapter = new WorkspaceListAdapter(getContext(), new ArrayList<Workspace>());
-        mFileListAdapter = new FileListAdapter(getContext(), new ArrayList<File>());
     }
 
     public Workspace addNewWorkspace(String name, User owner, long quota, boolean isPrivate, Collection<Tag> tags) {
