@@ -35,7 +35,7 @@ public class WorkspacesFragment extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         WorkspaceListAdapter workspaceListAdapter = (WorkspaceListAdapter) WorkspaceManager.getInstance().getWorkspaceListAdapter();
 
-        View workspaceFragmentView = inflater.inflate(R.layout.fragment_workspaces, container, false);
+        final View workspaceFragmentView = inflater.inflate(R.layout.fragment_workspaces, container, false);
 
         ListView listView = (ListView) workspaceFragmentView.findViewById(R.id.myWorkspacesList);
         listView.setAdapter(workspaceListAdapter);

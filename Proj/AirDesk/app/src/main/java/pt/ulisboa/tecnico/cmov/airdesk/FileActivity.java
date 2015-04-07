@@ -13,6 +13,7 @@ import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
@@ -33,7 +34,7 @@ public class FileActivity extends ActionBarActivity {
     private EditText textToEdit;
     private ImageView save;
 
-    private String fileName;
+    private File file;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -47,9 +48,9 @@ public class FileActivity extends ActionBarActivity {
         save = (ImageView) findViewById(R.id.saveTextFile);
 
         Intent intent = getIntent();
-        fileName = intent.getStringExtra("textFile");
+        file = (File) intent.getSerializableExtra("textFile");
 
-        Toast.makeText(getApplicationContext(), "Filename : " + fileName, Toast.LENGTH_SHORT).show();
+        Toast.makeText(getApplicationContext(), "Filename : " + file.getName(), Toast.LENGTH_SHORT).show();
 
         String fileText = read();
         textToView.setText(fileText);
@@ -108,7 +109,7 @@ public class FileActivity extends ActionBarActivity {
         FileOutputStream fos = null;
         try {
             // note that there are many modes you can use
-            fos = openFileOutput(fileName, Context.MODE_PRIVATE);
+            fos = new FileOutputStream(file);   
             fos.write(textToEdit.getText().toString().getBytes());
 
         Toast.makeText(getApplicationContext(), "File written", Toast.LENGTH_SHORT).show();
@@ -127,12 +128,11 @@ public class FileActivity extends ActionBarActivity {
     }
 
     private String read() {
-
         FileInputStream fis = null;
         Scanner scanner = null;
         StringBuilder sb = new StringBuilder();
         try {
-            fis = openFileInput(fileName);
+            fis = new FileInputStream(file);
             // scanner does mean one more object, but it's easier to work with
             scanner = new Scanner(fis);
             while (scanner.hasNextLine()) {
