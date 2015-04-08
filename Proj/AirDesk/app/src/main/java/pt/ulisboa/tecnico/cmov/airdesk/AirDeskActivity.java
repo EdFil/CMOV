@@ -17,6 +17,7 @@ import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ListView;
+import android.widget.Switch;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -27,6 +28,7 @@ import pt.ulisboa.tecnico.cmov.airdesk.fragment.NavigationDrawerFragment;
 import pt.ulisboa.tecnico.cmov.airdesk.fragment.NewFileFragment;
 import pt.ulisboa.tecnico.cmov.airdesk.fragment.NewWorkspaceFragment;
 import pt.ulisboa.tecnico.cmov.airdesk.fragment.WorkspacesFragment;
+import pt.ulisboa.tecnico.cmov.airdesk.util.Constants;
 
 public class AirDeskActivity extends ActionBarActivity
         implements NavigationDrawerFragment.NavigationDrawerCallbacks,
@@ -35,6 +37,7 @@ public class AirDeskActivity extends ActionBarActivity
 
     public static final String TAG = AirDeskActivity.class.getSimpleName();
 
+    private static final int WS_DETAILS_REQUEST = 1;
     // Fragment managing the behaviors, interactions and presentation of the navigation drawer.
     private NavigationDrawerFragment mNavigationDrawerFragment;
 
@@ -94,21 +97,20 @@ public class AirDeskActivity extends ActionBarActivity
         SharedPreferences pref = getSharedPreferences("UserPref", MODE_PRIVATE);
         if(!pref.contains("user_email")){
             Intent intent = new Intent(this, LoginActivity.class);
-            startActivityForResult(intent, LoginActivity.LOGIN_REQUEST);
+            startActivityForResult(intent, Constants.LOGIN_REQUEST);
         }
     }
 
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         // Check which request we're responding to
-        if (requestCode == LoginActivity.LOGIN_REQUEST) {
-            // Make sure the request was successful
-            if (resultCode == RESULT_OK) {
-                refreshNickEmailAfterLogin();
-            }
-            if (resultCode == RESULT_CANCELED) {
-                finish();
-            }
+        switch(requestCode) {
+            case Constants.LOGIN_REQUEST:
+                if (resultCode == RESULT_OK)
+                    refreshNickEmailAfterLogin();
+                else if (resultCode == RESULT_CANCELED)
+                    finish();
+                break;
         }
     }
 

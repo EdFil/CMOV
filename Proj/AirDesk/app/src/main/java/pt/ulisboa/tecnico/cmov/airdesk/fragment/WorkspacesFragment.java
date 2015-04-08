@@ -30,6 +30,7 @@ public class WorkspacesFragment extends Fragment {
 
 //    Context context = getActivity().getApplicationContext();
     public static final String TAG = WorkspacesFragment.class.getSimpleName();
+
     WorkspaceManager manager;
 
     private List<Workspace> mWorkspaces;
@@ -69,7 +70,7 @@ public class WorkspacesFragment extends Fragment {
                 filesFragment.setArguments(bundle);
 
                 transaction.replace(R.id.container, filesFragment);
-                transaction.addToBackStack(null);
+//                transaction.addToBackStack(null);
 
                 // Commit the transaction
                 transaction.commit();
@@ -110,24 +111,25 @@ public class WorkspacesFragment extends Fragment {
     public boolean onContextItemSelected(MenuItem item) {
 
         AdapterView.AdapterContextMenuInfo info = (AdapterView.AdapterContextMenuInfo) item.getMenuInfo();
+        Workspace workspaceSelected = mWorkspaces.get(info.position);
 
+        // TODO : UPDATE OF THE WORKSPACE LIST ON DETAILS ACTIVITY RESULT
         Intent intent;
         switch(item.getItemId()){
             case R.id.menu_my_edit:
                 intent = new Intent(getActivity(), WorkspaceDetailsActivity.class);
                 intent.putExtra(WorkspaceDetailsActivity.EDIT_MODE, true);
-                intent.putExtra(WorkspaceDetailsActivity.WORKSPACE_INDEX_TAG, info.position);
+                intent.putExtra("workspaceSelected", workspaceSelected);
                 getActivity().startActivity(intent);
                 break;
             case R.id.menu_my_details:
                 intent = new Intent(getActivity(), WorkspaceDetailsActivity.class);
                 intent.putExtra(WorkspaceDetailsActivity.EDIT_MODE, false);
-                intent.putExtra(WorkspaceDetailsActivity.WORKSPACE_INDEX_TAG, info.position);
+                intent.putExtra("workspaceSelected", workspaceSelected);
                 getActivity().startActivity(intent);
                 break;
             case R.id.menu_my_delete:
-                Workspace selectedWorkspace = (Workspace)((ListView)info.targetView.getParent()).getAdapter().getItem(info.position);
-                WorkspaceManager.getInstance().deleteWorkspace(selectedWorkspace);
+                WorkspaceManager.getInstance().deleteWorkspace(workspaceSelected);
                 break;
             case R.id.menu_my_invite:
                 Toast.makeText(getActivity(), "TODO Invite", Toast.LENGTH_SHORT).show();

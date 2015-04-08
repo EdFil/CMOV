@@ -3,19 +3,10 @@ package pt.ulisboa.tecnico.cmov.airdesk;
 import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.support.v7.app.ActionBarActivity;
-import android.util.Log;
-import android.view.Menu;
-import android.view.MenuItem;
 import android.view.View;
 import android.widget.EditText;
-import android.widget.TextView;
-import android.widget.Toast;
-
-import pt.ulisboa.tecnico.cmov.airdesk.R;
 
 public class LoginActivity extends ActionBarActivity {
-
-    public static final int LOGIN_REQUEST = 1;
 
     String email;
     String nick;

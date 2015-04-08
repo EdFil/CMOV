@@ -5,6 +5,8 @@ import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
+import android.support.v4.app.FragmentManager;
+import android.support.v4.app.FragmentTransaction;
 import android.view.ContextMenu;
 import android.view.LayoutInflater;
 import android.view.MenuItem;
@@ -64,6 +66,13 @@ public class FilesFragment extends Fragment {
                 // Send file to the File activity
                 String fileName = ((File) parent.getItemAtPosition(position)).getName();
                 File file = FileManager.fileNameToFile(getActivity(), mWorkspace.getName(), fileName);
+//
+//                FragmentManager fragmentManager = getActivity().getSupportFragmentManager();
+//                FragmentTransaction transaction = fragmentManager.beginTransaction();
+//                transaction.addToBackStack(null);
+//                // Commit the transaction
+//                transaction.commit();
+
                 Intent intent = new Intent(getActivity(), FileActivity.class);
                 intent.putExtra("textFile", file);
                 startActivity(intent);

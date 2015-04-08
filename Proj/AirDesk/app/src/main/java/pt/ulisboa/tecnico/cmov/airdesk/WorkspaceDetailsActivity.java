@@ -51,45 +51,43 @@ public class WorkspaceDetailsActivity extends ActionBarActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_workspace_details);
 
-//        int workspaceIndex = getIntent().getIntExtra(WORKSPACE_INDEX_TAG, -1);
-//        mEditMode = getIntent().getBooleanExtra(EDIT_MODE, false);
-//
-//        Workspace workspace = WorkspaceManager.getInstance().getWorkspaceAtIndex(workspaceIndex);
-//
-//        mNameInformationText = (TextView) findViewById(R.id.nameInformationText);
-//        mOwnerInformationText = (TextView) findViewById(R.id.ownerInformationText);
-//        mQuotaInformationText = (TextView) findViewById(R.id.quotaInformationText);
-//        mPrivacyInformationText = (TextView) findViewById(R.id.privateInformationText);
-//
-//        mNameInformationEdit = (EditText) findViewById(R.id.nameInformationEdit);
-//        mOwnerInformationEdit = (EditText) findViewById(R.id.ownerInformationEdit);
-//        mQuotaInformationEdit = (EditText) findViewById(R.id.quotaInformationEdit);
-//        mPrivacyInformationSwitch = (Switch) findViewById(R.id.privateInformationSwitch);
-//
-//        mNameViewSwitcher = (ViewSwitcher) findViewById(R.id.nameViewSwitcher);
-//        mOwnerViewSwitcher = (ViewSwitcher) findViewById(R.id.ownerViewSwitcher);
-//        mQuotaViewSwitcher = (ViewSwitcher) findViewById(R.id.quotaViewSwitcher);
-//        mPrivacyViewSwitcher = (ViewSwitcher) findViewById(R.id.privacyViewSwitcher);
-//
-//        mTagsTableLayout = (TableLayout) findViewById(R.id.tagsTable);
-//        mTagsTableLayout.setStretchAllColumns(true);
-//        mUsersTableLayout = (TableLayout) findViewById(R.id.usersTable);
-//        mUsersTableLayout.setStretchAllColumns(true);
-//
-//        mOwnerInformationText.setText(workspace.getOwner().getEmail());
-//
-//        long bytesUsed = 0;
-//        for(File file : workspace.getFiles())
-//            bytesUsed += file.length();
-//
-//        mQuotaInformationText.setText("Used " + bytesUsed + " out of " + workspace.getQuota());
-//        mPrivacyInformationText.setText(workspace.isPrivate() ? "True" : "False");
-//
-//        for(Tag tag : workspace.getTags())
-//            addTagToTable(tag.getText());
-//
-//        for(User user : workspace.getUsers())
-//            addUserToTable(user.getEmail());
+        mEditMode = getIntent().getBooleanExtra(EDIT_MODE, false);
+        Workspace workspace = getIntent().getParcelableExtra("workspaceSelected");
+
+        mNameInformationText = (TextView) findViewById(R.id.nameInformationText);
+        mOwnerInformationText = (TextView) findViewById(R.id.ownerInformationText);
+        mQuotaInformationText = (TextView) findViewById(R.id.quotaInformationText);
+        mPrivacyInformationText = (TextView) findViewById(R.id.privateInformationText);
+
+        mNameInformationEdit = (EditText) findViewById(R.id.nameInformationEdit);
+        mOwnerInformationEdit = (EditText) findViewById(R.id.ownerInformationEdit);
+        mQuotaInformationEdit = (EditText) findViewById(R.id.quotaInformationEdit);
+        mPrivacyInformationSwitch = (Switch) findViewById(R.id.privateInformationSwitch);
+
+        mNameViewSwitcher = (ViewSwitcher) findViewById(R.id.nameViewSwitcher);
+        mOwnerViewSwitcher = (ViewSwitcher) findViewById(R.id.ownerViewSwitcher);
+        mQuotaViewSwitcher = (ViewSwitcher) findViewById(R.id.quotaViewSwitcher);
+        mPrivacyViewSwitcher = (ViewSwitcher) findViewById(R.id.privacyViewSwitcher);
+
+        mTagsTableLayout = (TableLayout) findViewById(R.id.tagsTable);
+        mTagsTableLayout.setStretchAllColumns(true);
+        mUsersTableLayout = (TableLayout) findViewById(R.id.usersTable);
+        mUsersTableLayout.setStretchAllColumns(true);
+
+        mOwnerInformationText.setText(workspace.getOwner().getEmail());
+
+        long bytesUsed = 0;
+        for(File file : workspace.getFiles())
+            bytesUsed += file.length();
+
+        mQuotaInformationText.setText("Used " + bytesUsed + " out of " + workspace.getQuota());
+        mPrivacyInformationText.setText(workspace.isPrivate() ? "True" : "False");
+
+        for(Tag tag : workspace.getTags())
+            addTagToTable(tag.getText());
+
+        for(User user : workspace.getUsers())
+            addUserToTable(user.getEmail());
     }
 
     @Override

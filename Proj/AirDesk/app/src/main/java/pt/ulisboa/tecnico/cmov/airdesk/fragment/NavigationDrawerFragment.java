@@ -27,6 +27,7 @@ import android.widget.Toast;
 
 import pt.ulisboa.tecnico.cmov.airdesk.LoginActivity;
 import pt.ulisboa.tecnico.cmov.airdesk.R;
+import pt.ulisboa.tecnico.cmov.airdesk.util.Constants;
 
 /**
  * Fragment used for managing interactions for and presentation of a navigation drawer.
@@ -219,7 +220,7 @@ public class NavigationDrawerFragment extends Fragment {
 
             // Returns the result to the AirDeskActivity
             Intent intent = new Intent(getActivity(), LoginActivity.class);
-            getActivity().startActivityForResult(intent, LoginActivity.LOGIN_REQUEST);
+            getActivity().startActivityForResult(intent, Constants.LOGIN_REQUEST);
 
             mCurrentSelectedPosition = 1;
         }
