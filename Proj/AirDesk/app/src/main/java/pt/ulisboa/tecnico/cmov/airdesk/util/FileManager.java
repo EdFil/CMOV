@@ -16,7 +16,7 @@ public class FileManager {
 
     private static final String TAG = FileManager.class.getSimpleName();
     // Name used to internal storage folder for local workspaces
-    public static final String WORKSPACES_FOLDER_NAME = "workspaces";
+    public static String WORKSPACES_FOLDER_NAME = "default_workspace";
 
     public static boolean isWorkspaceNameAvailable(Context context, String workspaceName) {
         File rootFolder = context.getDir(WORKSPACES_FOLDER_NAME, Context.MODE_PRIVATE);
@@ -34,7 +34,7 @@ public class FileManager {
         return false;
     }
 
-    public static void deleteFolder(Context context, String folderName){
+    public static void deleteFolder(Context context, String folderName) {
         File rootFolder = context.getDir(WORKSPACES_FOLDER_NAME, Context.MODE_PRIVATE);
         deleteDir(new File(rootFolder.toString(), folderName));
     }
@@ -62,25 +62,6 @@ public class FileManager {
             file.delete();
     }
 
-    /* Checks if external storage is available for read and write */
-    public static boolean isExternalStorageWritable() {
-        String state = Environment.getExternalStorageState();
-        if (Environment.MEDIA_MOUNTED.equals(state)) {
-            return true;
-        }
-        return false;
-    }
-
-    /* Checks if external storage is available to at least read */
-    public static boolean isExternalStorageReadable() {
-        String state = Environment.getExternalStorageState();
-        if (Environment.MEDIA_MOUNTED.equals(state) ||
-                Environment.MEDIA_MOUNTED_READ_ONLY.equals(state)) {
-            return true;
-        }
-        return false;
-    }
-
     private static boolean deleteDir(File dir) {
         if (dir != null && dir.isDirectory()) {
             String[] children = dir.list();
@@ -101,5 +82,4 @@ public class FileManager {
         long availableBlocks = stat.getAvailableBlocks();
         return availableBlocks * blockSize;
     }
-
 }

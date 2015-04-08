@@ -3,6 +3,7 @@ package pt.ulisboa.tecnico.cmov.airdesk;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
+import android.provider.SyncStateContract;
 import android.support.v7.app.ActionBarActivity;
 import android.util.Log;
 import android.view.View;
@@ -16,12 +17,11 @@ import android.widget.Toast;
 import pt.ulisboa.tecnico.cmov.airdesk.adapter.UserListAdapter;
 import pt.ulisboa.tecnico.cmov.airdesk.core.user.User;
 import pt.ulisboa.tecnico.cmov.airdesk.core.user.UserManager;
+import pt.ulisboa.tecnico.cmov.airdesk.util.Constants;
 
 public class LoginActivity extends ActionBarActivity {
-    public static final int LOGIN_REQUEST = 1;
-    public static final String SHARED_PREF_FILE = "Airdesk";
-    public static final String EMAIL_KEY = "last_user";
-    public static final String LOG_OUT = "logout";
+
+    private static final String TAG = LoginActivity.class.getSimpleName();
 
     private AutoCompleteTextView mEmailView;
     private EditText mNickView;
@@ -33,19 +33,24 @@ public class LoginActivity extends ActionBarActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_login);
 
-        boolean logout = getIntent().getBooleanExtra(LOG_OUT, false);
+        boolean logout = getIntent().getBooleanExtra(Constants.LOG_OUT_MESSAGE, false);
         UserManager.getInstance().initUserManager(getApplicationContext());
-        mSharedPreferences = getSharedPreferences(SHARED_PREF_FILE, MODE_PRIVATE);
+        mSharedPreferences = getSharedPreferences(Constants.SHARED_PREF_FILE, MODE_PRIVATE);
 
         if(logout) {
-            mSharedPreferences.edit().remove(EMAIL_KEY).commit();
+            mSharedPreferences.edit().remove(Constants.EMAIL_KEY).commit();
         }else {
-            String storedEmail = mSharedPreferences.getString(EMAIL_KEY, null);
+            String storedEmail = mSharedPreferences.getString(Constants.EMAIL_KEY, null);
             if (storedEmail != null) {
                 User user = UserManager.getInstance().getUserByEmail(storedEmail);
-                UserManager.getInstance().setOwner(user);
-                Intent intent = new Intent(getApplicationContext(), AirDeskActivity.class);
-                startActivity(intent);
+                if (user == null) {
+                    Log.i(TAG, "Bad user E-mail");
+                    mSharedPreferences.edit().remove(Constants.EMAIL_KEY).commit();
+                } else {
+                    UserManager.getInstance().setOwner(user);
+                    Intent intent = new Intent(getApplicationContext(), AirDeskActivity.class);
+                    startActivity(intent);
+                }
             }
         }
 
@@ -79,10 +84,10 @@ public class LoginActivity extends ActionBarActivity {
         SharedPreferences.Editor editor = mSharedPreferences.edit();
 
         if(mRememberMe.isChecked()){
-            editor.putString(EMAIL_KEY, user.getEmail());
+            editor.putString(Constants.EMAIL_KEY, user.getEmail());
             editor.commit();
         } else {
-            editor.remove(EMAIL_KEY);
+            editor.remove(Constants.EMAIL_KEY);
             editor.commit();
         }
 

@@ -12,6 +12,7 @@ import java.util.List;
 import pt.ulisboa.tecnico.cmov.airdesk.core.file.exception.FileAlreadyExistsException;
 import pt.ulisboa.tecnico.cmov.airdesk.core.tag.Tag;
 import pt.ulisboa.tecnico.cmov.airdesk.core.user.User;
+import pt.ulisboa.tecnico.cmov.airdesk.core.user.UserManager;
 import pt.ulisboa.tecnico.cmov.airdesk.core.workspace.exception.WorkspaceAlreadyExistsException;
 import pt.ulisboa.tecnico.cmov.airdesk.core.workspace.exception.WorkspaceNameIsEmptyException;
 import pt.ulisboa.tecnico.cmov.airdesk.database.AirDeskDbHelper;
@@ -26,6 +27,7 @@ public class WorkspaceManager {
     public static final String TAG = WorkspaceManager.class.getSimpleName();
 
     private static WorkspaceManager mInstance;
+    List<Workspace> workspaces;
 
     public static synchronized WorkspaceManager getInstance() {
         return mInstance;
@@ -52,7 +54,7 @@ public class WorkspaceManager {
         if(AirDeskDbHelper.getInstance(getContext()).isWorkspaceNameAvailable(name, owner.getEmail()))
             throw new WorkspaceAlreadyExistsException();
 
-        long workspaceId = AirDeskDbHelper.getInstance(getContext()).insertWorkspace(name, owner.getDatabaseId(), quota, isPrivate);
+        long workspaceId = AirDeskDbHelper.getInstance(getContext()).insertWorkspace(name, owner.getDatabaseId(), quota, isPrivate, owner.getDatabaseId());
         FileManager.createFolder(getContext(), name);
         for(Tag tag : tags) {
             AirDeskDbHelper.getInstance(getContext()).addTagToWorkspace(workspaceId, tag.getText());
@@ -144,7 +146,7 @@ public class WorkspaceManager {
 
     public List<Workspace> getWorkspaces() {
         AirDeskDbHelper db = AirDeskDbHelper.getInstance(getContext());
-        List<Workspace> workspaces = db.getAllLocalWorkspaceInfo();
+        workspaces = db.getAllLocalWorkspaceInfo(UserManager.getInstance().getOwner().getDatabaseId());
         return workspaces;
     }
 
