@@ -27,7 +27,6 @@ public class NewFileFragment extends DialogFragment {
         public void updateFileList();
     }
 
-
     Workspace mWorkspace;
 
     Button cancelButton, newButton;
@@ -36,7 +35,6 @@ public class NewFileFragment extends DialogFragment {
     public static NewFileFragment newInstance() {
         return new NewFileFragment();
     }
-
 
     @Override
     public View onCreateView(LayoutInflater inflater, final ViewGroup container, Bundle savedInstanceState) {
@@ -83,7 +81,6 @@ public class NewFileFragment extends DialogFragment {
                 dismiss();
             }
         });
-
 
         return view;
     }

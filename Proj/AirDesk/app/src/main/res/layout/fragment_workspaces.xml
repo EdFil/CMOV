@@ -33,7 +33,7 @@
         />
 
     <Button
-        android:id="@+id/newButton"
+        android:id="@+id/newWorkspaceButton"
 
         android:text="+"
         android:textColor="#FFFF"

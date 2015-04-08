@@ -1,6 +1,7 @@
 package pt.ulisboa.tecnico.cmov.airdesk.fragment;
 
 import android.app.Activity;
+import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
@@ -30,16 +31,17 @@ public class FilesFragment extends Fragment {
 
     public static final String TAG = FilesFragment.class.getSimpleName();
 
-    FileListAdapter mFileListAdapter;
-
     Workspace mWorkspace;
+
     List<File> mFiles;
+    FileListAdapter mFileListAdapter;
 
     public FilesFragment() {}
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
 
+        Context context = container.getContext();
         View fileFragmentView = inflater.inflate(R.layout.fragment_files, container, false);
 
         // Get manager
@@ -49,12 +51,9 @@ public class FilesFragment extends Fragment {
         Bundle bundle = getArguments();
         mWorkspace = bundle.getParcelable("Workspace");
 
-        // Define action bar title as the Workspace Name
-        ((AirDeskActivity) getActivity()).getSupportActionBar().setTitle(mWorkspace.getName());
-
         // Request the MANAGER for the FILES (and its ADAPTER) of the WORKSPACE
         mFiles = manager.getFilesFromWorkspace(mWorkspace);
-        mFileListAdapter = new FileListAdapter(container.getContext(), mFiles);
+        mFileListAdapter = new FileListAdapter(context, mFiles);
 
         ListView listView = (ListView) fileFragmentView.findViewById(R.id.filesList);
         listView.setAdapter(mFileListAdapter);
@@ -63,25 +62,30 @@ public class FilesFragment extends Fragment {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
                 // Send file to the File activity
-                File file = (File) parent.getItemAtPosition(position);
-                file = FileManager.fileNameToFile(getActivity(), mWorkspace.getName(), file.getName());
+                String fileName = ((File) parent.getItemAtPosition(position)).getName();
+                File file = FileManager.fileNameToFile(getActivity(), mWorkspace.getName(), fileName);
                 Intent intent = new Intent(getActivity(), FileActivity.class);
                 intent.putExtra("textFile", file);
                 startActivity(intent);
             }
         });
 
-        // regista a lista de ficheiros para ser selecionado
+        // Register the list of Files for the ContextMenu
         registerForContextMenu(listView);
 
-        Button newButton = (Button) fileFragmentView.findViewById(R.id.newButton);
-        newButton.setOnClickListener(new View.OnClickListener() {
+        Button newFileButton = (Button) fileFragmentView.findViewById(R.id.newFileButton);
+        newFileButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View buttonView) {
+                // Create fragment
                 NewFileFragment newFileFragment = new NewFileFragment();
+
+                // set the Workspace to send to fragment
                 Bundle bundle = new Bundle();
                 bundle.putParcelable("Workspace", mWorkspace);
                 newFileFragment.setArguments(bundle);
+
+                // Show dialog fragment
                 newFileFragment.show(getActivity().getFragmentManager(), "New File");
             }
         });
@@ -92,7 +96,10 @@ public class FilesFragment extends Fragment {
     @Override
     public void onStart() {
         super.onStart();
-        mFileListAdapter.notifyDataSetChanged();
+
+        // Define action bar title as the Workspace Name
+        ((AirDeskActivity) getActivity()).getSupportActionBar().setTitle(mWorkspace.getName());
+        updateFileList();
     }
 
     // This will be invoked when an item in the listView is long pressed
@@ -111,20 +118,20 @@ public class FilesFragment extends Fragment {
         Intent intent;
         switch(item.getItemId()){
             case R.id.menu_my_edit:
-                intent = new Intent(getActivity(), WorkspaceDetailsActivity.class);
-                intent.putExtra(WorkspaceDetailsActivity.EDIT_MODE, true);
-                intent.putExtra(WorkspaceDetailsActivity.WORKSPACE_INDEX_TAG, info.position);
-                getActivity().startActivity(intent);
+//                intent = new Intent(getActivity(), WorkspaceDetailsActivity.class);
+//                intent.putExtra(WorkspaceDetailsActivity.EDIT_MODE, true);
+//                intent.putExtra(WorkspaceDetailsActivity.WORKSPACE_INDEX_TAG, info.position);
+//                getActivity().startActivity(intent);
                 break;
             case R.id.menu_my_details:
-                intent = new Intent(getActivity(), WorkspaceDetailsActivity.class);
-                intent.putExtra(WorkspaceDetailsActivity.EDIT_MODE, false);
-                intent.putExtra(WorkspaceDetailsActivity.WORKSPACE_INDEX_TAG, info.position);
-                getActivity().startActivity(intent);
+//                intent = new Intent(getActivity(), WorkspaceDetailsActivity.class);
+//                intent.putExtra(WorkspaceDetailsActivity.EDIT_MODE, false);
+//                intent.putExtra(WorkspaceDetailsActivity.WORKSPACE_INDEX_TAG, info.position);
+//                getActivity().startActivity(intent);
                 break;
             case R.id.menu_my_delete:
-                Workspace selectedWorkspace = (Workspace)((ListView)info.targetView.getParent()).getAdapter().getItem(info.position);
-                WorkspaceManager.getInstance().deleteWorkspace(selectedWorkspace);
+//                Workspace selectedWorkspace = (Workspace)((ListView)info.targetView.getParent()).getAdapter().getItem(info.position);
+//                WorkspaceManager.getInstance().deleteWorkspace(selectedWorkspace);
                 break;
             case R.id.menu_my_invite:
                 Toast.makeText(getActivity(), "TODO Invite", Toast.LENGTH_SHORT).show();
@@ -139,7 +146,10 @@ public class FilesFragment extends Fragment {
         ((AirDeskActivity) activity).onSectionAttached(1);
     }
 
+
     public void updateFileList() {
         mFileListAdapter.notifyDataSetChanged();
     }
+
+
 }

@@ -20,16 +20,18 @@ import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import pt.ulisboa.tecnico.cmov.airdesk.core.workspace.Workspace;
 import pt.ulisboa.tecnico.cmov.airdesk.core.workspace.WorkspaceManager;
 import pt.ulisboa.tecnico.cmov.airdesk.fragment.FilesFragment;
 import pt.ulisboa.tecnico.cmov.airdesk.fragment.NavigationDrawerFragment;
 import pt.ulisboa.tecnico.cmov.airdesk.fragment.NewFileFragment;
+import pt.ulisboa.tecnico.cmov.airdesk.fragment.NewWorkspaceFragment;
 import pt.ulisboa.tecnico.cmov.airdesk.fragment.WorkspacesFragment;
 
 public class AirDeskActivity extends ActionBarActivity
         implements NavigationDrawerFragment.NavigationDrawerCallbacks,
-                   NewFileFragment.OnNewFileFragmentListener
-    {
+                   NewFileFragment.OnNewFileFragmentListener,
+                   NewWorkspaceFragment.OnNewWorkspaceFragmentListener {
 
     public static final String TAG = AirDeskActivity.class.getSimpleName();
 
@@ -52,7 +54,7 @@ public class AirDeskActivity extends ActionBarActivity
     @Override
     protected void onStart() {
         super.onStart();
-        refreshList();
+        //refreshList();
     }
 
     public void updateActionBarTitle() {
@@ -111,7 +113,7 @@ public class AirDeskActivity extends ActionBarActivity
     }
 
     public void refreshList(){
-        WorkspaceManager.getInstance().reloadWorkspaces();
+//        WorkspaceManager.getInstance().reloadWorkspaces();
     }
 
 
@@ -198,7 +200,10 @@ public class AirDeskActivity extends ActionBarActivity
                         .setMessage("Are you sure you want to delete all your workspaces?")
                         .setPositiveButton(android.R.string.yes, new DialogInterface.OnClickListener() {
                             public void onClick(DialogInterface dialog, int which) {
-                                WorkspaceManager.getInstance().deleteAllWorkspaces();
+                                WorkspacesFragment workspacesFrag = (WorkspacesFragment) getSupportFragmentManager().findFragmentById(R.id.container);
+
+                                if (workspacesFrag != null)
+                                    workspacesFrag.deleteAllWorkspaces();
                                 Toast.makeText(getBaseContext(), "DELETED", Toast.LENGTH_SHORT).show();
                             }
                         })
@@ -214,21 +219,27 @@ public class AirDeskActivity extends ActionBarActivity
         return super.onOptionsItemSelected(item);
     }
 
+    //////////////////////////////////////////////////////////
+    // Methods dealing with FILE FRAGMENTS
+    //////////////////////////////////////////////////////////
 
+    @Override
+    public void updateFileList() {
+        FilesFragment filesFrag = (FilesFragment) getSupportFragmentManager().findFragmentById(R.id.container);
 
-        //////////////////////////////////////////////////////////
-        // Methods dealing with FILE FRAGMENTS
-        //////////////////////////////////////////////////////////
+        if (filesFrag != null)
+            filesFrag.updateFileList();
+    }
 
-        @Override
-        public void updateFileList() {
-            FilesFragment articleFrag = (FilesFragment) getSupportFragmentManager().findFragmentById(R.id.container);
+    @Override
+    public void updateWorkspaceList() {
+        WorkspacesFragment workspaceFrag = (WorkspacesFragment) getSupportFragmentManager().findFragmentById(R.id.container);
 
-            if (articleFrag != null)
-                articleFrag.updateFileList();
-        }
+        if (workspaceFrag != null)
+            workspaceFrag.updateWorkspaceList();
+    }
 
-        /**
+    /**
      * A placeholder fragment containing a simple view.
      */
     public static class PlaceholderFragment extends Fragment {
@@ -255,8 +266,7 @@ public class AirDeskActivity extends ActionBarActivity
 
         @Override
         public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-            View rootView = inflater.inflate(R.layout.fragment_workspaces, container, false);
-            return rootView;
+            return inflater.inflate(R.layout.fragment_workspaces, container, false);
         }
 
         @Override

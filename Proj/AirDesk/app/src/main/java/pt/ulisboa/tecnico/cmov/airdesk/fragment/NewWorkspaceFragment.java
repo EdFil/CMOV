@@ -33,7 +33,6 @@ public class NewWorkspaceFragment extends DialogFragment {
 
     List<String> mTagCache;
     TagListAdapter mTagListAdapter;
-    WorkspaceListAdapter mWorkspaceListAdapter;
 
     Button cancelButton, createButton, addTagButton;
     EditText workspaceNameText, quotaValueText, newTagText;
@@ -41,6 +40,12 @@ public class NewWorkspaceFragment extends DialogFragment {
     ListView tagList;
     TextView tags;
 
+    OnNewWorkspaceFragmentListener mCallback;
+
+    // AirDeskActivity must implement this interface
+    public interface OnNewWorkspaceFragmentListener {
+        public void updateWorkspaceList();
+    }
 
     public static NewWorkspaceFragment newInstance() {
         return new NewWorkspaceFragment();
@@ -48,13 +53,11 @@ public class NewWorkspaceFragment extends DialogFragment {
 
     @Override
     public View onCreateView(LayoutInflater inflater, final ViewGroup container, Bundle savedInstanceState) {
-//        getDialog().setTitle("Create new Workspace");
+
         getDialog().getWindow().requestFeature(Window.FEATURE_NO_TITLE);
-//        getDialog().setCanceledOnTouchOutside(true);
-//        setStyle(DialogFragment.STYLE_NO_FRAME, R.style.Base_Theme_AppCompat_Dialog_FixedSize);
 
         mTagCache = new ArrayList<String>();
-//        getDialog().setTitle("Create new Workspace");
+
         final View view = inflater.inflate(R.layout.fragment_new_workspace, container, false);
         view.getContext();
         addTagButton = (Button)view.findViewById(R.id.addTagButton);
@@ -106,6 +109,7 @@ public class NewWorkspaceFragment extends DialogFragment {
                 addTagButton.setVisibility(b ? View.VISIBLE : View.INVISIBLE);
                 newTagText.setVisibility(b ? View.VISIBLE : View.INVISIBLE);
                 tags.setVisibility(b ? View.VISIBLE : View.INVISIBLE);
+
                 if(!b) {
 
                     // if the switch is switched to Private, clear list from adapter
@@ -119,7 +123,6 @@ public class NewWorkspaceFragment extends DialogFragment {
                 else{
                     mTagListAdapter.addAll(mTagCache);
                 }
-
             }
         });
 
@@ -157,6 +160,7 @@ public class NewWorkspaceFragment extends DialogFragment {
 
                     // Create workspace with associated user (owner) in database
                     WorkspaceManager.getInstance().addNewWorkspace(workspaceName, owner, (long)workspaceQuota, !privacySwitch.isChecked(), tags);
+
                     Toast.makeText(view.getContext(), "Workspace created", Toast.LENGTH_SHORT).show();
 
                     // Close dialog fragment

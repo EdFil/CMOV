@@ -23,7 +23,7 @@
         />
 
     <Button
-        android:id="@+id/newButton"
+        android:id="@+id/newFileButton"
 
         android:text="+"
         android:textColor="#FFFF"
