@@ -113,7 +113,6 @@ public class WorkspacesFragment extends Fragment {
 
         AdapterView.AdapterContextMenuInfo info = (AdapterView.AdapterContextMenuInfo) item.getMenuInfo();
 
-        // TODO : UPDATE OF THE WORKSPACE LIST ON DETAILS ACTIVITY RESULT
         Intent intent;
         switch(item.getItemId()){
             case R.id.menu_my_edit:
@@ -133,6 +132,7 @@ public class WorkspacesFragment extends Fragment {
                 updateWorkspaceList();
                 break;
             case R.id.menu_my_invite:
+                // TODO : INVITE FOR WORKSPACE
                 Toast.makeText(getActivity(), "TODO Invite", Toast.LENGTH_SHORT).show();
                 break;
         }

@@ -27,7 +27,7 @@ public class WorkspaceManager {
     public static final String TAG = WorkspaceManager.class.getSimpleName();
 
     private static WorkspaceManager mInstance;
-    List<Workspace> mWorkspaces;
+    private List<Workspace> mWorkspaces;
 
     public static synchronized WorkspaceManager getInstance() {
         return mInstance;

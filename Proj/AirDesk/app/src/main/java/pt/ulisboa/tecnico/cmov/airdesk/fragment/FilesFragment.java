@@ -102,8 +102,8 @@ public class FilesFragment extends Fragment {
     }
 
     @Override
-    public void onStart() {
-        super.onStart();
+    public void onResume() {
+        super.onResume();
 
         // Define action bar title as the Workspace Name
         ((AirDeskActivity) getActivity()).getSupportActionBar().setTitle(mWorkspace.getName());
