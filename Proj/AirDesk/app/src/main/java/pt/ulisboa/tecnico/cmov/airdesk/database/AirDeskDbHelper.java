@@ -533,4 +533,20 @@ public class AirDeskDbHelper extends SQLiteOpenHelper {
         return cursor.moveToFirst();
     }
 
+    public void updateWorkspace(long workspaceId, String workspaceName, Long quotaValue, Boolean isPrivate) {
+        SQLiteDatabase db = mInstance.getWritableDatabase();
+
+        ContentValues values = new ContentValues();
+        if(workspaceName != null)
+            values.put(WorkspaceEntry.COLUMN_WORKSPACE_NAME, workspaceName);
+        if(quotaValue != null)
+            values.put(WorkspaceEntry.COLUMN_WORKSPACE_QUOTA, quotaValue.longValue());
+        if(isPrivate != null)
+            values.put(WorkspaceEntry.COLUMN_WORKSPACE_IS_PRIVATE, isPrivate.booleanValue());
+
+        db.update(WorkspaceEntry.TABLE_NAME, values, WorkspaceEntry._ID + "=" + workspaceId, null);
+
+        db.close();
+    }
+
 }
