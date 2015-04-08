@@ -232,11 +232,11 @@ public class AirDeskActivity extends ActionBarActivity
     }
 
     @Override
-    public void updateWorkspaceList() {
+    public void updateWorkspaceList(Workspace workspace) {
         WorkspacesFragment workspaceFrag = (WorkspacesFragment) getSupportFragmentManager().findFragmentById(R.id.container);
 
         if (workspaceFrag != null)
-            workspaceFrag.updateWorkspaceList();
+            workspaceFrag.addWorkspace(workspace);
     }
 
     /**

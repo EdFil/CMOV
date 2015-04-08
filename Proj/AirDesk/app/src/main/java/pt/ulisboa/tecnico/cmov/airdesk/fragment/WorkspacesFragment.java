@@ -95,7 +95,7 @@ public class WorkspacesFragment extends Fragment {
     public void onStart() {
         super.onStart();
         ((AirDeskActivity) getActivity()).updateActionBarTitle();
-        updateWorkspaceList();
+        mWorkspaceListAdapter.notifyDataSetChanged();
     }
 
     // This will be invoked when an item in the listView is long pressed
@@ -142,7 +142,8 @@ public class WorkspacesFragment extends Fragment {
         ((AirDeskActivity) activity).onSectionAttached(1);
     }
 
-    public void updateWorkspaceList() {
+    public void addWorkspace(Workspace workspace) {
+        mWorkspaces.add(workspace);
         mWorkspaceListAdapter.notifyDataSetChanged();
     }
 

@@ -1,5 +1,6 @@
 package pt.ulisboa.tecnico.cmov.airdesk.fragment;
 
+import android.app.Activity;
 import android.app.DialogFragment;
 import android.content.Context;
 import android.content.SharedPreferences;
@@ -26,6 +27,7 @@ import pt.ulisboa.tecnico.cmov.airdesk.adapter.TagListAdapter;
 import pt.ulisboa.tecnico.cmov.airdesk.adapter.WorkspaceListAdapter;
 import pt.ulisboa.tecnico.cmov.airdesk.core.tag.Tag;
 import pt.ulisboa.tecnico.cmov.airdesk.core.user.User;
+import pt.ulisboa.tecnico.cmov.airdesk.core.workspace.Workspace;
 import pt.ulisboa.tecnico.cmov.airdesk.core.workspace.WorkspaceManager;
 import pt.ulisboa.tecnico.cmov.airdesk.core.workspace.exception.WorkspaceException;
 
@@ -44,7 +46,7 @@ public class NewWorkspaceFragment extends DialogFragment {
 
     // AirDeskActivity must implement this interface
     public interface OnNewWorkspaceFragmentListener {
-        public void updateWorkspaceList();
+        public void updateWorkspaceList(Workspace workspace);
     }
 
     public static NewWorkspaceFragment newInstance() {
@@ -159,8 +161,8 @@ public class NewWorkspaceFragment extends DialogFragment {
                     User owner = new User(pref.getString("user_email", null), pref.getString("user_nick", null));
 
                     // Create workspace with associated user (owner) in database
-                    WorkspaceManager.getInstance().addNewWorkspace(workspaceName, owner, (long)workspaceQuota, !privacySwitch.isChecked(), tags);
-
+                    Workspace workspace = WorkspaceManager.getInstance().addNewWorkspace(workspaceName, owner, (long)workspaceQuota, !privacySwitch.isChecked(), tags);
+                    mCallback.updateWorkspaceList(workspace);
                     Toast.makeText(view.getContext(), "Workspace created", Toast.LENGTH_SHORT).show();
 
                     // Close dialog fragment
@@ -172,5 +174,18 @@ public class NewWorkspaceFragment extends DialogFragment {
         });
 
         return view;
+    }
+
+    @Override
+    public void onAttach(Activity activity) {
+        super.onAttach(activity);
+
+        // This makes sure that the container activity has implemented
+        // the callback interface. If not, it throws an exception
+        try {
+            mCallback = (OnNewWorkspaceFragmentListener) activity;
+        } catch (ClassCastException e) {
+            throw new ClassCastException(activity.toString() + " must implement OnHeadlineSelectedListener");
+        }
     }
 }
