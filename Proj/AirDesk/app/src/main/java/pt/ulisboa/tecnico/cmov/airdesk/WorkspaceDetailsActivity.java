@@ -15,9 +15,6 @@ import pt.ulisboa.tecnico.cmov.airdesk.util.Constants;
 
 public class WorkspaceDetailsActivity extends ActionBarActivity {
 
-    private static final int NUM_COLUMNS_PER_ROW = 4;
-
-    public static final String WORKSPACE_INDEX_TAG = "worspace_index";
     public static final String EDIT_MODE = "view_mode";
 
     boolean mEditMode;
@@ -46,7 +43,6 @@ public class WorkspaceDetailsActivity extends ActionBarActivity {
             editDetailsFragment = WorkspacesDetailsEditFragment.newInstance();
             fragmentManager.beginTransaction().replace(R.id.details_container, editDetailsFragment).commit();
             editDetailsFragment.sendWorkspaceDetails(workspace);
-
         } else {
             detailsFragment = WorkspacesDetailsFragment.newInstance();
             fragmentManager.beginTransaction().replace(R.id.details_container, detailsFragment).commit();
