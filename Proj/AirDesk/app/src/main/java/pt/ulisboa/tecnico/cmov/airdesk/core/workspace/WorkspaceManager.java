@@ -15,6 +15,7 @@ import pt.ulisboa.tecnico.cmov.airdesk.core.user.User;
 import pt.ulisboa.tecnico.cmov.airdesk.core.user.UserManager;
 import pt.ulisboa.tecnico.cmov.airdesk.core.workspace.exception.WorkspaceAlreadyExistsException;
 import pt.ulisboa.tecnico.cmov.airdesk.core.workspace.exception.WorkspaceNameIsEmptyException;
+import pt.ulisboa.tecnico.cmov.airdesk.database.AirDeskContract;
 import pt.ulisboa.tecnico.cmov.airdesk.database.AirDeskDbHelper;
 import pt.ulisboa.tecnico.cmov.airdesk.util.FileManager;
 
@@ -77,6 +78,10 @@ public class WorkspaceManager {
         mWorkspaces.remove(workspaceIndex);
     }
 
+    public void deleteWorkspace(Workspace workspace){
+        mWorkspaces.remove(workspace);
+    }
+
     public List<File> getFilesFromWorkspace(Workspace workspace) {
         return workspace.getFiles();
     }
@@ -123,6 +128,18 @@ public class WorkspaceManager {
         AirDeskDbHelper.getInstance(getContext()).removeTagFromWorkspace(workspace.getDatabaseId(), tag.getText());
     }
 
+    public void updateWorkspace(Workspace workspace, String workspaceName, Long quotaValue, Boolean isPrivate){
+        if(workspaceName != null) {
+            workspace.setName(workspaceName);
+            FileManager.renameFolder(getContext(), workspace.getName(), workspaceName);
+        }
+        if(quotaValue != null)
+            workspace.setQuota(quotaValue.longValue());
+        if(isPrivate != null)
+            workspace.setIsPrivate(isPrivate.booleanValue());
+        AirDeskDbHelper.getInstance(getContext()).updateWorkspace(workspace.getDatabaseId(), workspaceName, quotaValue, isPrivate);
+    }
+
     public Context getContext() {
         return mContext;
     }
@@ -130,21 +147,6 @@ public class WorkspaceManager {
     public long getSpaceAvailableInternalStorage() {
         return FileManager.getAvailableSpace(mContext);
     }
-
-
-    // TODO : não devia estar no fragmento dos workspaces?
-//    public void reloadWorkspaces() {
-//
-//        for(Workspace workspace : db.getAllLocalWorkspaceInfo()) {
-//            mWorkspaceListAdapter.add(workspace);
-//        }
-////        mWorkspaceListAdapter.sort(new Comparator<Workspace>() {
-////            @Override
-////            public int compare(Workspace lhs, Workspace rhs) {
-////                return lhs.getName().compareToIgnoreCase(rhs.getName());
-////            }
-////        });
-//    }
 
     public List<Workspace> getWorkspacesFromDB() {
         AirDeskDbHelper db = AirDeskDbHelper.getInstance(getContext());

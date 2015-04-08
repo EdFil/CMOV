@@ -9,6 +9,8 @@ import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
 
+import pt.ulisboa.tecnico.cmov.airdesk.core.workspace.Workspace;
+
 /**
  * Created by edgar on 22-03-2015.
  */
@@ -81,5 +83,17 @@ public class FileManager {
         long blockSize = stat.getBlockSize();
         long availableBlocks = stat.getAvailableBlocks();
         return availableBlocks * blockSize;
+    }
+
+    public static void renameFolder(Context context, String folderName, String newFolderName) {
+        File rootFolder = context.getDir(WORKSPACES_FOLDER_NAME, Context.MODE_PRIVATE);
+        File folder = new File(rootFolder, folderName); //Getting a folder within the dir
+        folder.renameTo(new File(rootFolder, newFolderName));
+    }
+
+    public static void renameFile(Context context, String folderName, String fileName, String newFileName) {
+        File rootFolder = context.getDir(WORKSPACES_FOLDER_NAME, Context.MODE_PRIVATE);
+        File file = new File(rootFolder + "/" + folderName, fileName); //Getting a folder within the dir
+        file.renameTo(new File(rootFolder + "/" + folderName, newFileName));
     }
 }

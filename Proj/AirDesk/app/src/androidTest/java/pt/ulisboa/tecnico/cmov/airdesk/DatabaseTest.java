@@ -13,6 +13,7 @@ import pt.ulisboa.tecnico.cmov.airdesk.core.user.UserManager;
 import pt.ulisboa.tecnico.cmov.airdesk.core.workspace.Workspace;
 import pt.ulisboa.tecnico.cmov.airdesk.core.workspace.WorkspaceManager;
 import pt.ulisboa.tecnico.cmov.airdesk.database.AirDeskDbHelper;
+import pt.ulisboa.tecnico.cmov.airdesk.util.FileManager;
 
 ;
 
@@ -36,20 +37,20 @@ public class DatabaseTest extends AndroidTestCase {
     public void testCustom(){
         AirDeskDbHelper dbHelper = AirDeskDbHelper.getInstance(mContext);
 
-        User owner = UserManager.getInstance().createUser("edgar@email.com", "Edgar");
-        User bruno = UserManager.getInstance().createUser("bruno@email.com", "Bruno");
-        User stevens = UserManager.getInstance().createUser("stevens@email.com", "Stevens");
-        UserManager.getInstance().setOwner(owner);
-
-        Workspace workspace = WorkspaceManager.getInstance().addNewWorkspace("Workspace", owner, 1024, true, new ArrayList<Tag>());
-        File file = WorkspaceManager.getInstance().addFileToWorkspace("New File", workspace);
-        Tag tag = WorkspaceManager.getInstance().addTagToWorkspace("New Tag", workspace);
-        User user = WorkspaceManager.getInstance().addUserToWorkspace(bruno, workspace);
-        WorkspaceManager.getInstance().removeFileFromWorkspace(file, workspace);
-        WorkspaceManager.getInstance().removeTagFromWorkspace(tag, workspace);
-        WorkspaceManager.getInstance().removeUserFromWorkspace(user, workspace);
-        WorkspaceManager.getInstance().deleteWorkspace(workspace);
-
+//        User owner = UserManager.getInstance().createUser("edgar@email.com", "Edgar");
+//        User bruno = UserManager.getInstance().createUser("bruno@email.com", "Bruno");
+//        User stevens = UserManager.getInstance().createUser("stevens@email.com", "Stevens");
+//        UserManager.getInstance().setOwner(owner);
+//
+//        Workspace workspace = WorkspaceManager.getInstance().addNewWorkspace("Workspace", owner, 1024, true, new ArrayList<Tag>());
+//        File file = WorkspaceManager.getInstance().addFileToWorkspace("New File", workspace);
+//        Tag tag = WorkspaceManager.getInstance().addTagToWorkspace("New Tag", workspace);
+//        User user = WorkspaceManager.getInstance().addUserToWorkspace(bruno, workspace);
+//        WorkspaceManager.getInstance().removeFileFromWorkspace(file, workspace);
+//        WorkspaceManager.getInstance().removeTagFromWorkspace(tag, workspace);
+//        WorkspaceManager.getInstance().removeUserFromWorkspace(user, workspace);
+//        WorkspaceManager.getInstance().updateWorkspace(workspace, "Updated Name", 120120120l, false);
+//        WorkspaceManager.getInstance().deleteAllWorkspaces();
 
 //        long edgarID = dbHelper.insertUser("edgar@email.com", "Edgar");
 //        long stevensID = dbHelper.insertUser("stevens@email.com", "Stevens");
