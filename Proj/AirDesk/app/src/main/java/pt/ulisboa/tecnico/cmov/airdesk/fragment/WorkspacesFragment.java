@@ -71,7 +71,7 @@ public class WorkspacesFragment extends Fragment {
                 filesFragment.setArguments(bundle);
 
                 transaction.replace(R.id.container, filesFragment);
-//                transaction.addToBackStack(null);
+                transaction.addToBackStack(null);
 
                 // Commit the transaction
                 transaction.commit();
@@ -94,10 +94,10 @@ public class WorkspacesFragment extends Fragment {
     }
 
     @Override
-    public void onStart() {
-        super.onStart();
+    public void onResume() {
+        super.onResume();
         ((AirDeskActivity) getActivity()).updateActionBarTitle();
-        mWorkspaceListAdapter.notifyDataSetChanged();
+        updateWorkspaceList();
     }
 
     // This will be invoked when an item in the listView is long pressed
@@ -112,7 +112,6 @@ public class WorkspacesFragment extends Fragment {
     public boolean onContextItemSelected(MenuItem item) {
 
         AdapterView.AdapterContextMenuInfo info = (AdapterView.AdapterContextMenuInfo) item.getMenuInfo();
-        Workspace workspaceSelected = mWorkspaces.get(info.position);
 
         // TODO : UPDATE OF THE WORKSPACE LIST ON DETAILS ACTIVITY RESULT
         Intent intent;
@@ -131,7 +130,7 @@ public class WorkspacesFragment extends Fragment {
                 break;
             case R.id.menu_my_delete:
                 WorkspaceManager.getInstance().deleteWorkspace(info.position);
-                mWorkspaceListAdapter.notifyDataSetChanged();
+                updateWorkspaceList();
                 break;
             case R.id.menu_my_invite:
                 Toast.makeText(getActivity(), "TODO Invite", Toast.LENGTH_SHORT).show();
@@ -148,11 +147,15 @@ public class WorkspacesFragment extends Fragment {
 
     public void addWorkspace(Workspace workspace) {
         mWorkspaces.add(workspace);
-        mWorkspaceListAdapter.notifyDataSetChanged();
+        updateWorkspaceList();
     }
 
     public void deleteAllWorkspaces() {
         manager.deleteAllWorkspaces();
+        updateWorkspaceList();
+    }
+
+    public void updateWorkspaceList() {
         mWorkspaceListAdapter.notifyDataSetChanged();
     }
 }

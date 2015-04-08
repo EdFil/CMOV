@@ -36,7 +36,6 @@ public class AirDeskActivity extends ActionBarActivity
 
     public static final String TAG = AirDeskActivity.class.getSimpleName();
 
-    private static final int WS_DETAILS_REQUEST = 1;
     // Fragment managing the behaviors, interactions and presentation of the navigation drawer.
     private NavigationDrawerFragment mNavigationDrawerFragment;
 
@@ -52,16 +51,9 @@ public class AirDeskActivity extends ActionBarActivity
         setNavigationDrawer();
     }
 
-    @Override
-    protected void onStart() {
-        super.onStart();
-        //refreshList();
-    }
-
     public void updateActionBarTitle() {
         getSupportActionBar().setTitle(mTitle);
     }
-
 
     private void setNavigationDrawer() {
         // Adding of the header to the drawer list
@@ -101,11 +93,6 @@ public class AirDeskActivity extends ActionBarActivity
         }
     }
 
-    public void refreshList(){
-//        WorkspaceManager.getInstance().reloadWorkspaces();
-    }
-
-
     @Override
     public void onNavigationDrawerItemSelected(int position) {
             // update the main content by replacing fragments
@@ -130,9 +117,6 @@ public class AirDeskActivity extends ActionBarActivity
                 Intent intent = new Intent(getApplicationContext(), LoginActivity.class);
                 intent.putExtra(Constants.LOG_OUT_MESSAGE, true);
                 startActivityForResult(intent, Constants.LOGIN_REQUEST);
-
-
-
             default:
                 fragmentManager.beginTransaction().replace(R.id.container, PlaceholderFragment.newInstance(position)).commit();
         }
@@ -166,7 +150,6 @@ public class AirDeskActivity extends ActionBarActivity
         actionBar.setTitle(mTitle);
     }
 
-
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         if (!mNavigationDrawerFragment.isDrawerOpen()) {
@@ -187,7 +170,8 @@ public class AirDeskActivity extends ActionBarActivity
         // as you specify a parent activity in AndroidManifest.xml.
 
         if (item.getItemId() == R.id.refresh) {
-            refreshList();
+            WorkspacesFragment frag = (WorkspacesFragment) getSupportFragmentManager().findFragmentById(R.id.container);
+            frag.updateWorkspaceList();
             return true;
         }
 
