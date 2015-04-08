@@ -27,6 +27,7 @@ public class WorkspaceManager {
     public static final String TAG = WorkspaceManager.class.getSimpleName();
 
     private static WorkspaceManager mInstance;
+    List<Workspace> workspaces;
 
     public static synchronized WorkspaceManager getInstance() {
         return mInstance;
@@ -145,7 +146,7 @@ public class WorkspaceManager {
 
     public List<Workspace> getWorkspaces() {
         AirDeskDbHelper db = AirDeskDbHelper.getInstance(getContext());
-        List<Workspace> workspaces = db.getAllLocalWorkspaceInfo(UserManager.getInstance().getOwner().getDatabaseId());
+        workspaces = db.getAllLocalWorkspaceInfo(UserManager.getInstance().getOwner().getDatabaseId());
         return workspaces;
     }
 

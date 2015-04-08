@@ -42,7 +42,7 @@ public class WorkspacesEditDetailsFragment extends Fragment {
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-        WorkspaceListAdapter workspaceListAdapter = (WorkspaceListAdapter) WorkspaceManager.getInstance().getWorkspaceListAdapter();
+//        WorkspaceListAdapter workspaceListAdapter = (WorkspaceListAdapter) WorkspaceManager.getInstance().getWorkspaceListAdapter();
 
         final View workspaceFragmentView = inflater.inflate(R.layout.fragment_workspace_details_edit, container, false);
 
