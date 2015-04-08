@@ -1,6 +1,7 @@
 package pt.ulisboa.tecnico.cmov.airdesk.fragment;
 
 import android.app.Activity;
+import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
@@ -16,6 +17,8 @@ import android.widget.Button;
 import android.widget.ListView;
 import android.widget.Toast;
 
+import java.util.List;
+
 import pt.ulisboa.tecnico.cmov.airdesk.AirDeskActivity;
 import pt.ulisboa.tecnico.cmov.airdesk.R;
 import pt.ulisboa.tecnico.cmov.airdesk.WorkspaceDetailsActivity;
@@ -25,6 +28,14 @@ import pt.ulisboa.tecnico.cmov.airdesk.core.workspace.WorkspaceManager;
 
 public class WorkspacesFragment extends Fragment {
 
+//    Context context = getActivity().getApplicationContext();
+    public static final String TAG = WorkspacesFragment.class.getSimpleName();
+
+    WorkspaceManager manager;
+
+    private List<Workspace> mWorkspaces;
+    WorkspaceListAdapter mWorkspaceListAdapter;
+
     public WorkspacesFragment() {}
 
     public static WorkspacesFragment newInstance() {
@@ -33,12 +44,19 @@ public class WorkspacesFragment extends Fragment {
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-        WorkspaceListAdapter workspaceListAdapter = (WorkspaceListAdapter) WorkspaceManager.getInstance().getWorkspaceListAdapter();
+        Context context = container.getContext();
+        View workspaceFragmentView = inflater.inflate(R.layout.fragment_workspaces, container, false);
 
-        final View workspaceFragmentView = inflater.inflate(R.layout.fragment_workspaces, container, false);
+        // Get manager
+        manager = WorkspaceManager.getInstance();
+
+        mWorkspaces = manager.getWorkspaces();
+        mWorkspaceListAdapter = new WorkspaceListAdapter(context, mWorkspaces);
 
         ListView listView = (ListView) workspaceFragmentView.findViewById(R.id.myWorkspacesList);
-        listView.setAdapter(workspaceListAdapter);
+        listView.setAdapter(mWorkspaceListAdapter);
+
+        // When selecting a workspace replaces this fragment for the FilesFragment
         listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
@@ -52,26 +70,33 @@ public class WorkspacesFragment extends Fragment {
                 filesFragment.setArguments(bundle);
 
                 transaction.replace(R.id.container, filesFragment);
-                transaction.addToBackStack(null);
+//                transaction.addToBackStack(null);
 
                 // Commit the transaction
                 transaction.commit();
             }
         });
 
+        // Register the list of Files for the ContextMenu
         registerForContextMenu(listView);
 
         // Setup create new workspace button
-        Button createNewWorkspaceButton = (Button) workspaceFragmentView.findViewById(R.id.newButton);
-        createNewWorkspaceButton.setOnClickListener(new View.OnClickListener() {
+        Button newWorkspaceButton = (Button) workspaceFragmentView.findViewById(R.id.newWorkspaceButton);
+        newWorkspaceButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View buttonView) {
-                NewWorkspaceFragment.newInstance().show(getActivity().getFragmentManager(), "Create Workspace");
+                NewWorkspaceFragment.newInstance().show(getActivity().getFragmentManager(), "New Workspace");
             }
         });
 
-
         return workspaceFragmentView;
+    }
+
+    @Override
+    public void onStart() {
+        super.onStart();
+        ((AirDeskActivity) getActivity()).updateActionBarTitle();
+        mWorkspaceListAdapter.notifyDataSetChanged();
     }
 
     // This will be invoked when an item in the listView is long pressed
@@ -86,24 +111,25 @@ public class WorkspacesFragment extends Fragment {
     public boolean onContextItemSelected(MenuItem item) {
 
         AdapterView.AdapterContextMenuInfo info = (AdapterView.AdapterContextMenuInfo) item.getMenuInfo();
+        Workspace workspaceSelected = mWorkspaces.get(info.position);
 
+        // TODO : UPDATE OF THE WORKSPACE LIST ON DETAILS ACTIVITY RESULT
         Intent intent;
         switch(item.getItemId()){
             case R.id.menu_my_edit:
                 intent = new Intent(getActivity(), WorkspaceDetailsActivity.class);
                 intent.putExtra(WorkspaceDetailsActivity.EDIT_MODE, true);
-                intent.putExtra(WorkspaceDetailsActivity.WORKSPACE_INDEX_TAG, info.position);
+                intent.putExtra("workspaceSelected", workspaceSelected);
                 getActivity().startActivity(intent);
                 break;
             case R.id.menu_my_details:
                 intent = new Intent(getActivity(), WorkspaceDetailsActivity.class);
                 intent.putExtra(WorkspaceDetailsActivity.EDIT_MODE, false);
-                intent.putExtra(WorkspaceDetailsActivity.WORKSPACE_INDEX_TAG, info.position);
+                intent.putExtra("workspaceSelected", workspaceSelected);
                 getActivity().startActivity(intent);
                 break;
             case R.id.menu_my_delete:
-                Workspace selectedWorkspace = (Workspace)((ListView)info.targetView.getParent()).getAdapter().getItem(info.position);
-                WorkspaceManager.getInstance().deleteWorkspace(selectedWorkspace);
+                WorkspaceManager.getInstance().deleteWorkspace(workspaceSelected);
                 break;
             case R.id.menu_my_invite:
                 Toast.makeText(getActivity(), "TODO Invite", Toast.LENGTH_SHORT).show();
@@ -116,5 +142,14 @@ public class WorkspacesFragment extends Fragment {
     public void onAttach(Activity activity) {
         super.onAttach(activity);
         ((AirDeskActivity) activity).onSectionAttached(1);
+    }
+
+    public void addWorkspace(Workspace workspace) {
+        mWorkspaces.add(workspace);
+        mWorkspaceListAdapter.notifyDataSetChanged();
+    }
+
+    public void deleteAllWorkspaces() {
+        manager.deleteAllWorkspaces(mWorkspaces);
     }
 }

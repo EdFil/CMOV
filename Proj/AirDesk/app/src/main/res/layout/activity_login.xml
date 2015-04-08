@@ -1,45 +1,55 @@
-<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:tools="http://schemas.android.com/tools" android:layout_width="match_parent"
-    android:layout_height="match_parent" android:paddingLeft="@dimen/activity_horizontal_margin"
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:layout_gravity="center"
+    android:orientation="vertical"
+    android:paddingBottom="@dimen/activity_vertical_margin"
+    android:paddingLeft="@dimen/activity_horizontal_margin"
     android:paddingRight="@dimen/activity_horizontal_margin"
     android:paddingTop="@dimen/activity_vertical_margin"
-    android:paddingBottom="@dimen/activity_vertical_margin"
     tools:context="pt.ulisboa.tecnico.cmov.airdesk.LoginActivity">
 
-    <EditText
-        android:layout_width="fill_parent"
-        android:layout_height="wrap_content"
-        android:inputType="textEmailAddress"
-        android:ems="10"
-        android:id="@+id/nick"
-        android:hint="Insert your Nickname"
-        android:layout_above="@+id/email"
-        android:layout_alignParentRight="true"
-        android:layout_alignParentEnd="true" />
-
-
-    <EditText
-        android:layout_width="fill_parent"
-        android:layout_height="wrap_content"
-        android:inputType="textEmailAddress"
-        android:ems="10"
+    <AutoCompleteTextView
         android:id="@+id/email"
-        android:hint="Insert your Email"
-        android:layout_centerVertical="true"
-        android:layout_alignParentRight="true"
-        android:layout_alignParentEnd="true" />
-
-
-
-    <Button
-        android:layout_width="wrap_content"
+        android:layout_width="fill_parent"
         android:layout_height="wrap_content"
-        android:text="Login"
-        android:id="@+id/login"
-        android:onClick="onLoginCLicked"
-        android:layout_below="@+id/email"
-        android:layout_alignRight="@+id/email"
-        android:layout_alignEnd="@+id/email"
-        android:layout_marginTop="36dp" />
+        android:ems="10"
+        android:hint="Insert your Email"
+        android:inputType="textEmailAddress" />
 
-</RelativeLayout>
+    <EditText
+        android:id="@+id/nick"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:ems="10"
+        android:hint="Insert your Nickname"
+        android:inputType="textPersonName" />
+
+
+    <RelativeLayout
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content">
+
+        <Button
+            android:id="@+id/login"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:onClick="onLoginCLicked"
+            android:layout_alignParentRight="true"
+            android:text="Login" />
+
+        <CheckBox
+            android:id="@+id/rememberMe"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Remember me"
+            android:button="@null"
+            android:layout_centerVertical="true"
+            android:drawableRight="?android:attr/listChoiceIndicatorSingle"/>
+
+        </RelativeLayout>
+
+
+
+</LinearLayout>

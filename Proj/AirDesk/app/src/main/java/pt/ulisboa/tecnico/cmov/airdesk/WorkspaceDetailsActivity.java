@@ -46,10 +46,25 @@ public class WorkspaceDetailsActivity extends ActionBarActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_workspace_details_wfragments);
 
-        int workspaceIndex = getIntent().getIntExtra(WORKSPACE_INDEX_TAG, -1);
         mEditMode = getIntent().getBooleanExtra(EDIT_MODE, false);
 
-        Workspace workspace = WorkspaceManager.getInstance().getWorkspaceAtIndex(workspaceIndex);
+
+        Workspace workspace = getIntent().getParcelableExtra("workspaceSelected");
+
+
+
+//        long bytesUsed = 0;
+//        for(File file : workspace.getFiles())
+//            bytesUsed += file.length();
+//
+//        mQuotaInformationText.setText("Used " + bytesUsed + " out of " + workspace.getQuota());
+//        mPrivacyInformationText.setText(workspace.isPrivate() ? "True" : "False");
+//
+//        for(Tag tag : workspace.getTags())
+//            addTagToTable(tag.getText());
+//
+//        for(User user : workspace.getUsers())
+//            addUserToTable(user.getEmail());
     }
 
     @Override

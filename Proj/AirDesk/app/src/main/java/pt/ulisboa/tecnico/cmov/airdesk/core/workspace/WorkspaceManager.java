@@ -2,17 +2,13 @@ package pt.ulisboa.tecnico.cmov.airdesk.core.workspace;
 
 import android.content.Context;
 import android.database.sqlite.SQLiteConstraintException;
-import android.widget.ListAdapter;
 
 import java.io.File;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Collection;
-import java.util.Comparator;
 import java.util.List;
 
-import pt.ulisboa.tecnico.cmov.airdesk.adapter.FileListAdapter;
-import pt.ulisboa.tecnico.cmov.airdesk.adapter.WorkspaceListAdapter;
 import pt.ulisboa.tecnico.cmov.airdesk.core.file.exception.FileAlreadyExistsException;
 import pt.ulisboa.tecnico.cmov.airdesk.core.tag.Tag;
 import pt.ulisboa.tecnico.cmov.airdesk.core.user.User;
@@ -28,6 +24,7 @@ public class WorkspaceManager {
     // ------------------------
 
     public static final String TAG = WorkspaceManager.class.getSimpleName();
+
     private static WorkspaceManager mInstance;
 
     public static synchronized WorkspaceManager getInstance() {
@@ -43,105 +40,83 @@ public class WorkspaceManager {
     // ------------------------
 
     private Context mContext = null;
-    private WorkspaceListAdapter mWorkspaceListAdapter;
-    private FileListAdapter mFileListAdapter;
-
-    public FileListAdapter getFileListAdapter() {
-        return mFileListAdapter;
-    }
-
-    public void setFileListAdapter(FileListAdapter fileListAdapter) {
-        mFileListAdapter = fileListAdapter;
-    }
-
-    public void updateFileList() {
-        mFileListAdapter.notifyDataSetChanged();
-    }
-
-
-
+    SimpleDateFormat mDateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
 
     protected WorkspaceManager(Context context){
         mContext = context;
-        mWorkspaceListAdapter = new WorkspaceListAdapter(getContext(), new ArrayList<Workspace>());
-        mFileListAdapter = new FileListAdapter(getContext(), new ArrayList<File>());
     }
 
     public Workspace addNewWorkspace(String name, User owner, long quota, boolean isPrivate, Collection<Tag> tags) {
         if(name.isEmpty())
             throw new WorkspaceNameIsEmptyException();
-
-        if(!FileManager.isWorkspaceNameAvailable(getContext(), name))
+        if(AirDeskDbHelper.getInstance(getContext()).isWorkspaceNameAvailable(name, owner.getEmail()))
             throw new WorkspaceAlreadyExistsException();
+
+        long workspaceId = AirDeskDbHelper.getInstance(getContext()).insertWorkspace(name, owner.getDatabaseId(), quota, isPrivate);
+        FileManager.createFolder(getContext(), name);
+        for(Tag tag : tags) {
+            AirDeskDbHelper.getInstance(getContext()).addTagToWorkspace(workspaceId, tag.getText());
+        }
+        AirDeskDbHelper.getInstance(getContext()).addUserToWorkspace(workspaceId, owner.getDatabaseId());
 
         ArrayList<File> files = new ArrayList<>();
         ArrayList<User> users = new ArrayList<>();
         users.add(owner);
 
-        Workspace newWorkspace = new Workspace(name, owner, quota, isPrivate, tags, users, files, this);
-        FileManager.createFolder(getContext(), name);
-        AirDeskDbHelper.getInstance(getContext()).insertWorkspace(newWorkspace);
-        AirDeskDbHelper.getInstance(getContext()).addTagsToWorkspace(newWorkspace, newWorkspace.getTags());
-        AirDeskDbHelper.getInstance(getContext()).addUsersToWorkspace(newWorkspace, newWorkspace.getUsers());
+        LocalWorkspace newWorkspace = new LocalWorkspace(workspaceId, name, owner, quota, isPrivate, tags, users, files, this);
 
-        mWorkspaceListAdapter.add(newWorkspace);
         return newWorkspace;
     }
 
     public void deleteWorkspace(Workspace workspace){
-        AirDeskDbHelper.getInstance(getContext()).deleteWorkspace(workspace);
+        AirDeskDbHelper.getInstance(getContext()).deleteWorkspace(workspace.getDatabaseId());
         FileManager.deleteFolder(getContext(), workspace.getName());
-        mWorkspaceListAdapter.remove(workspace);
     }
 
     public List<File> getFilesFromWorkspace(Workspace workspace) {
         return workspace.getFiles();
     }
 
-    public void addFileToWorkspace(String fileName, Workspace workspace) {
-        // Create folder in internal storage
+    public File addFileToWorkspace(String fileName, Workspace workspace) {
         try {
             File file = FileManager.createFile(getContext(), workspace.getName(), fileName);
-            AirDeskDbHelper.getInstance(getContext()).addFilesToWorkspace(workspace, Arrays.asList(new File[]{file}));
+            AirDeskDbHelper.getInstance(getContext()).addFileToWorkspace(workspace.getDatabaseId(), file.getPath(), mDateFormat.format(file.lastModified()));
             workspace.addFile(file);
-            return;
+            return file;
         } catch (SQLiteConstraintException e) {
             throw new FileAlreadyExistsException(fileName);
         }
     }
 
     public void removeFileFromWorkspace(File file, Workspace workspace) {
-        workspace.removeFile(file);
         FileManager.deleteFile(getContext(), workspace.getName(), file.getName());
-        AirDeskDbHelper.getInstance(getContext()).removeFileFromWorkspace(workspace, file);
+        AirDeskDbHelper.getInstance(getContext()).removeFileFromWorkspace(workspace.getDatabaseId(), file.getPath());
+        workspace.removeFile(file);
     }
 
-    public void addUserToWorkspace(String userEmail, String userNick, Workspace workspace) {
+    public User addUserToWorkspace(User user, Workspace workspace) {
         // Create folder in internal storage
-        User user = new User(userEmail, userNick);
-        workspace.addUser(new User(userEmail, userNick));
-        AirDeskDbHelper.getInstance(getContext()).addUsersToWorkspace(workspace, Arrays.asList(new User[] { user }));
+        AirDeskDbHelper.getInstance(getContext()).addUserToWorkspace(workspace.getDatabaseId(), user.getDatabaseId());
+        workspace.addUser(user);
+        return user;
     }
 
     public void removeUserFromWorkspace(User user, Workspace workspace) {
+        AirDeskDbHelper.getInstance(getContext()).removeUserFromWorkspace(workspace.getDatabaseId(), user.getDatabaseId());
         workspace.removeUser(user);
-        AirDeskDbHelper.getInstance(getContext()).removeUserFromWorkspace(workspace, user);
     }
 
-    public void addTagToWorkspace(String tagName, Workspace workspace) {
+    public Tag addTagToWorkspace(String tagName, Workspace workspace) {
         // Create folder in internal storage
         Tag tag = new Tag(tagName);
         workspace.addTag(tag);
-        AirDeskDbHelper.getInstance(getContext()).addTagsToWorkspace(workspace, Arrays.asList(new Tag[] { tag }));
+        AirDeskDbHelper.getInstance(getContext()).addTagToWorkspace(workspace.getDatabaseId(), tagName);
+        return tag;
     }
 
     public void removeTagFromWorkspace(Tag tag, Workspace workspace) {
         workspace.removeTag(tag);
-        AirDeskDbHelper.getInstance(getContext()).removeTagFromWorkspace(workspace, tag);
-    }
-
-    public void loadExistingWorkspace(String name, User owner, long quota, boolean isPrivate, Collection<Tag> tags, Collection<User> users, Collection<File> files) {
-        mWorkspaceListAdapter.add(new Workspace(name, owner, quota, isPrivate, tags, users, files, this));
+        AirDeskDbHelper.getInstance(getContext()).removeTagFromWorkspace(workspace.getDatabaseId(), tag.getText());
     }
 
     public Context getContext() {
@@ -152,35 +127,33 @@ public class WorkspaceManager {
         return FileManager.getAvailableSpace(mContext);
     }
 
-    public ListAdapter getWorkspaceListAdapter() {
-        return mWorkspaceListAdapter;
-    }
-
 
     // TODO : não devia estar no fragmento dos workspaces?
-    public void reloadWorkspaces() {
+//    public void reloadWorkspaces() {
+//
+//        for(Workspace workspace : db.getAllLocalWorkspaceInfo()) {
+//            mWorkspaceListAdapter.add(workspace);
+//        }
+////        mWorkspaceListAdapter.sort(new Comparator<Workspace>() {
+////            @Override
+////            public int compare(Workspace lhs, Workspace rhs) {
+////                return lhs.getName().compareToIgnoreCase(rhs.getName());
+////            }
+////        });
+//    }
+
+    public List<Workspace> getWorkspaces() {
         AirDeskDbHelper db = AirDeskDbHelper.getInstance(getContext());
-        mWorkspaceListAdapter.clear();
-        for(Workspace workspace : db.getAllLocalWorkspaceInfo()) {
-            mWorkspaceListAdapter.add(workspace);
-        }
-        mWorkspaceListAdapter.sort(new Comparator<Workspace>() {
-            @Override
-            public int compare(Workspace lhs, Workspace rhs) {
-                return lhs.getName().compareToIgnoreCase(rhs.getName());
-            }
-        });
+        List<Workspace> workspaces = db.getAllLocalWorkspaceInfo();
+        return workspaces;
     }
 
-
-
-    public void deleteAllWorkspaces() {
-        int i = mWorkspaceListAdapter.getCount() - 1;
-        while(i >= 0)
-            deleteWorkspace(mWorkspaceListAdapter.getItem(i--));
+    public void deleteAllWorkspaces(List<Workspace> workspaces) {
+        for(Workspace w : workspaces)
+            deleteWorkspace(w);
     }
 
-    public Workspace getWorkspaceAtIndex(int workspaceIndex) {
-        return mWorkspaceListAdapter.getItem(workspaceIndex);
-    }
+//    public Workspace getWorkspaceAtIndex(int workspaceIndex) {
+//        return mWorkspaceListAdapter.getItem(workspaceIndex);
+//    }
 }

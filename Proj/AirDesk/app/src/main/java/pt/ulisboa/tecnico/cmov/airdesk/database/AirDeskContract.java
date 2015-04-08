@@ -14,7 +14,7 @@ public class AirDeskContract {
         // Name of the workspace
         public static final String COLUMN_WORKSPACE_NAME = "workspace_name";
         // Owner of the workspace
-        public static final String COLUMN_WORKSPACE_OWNER = "workspace_owner";
+        public static final String COLUMN_OWNER_KEY = "owner_key";
         // Amount of quota available
         public static final String COLUMN_WORKSPACE_QUOTA = "workspace_quota";
         // Is the workspace private?
@@ -23,41 +23,45 @@ public class AirDeskContract {
     }
 
     /* Inner class that defines the table contents of the location table */
-    public static final class FileEntry implements BaseColumns {
+    public static final class FilesEntry implements BaseColumns {
         // Table name
         public static final String TABLE_NAME = "file";
         // Foreign Key into the workspace table
-        public static final String COLUMN_WORKSPACE_KEY = "workspace_id";
+        public static final String COLUMN_WORKSPACE_KEY = "workspace_key";
         // Name of the file
-        public static final String COLUMN_FILE_NAME = "file_name";
-        // File size
-        public static final String COLUMN_FILE_SIZE = "file_size";
+        public static final String COLUMN_FILE_PATH = "file_path";
         // Last Edit Date
         public static final String COLUMN_FILE_LAST_EDIT = "file_last_edit";
-        // Last Access Date
-        public static final String COLUMN_FILE_LAST_ACCESS = "file_last_access";
     }
 
     /* Inner class that defines the table contents of the Tag table */
-    public static final class TagsEntry {
+    public static final class TagsEntry implements BaseColumns {
         // Table Name
         public static final String TABLE_NAME = "tag";
-        // Name of the foreign workspace
+        // Name of the tag
         public static final String COLUMN_WORKSPACE_KEY = "workspace_id";
         // Name of the tag
         public static final String COLUMN_TAG_NAME = "tag_name";
     }
 
     /* Inner class that defines the table contents of the User table */
-    public static final class UsersEntry {
+    public static final class UsersEntry implements BaseColumns {
         // Table Name
         public static final String TABLE_NAME = "user";
-        // Name of the foreign workspace
-        public static final String COLUMN_WORKSPACE_KEY = "workspace_id";
         // Unique email of the user
         public static final String COLUMN_USER_EMAIL = "user_email";
         // User nick name
         public static final String COLUMN_USER_NICK = "user_nick";
+    }
+
+    /* Inner class that defines the table contents of the User table */
+    public static final class UsersWorkspacesEntry {
+        // Table Name
+        public static final String TABLE_NAME = "user_workspace";
+        // Unique email of the user
+        public static final String COLUMN_WORKSPACE_KEY = "workspace_key";
+        // User nick name
+        public static final String COLUMN_USER_KEY = "user_key";
     }
 }
 

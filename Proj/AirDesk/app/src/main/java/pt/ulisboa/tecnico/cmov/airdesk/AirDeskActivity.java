@@ -20,14 +20,24 @@ import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import pt.ulisboa.tecnico.cmov.airdesk.core.workspace.Workspace;
 import pt.ulisboa.tecnico.cmov.airdesk.core.workspace.WorkspaceManager;
+import pt.ulisboa.tecnico.cmov.airdesk.fragment.FilesFragment;
+import pt.ulisboa.tecnico.cmov.airdesk.core.user.UserManager;
 import pt.ulisboa.tecnico.cmov.airdesk.fragment.NavigationDrawerFragment;
+import pt.ulisboa.tecnico.cmov.airdesk.fragment.NewFileFragment;
+import pt.ulisboa.tecnico.cmov.airdesk.fragment.NewWorkspaceFragment;
 import pt.ulisboa.tecnico.cmov.airdesk.fragment.WorkspacesFragment;
+import pt.ulisboa.tecnico.cmov.airdesk.util.Constants;
 
-public class AirDeskActivity extends ActionBarActivity implements NavigationDrawerFragment.NavigationDrawerCallbacks {
+public class AirDeskActivity extends ActionBarActivity
+        implements NavigationDrawerFragment.NavigationDrawerCallbacks,
+                   NewFileFragment.OnNewFileFragmentListener,
+                   NewWorkspaceFragment.OnNewWorkspaceFragmentListener {
 
     public static final String TAG = AirDeskActivity.class.getSimpleName();
 
+    private static final int WS_DETAILS_REQUEST = 1;
     // Fragment managing the behaviors, interactions and presentation of the navigation drawer.
     private NavigationDrawerFragment mNavigationDrawerFragment;
 
@@ -40,15 +50,19 @@ public class AirDeskActivity extends ActionBarActivity implements NavigationDraw
         setContentView(R.layout.activity_air_desk);
         // Init the manager of the workspaces so it has the context of the application
         WorkspaceManager.initWorkspaceManager(getApplicationContext());
-        checkUserLogin();
         setNavigationDrawer();
     }
 
     @Override
     protected void onStart() {
         super.onStart();
-        refreshList();
+        //refreshList();
     }
+
+    public void updateActionBarTitle() {
+        getSupportActionBar().setTitle(mTitle);
+    }
+
 
     private void setNavigationDrawer() {
         // Adding of the header to the drawer list
@@ -75,34 +89,21 @@ public class AirDeskActivity extends ActionBarActivity implements NavigationDraw
         email.setText(pref.getString("user_email", "Email"));
     }
 
-
-    // Check if user is logged in and acts upon it
-    private void checkUserLogin() {
-        // Ready the User
-        SharedPreferences pref = getSharedPreferences("UserPref", MODE_PRIVATE);
-        if(!pref.contains("user_email")){
-            Intent intent = new Intent(this, LoginActivity.class);
-            startActivityForResult(intent, LoginActivity.LOGIN_REQUEST);
-        }
-    }
-
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         // Check which request we're responding to
-        if (requestCode == LoginActivity.LOGIN_REQUEST) {
-            // Make sure the request was successful
-            if (resultCode == RESULT_OK) {
-                refreshNickEmailAfterLogin();
-            }
-            if (resultCode == RESULT_CANCELED) {
-                finish();
-                //checkUserLogin();
-            }
+        switch(requestCode) {
+            case Constants.LOGIN_REQUEST:
+                if (resultCode == RESULT_OK)
+                    refreshNickEmailAfterLogin();
+                else if (resultCode == RESULT_CANCELED)
+                    finish();
+                break;
         }
     }
 
     public void refreshList(){
-        WorkspaceManager.getInstance().reloadWorkspaces();
+//        WorkspaceManager.getInstance().reloadWorkspaces();
     }
 
 
@@ -125,6 +126,14 @@ public class AirDeskActivity extends ActionBarActivity implements NavigationDraw
             // Search Workspace
             case 3:
                 break;
+            case 5:
+                // Returns the result to the AirDeskActivity
+                Intent intent = new Intent(getApplicationContext(), LoginActivity.class);
+                intent.putExtra(Constants.LOG_OUT_MESSAGE, true);
+                startActivityForResult(intent, Constants.LOGIN_REQUEST);
+
+
+
             default:
                 fragmentManager.beginTransaction().replace(R.id.container, PlaceholderFragment.newInstance(position)).commit();
         }
@@ -189,7 +198,10 @@ public class AirDeskActivity extends ActionBarActivity implements NavigationDraw
                         .setMessage("Are you sure you want to delete all your workspaces?")
                         .setPositiveButton(android.R.string.yes, new DialogInterface.OnClickListener() {
                             public void onClick(DialogInterface dialog, int which) {
-                                WorkspaceManager.getInstance().deleteAllWorkspaces();
+                                WorkspacesFragment workspacesFrag = (WorkspacesFragment) getSupportFragmentManager().findFragmentById(R.id.container);
+
+                                if (workspacesFrag != null)
+                                    workspacesFrag.deleteAllWorkspaces();
                                 Toast.makeText(getBaseContext(), "DELETED", Toast.LENGTH_SHORT).show();
                             }
                         })
@@ -203,6 +215,26 @@ public class AirDeskActivity extends ActionBarActivity implements NavigationDraw
         }
 
         return super.onOptionsItemSelected(item);
+    }
+
+    //////////////////////////////////////////////////////////
+    // Methods dealing with FILE FRAGMENTS
+    //////////////////////////////////////////////////////////
+
+    @Override
+    public void updateFileList() {
+        FilesFragment filesFrag = (FilesFragment) getSupportFragmentManager().findFragmentById(R.id.container);
+
+        if (filesFrag != null)
+            filesFrag.updateFileList();
+    }
+
+    @Override
+    public void updateWorkspaceList(Workspace workspace) {
+        WorkspacesFragment workspaceFrag = (WorkspacesFragment) getSupportFragmentManager().findFragmentById(R.id.container);
+
+        if (workspaceFrag != null)
+            workspaceFrag.addWorkspace(workspace);
     }
 
     /**
@@ -232,15 +264,13 @@ public class AirDeskActivity extends ActionBarActivity implements NavigationDraw
 
         @Override
         public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-            View rootView = inflater.inflate(R.layout.fragment_workspaces, container, false);
-            return rootView;
+            return inflater.inflate(R.layout.fragment_workspaces, container, false);
         }
 
         @Override
         public void onAttach(Activity activity) {
             super.onAttach(activity);
-            ((AirDeskActivity) activity).onSectionAttached(
-                    getArguments().getInt(ARG_SECTION_NUMBER));
+            ((AirDeskActivity) activity).onSectionAttached(getArguments().getInt(ARG_SECTION_NUMBER));
         }
     }
 

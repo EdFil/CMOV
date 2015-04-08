@@ -50,12 +50,17 @@ public class FileActivity extends ActionBarActivity {
         Intent intent = getIntent();
         file = (File) intent.getSerializableExtra("textFile");
 
+        // Action bar back button e name
+        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+        getSupportActionBar().setTitle(file.getName());
+
         Toast.makeText(getApplicationContext(), "Filename : " + file.getName(), Toast.LENGTH_SHORT).show();
 
         String fileText = read();
         textToView.setText(fileText);
 
     }
+
 
     public void onClickEdit(View view) {
 
@@ -94,14 +99,16 @@ public class FileActivity extends ActionBarActivity {
         // Handle action bar item clicks here. The action bar will
         // automatically handle clicks on the Home/Up button, so long
         // as you specify a parent activity in AndroidManifest.xml.
-        int id = item.getItemId();
-
-        //noinspection SimplifiableIfStatement
-        if (id == R.id.action_settings) {
-            return true;
+        switch (item.getItemId()) {
+            case android.R.id.home:
+                // app icon in action bar clicked; goto parent activity.
+                this.finish();
+                return true;
+            case R.id.action_settings:
+                return true;
+            default:
+                return super.onOptionsItemSelected(item);
         }
-
-        return super.onOptionsItemSelected(item);
     }
 
     private void write() {

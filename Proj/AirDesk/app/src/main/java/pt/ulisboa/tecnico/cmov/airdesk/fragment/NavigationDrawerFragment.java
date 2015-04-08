@@ -27,6 +27,7 @@ import android.widget.Toast;
 
 import pt.ulisboa.tecnico.cmov.airdesk.LoginActivity;
 import pt.ulisboa.tecnico.cmov.airdesk.R;
+import pt.ulisboa.tecnico.cmov.airdesk.util.Constants;
 
 /**
  * Fragment used for managing interactions for and presentation of a navigation drawer.
@@ -207,21 +208,8 @@ public class NavigationDrawerFragment extends Fragment {
         if (mDrawerLayout != null && position != 0) {
             mDrawerLayout.closeDrawer(mFragmentContainerView);
         }
-        if (mCallbacks != null && position != 5) {
+        if (mCallbacks != null) {
             mCallbacks.onNavigationDrawerItemSelected(position);
-        }
-        if (mCallbacks != null && position == 5) {
-            // Put user on Cache.
-            SharedPreferences preferences = getActivity().getSharedPreferences("UserPref", Context.MODE_PRIVATE);
-            SharedPreferences.Editor editor = preferences.edit();
-            editor.remove("user_email").commit();
-            editor.remove("user_nick").commit();
-
-            // Returns the result to the AirDeskActivity
-            Intent intent = new Intent(getActivity(), LoginActivity.class);
-            getActivity().startActivityForResult(intent, LoginActivity.LOGIN_REQUEST);
-
-            mCurrentSelectedPosition = 1;
         }
     }
 

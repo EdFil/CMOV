@@ -15,8 +15,8 @@ import pt.ulisboa.tecnico.cmov.airdesk.util.FileManager;
  */
 public class LocalWorkspace extends Workspace {
 
-    public LocalWorkspace(Context context, String name, String owner, int quota, boolean isPrivate, Collection<Tag> tags, Collection<User> users, Collection<File> files, WorkspaceManager workspaceManager) {
-        super(name, new User(owner, ""), quota, isPrivate, tags, users, files, workspaceManager);
+    public LocalWorkspace(long workspaceId, String name, User owner, long quota, boolean isPrivate, Collection<Tag> tags, Collection<User> users, Collection<File> files, WorkspaceManager workspaceManager) {
+        super(workspaceId, name, owner, quota, isPrivate, tags, users, files, workspaceManager);
     }
 
 }
