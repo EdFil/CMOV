@@ -7,6 +7,7 @@ import java.util.Collection;
 import java.util.List;
 
 import pt.ulisboa.tecnico.cmov.airdesk.database.AirDeskDbHelper;
+import pt.ulisboa.tecnico.cmov.airdesk.util.FileManager;
 
 /**
  * Created by edgar on 08-04-2015.
@@ -70,7 +71,10 @@ public class UserManager {
     }
 
     public User getOwner() { return mOwner; }
-    public void setOwner(User owner) { mOwner = owner; }
+    public void setOwner(User owner) {
+        mOwner = owner;
+        FileManager.WORKSPACES_FOLDER_NAME = mOwner.getEmail().replace("@", "_").replace(".", "_") + "_workspace";
+    }
 
 
     public List<User> getUsers() { return mUserList; }

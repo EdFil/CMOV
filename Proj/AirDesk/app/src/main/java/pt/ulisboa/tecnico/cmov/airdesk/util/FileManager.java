@@ -16,7 +16,7 @@ public class FileManager {
 
     private static final String TAG = FileManager.class.getSimpleName();
     // Name used to internal storage folder for local workspaces
-    public static final String WORKSPACES_FOLDER_NAME = "workspaces";
+    public static String WORKSPACES_FOLDER_NAME = "default_workspace";
 
     public static boolean isWorkspaceNameAvailable(Context context, String workspaceName) {
         File rootFolder = context.getDir(WORKSPACES_FOLDER_NAME, Context.MODE_PRIVATE);
@@ -34,7 +34,7 @@ public class FileManager {
         return false;
     }
 
-    public static void deleteFolder(Context context, String folderName){
+    public static void deleteFolder(Context context, String folderName) {
         File rootFolder = context.getDir(WORKSPACES_FOLDER_NAME, Context.MODE_PRIVATE);
         deleteDir(new File(rootFolder.toString(), folderName));
     }

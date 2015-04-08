@@ -19,7 +19,8 @@ public class AirDeskContract {
         public static final String COLUMN_WORKSPACE_QUOTA = "workspace_quota";
         // Is the workspace private?
         public static final String COLUMN_WORKSPACE_IS_PRIVATE = "workspace_is_private";
-
+        // User that uses workspace
+        public static final String COLUMN_WORKSPACE_USER = "workspace_user";
     }
 
     /* Inner class that defines the table contents of the location table */
