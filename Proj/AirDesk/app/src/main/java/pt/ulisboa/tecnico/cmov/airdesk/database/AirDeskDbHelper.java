@@ -500,8 +500,8 @@ public class AirDeskDbHelper extends SQLiteOpenHelper {
         SQLiteDatabase db = mInstance.getReadableDatabase();
         final String MY_QUERY = "SELECT * FROM " + WorkspaceEntry.TABLE_NAME + " INNER JOIN " + UsersEntry.TABLE_NAME +
                 " ON " + WorkspaceEntry.TABLE_NAME + "." + WorkspaceEntry.COLUMN_OWNER_KEY + " = " + UsersEntry.TABLE_NAME + "." + TagsEntry._ID +
-                " WHERE " + WorkspaceEntry.TABLE_NAME + "." + WorkspaceEntry.COLUMN_WORKSPACE_NAME + " = " + workspaceName + " AND " +
-                UsersEntry.TABLE_NAME + "." + UsersEntry.COLUMN_USER_EMAIL + " = " + ownerEmail;
+                " WHERE " + WorkspaceEntry.TABLE_NAME + "." + WorkspaceEntry.COLUMN_WORKSPACE_NAME + " = '" + workspaceName + "' AND " +
+                UsersEntry.TABLE_NAME + "." + UsersEntry.COLUMN_USER_EMAIL + " = '" + ownerEmail + "'";
 
         Cursor cursor = db.rawQuery(MY_QUERY, null);
 

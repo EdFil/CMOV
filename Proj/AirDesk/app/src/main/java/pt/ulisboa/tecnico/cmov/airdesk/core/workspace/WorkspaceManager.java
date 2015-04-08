@@ -5,6 +5,7 @@ import android.database.sqlite.SQLiteConstraintException;
 import android.widget.ListAdapter;
 
 import java.io.File;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
@@ -45,6 +46,7 @@ public class WorkspaceManager {
 
     private Context mContext = null;
     private WorkspaceListAdapter mWorkspaceListAdapter;
+    SimpleDateFormat mDateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
 
     protected WorkspaceManager(Context context){
         mContext = context;
@@ -57,7 +59,7 @@ public class WorkspaceManager {
         if(AirDeskDbHelper.getInstance(getContext()).isWorkspaceNameAvailable(name, owner.getEmail()))
             throw new WorkspaceAlreadyExistsException();
 
-        long workspaceId = AirDeskDbHelper.getInstance(getContext()).insertWorkspace(name, 0, quota, isPrivate);
+        long workspaceId = AirDeskDbHelper.getInstance(getContext()).insertWorkspace(name, owner.getDatabaseId(), quota, isPrivate);
         FileManager.createFolder(getContext(), name);
         for(Tag tag : tags) {
             AirDeskDbHelper.getInstance(getContext()).addTagToWorkspace(workspaceId, tag.getText());
@@ -84,50 +86,50 @@ public class WorkspaceManager {
         return workspace.getFiles();
     }
 
-    public void addFileToWorkspace(String fileName, Workspace workspace) {
-        // Create folder in internal storage
+    public File addFileToWorkspace(String fileName, Workspace workspace) {
         try {
             File file = FileManager.createFile(getContext(), workspace.getName(), fileName);
-            AirDeskDbHelper.getInstance(getContext()).addFileToWorkspace(workspace.getDatabaseId(), file.getPath());
+            AirDeskDbHelper.getInstance(getContext()).addFileToWorkspace(workspace.getDatabaseId(), file.getPath(), mDateFormat.format(file.lastModified()));
             workspace.addFile(file);
-            return;
+            return file;
         } catch (SQLiteConstraintException e) {
             throw new FileAlreadyExistsException(fileName);
         }
     }
 
     public void removeFileFromWorkspace(File file, Workspace workspace) {
-        workspace.removeFile(file);
         FileManager.deleteFile(getContext(), workspace.getName(), file.getName());
-        AirDeskDbHelper.getInstance(getContext()).removeFileFromWorkspace(workspace.getDatabaseId(), file.getName());
+        AirDeskDbHelper.getInstance(getContext()).removeFileFromWorkspace(workspace.getDatabaseId(), file.getPath());
+        workspace.removeFile(file);
     }
 
-    public void addUserToWorkspace(String userEmail, String userNick, Workspace workspace) {
+    public User addUserToWorkspace(User user, Workspace workspace) {
         // Create folder in internal storage
-        User user = UserManager.getInstance().createUser(userEmail, userNick);
+        AirDeskDbHelper.getInstance(getContext()).addUserToWorkspace(workspace.getDatabaseId(), user.getDatabaseId());
         workspace.addUser(user);
-//        AirDeskDbHelper.getInstance(getContext()).addUsersToWorkspace(workspace, Arrays.asList(new User[] { user }));
+        return user;
     }
 
     public void removeUserFromWorkspace(User user, Workspace workspace) {
+        AirDeskDbHelper.getInstance(getContext()).removeUserFromWorkspace(workspace.getDatabaseId(), user.getDatabaseId());
         workspace.removeUser(user);
-        //AirDeskDbHelper.getInstance(getContext()).removeUserFromWorkspace(workspace.getDatabaseId(), user.get);
     }
 
-    public void addTagToWorkspace(String tagName, Workspace workspace) {
+    public Tag addTagToWorkspace(String tagName, Workspace workspace) {
         // Create folder in internal storage
         Tag tag = new Tag(tagName);
         workspace.addTag(tag);
-//        AirDeskDbHelper.getInstance(getContext()).addTagsToWorkspace(workspace, Arrays.asList(new Tag[] { tag }));
+        AirDeskDbHelper.getInstance(getContext()).addTagToWorkspace(workspace.getDatabaseId(), tagName);
+        return tag;
     }
 
     public void removeTagFromWorkspace(Tag tag, Workspace workspace) {
         workspace.removeTag(tag);
-        //TODO: AirDeskDbHelper.getInstance(getContext()).removeTagFromWorkspace(workspace, tag);
+        AirDeskDbHelper.getInstance(getContext()).removeTagFromWorkspace(workspace.getDatabaseId(), tag.getText());
     }
 
     public void loadExistingWorkspace(String name, User owner, long quota, boolean isPrivate, Collection<Tag> tags, Collection<User> users, Collection<File> files) {
-        mWorkspaceListAdapter.add(new Workspace(name, owner, quota, isPrivate, tags, users, files, this));
+//        mWorkspaceListAdapter.add(new Workspace(name, owner, quota, isPrivate, tags, users, files, this));
     }
 
     public Context getContext() {
