@@ -1,35 +1,18 @@
 package pt.ulisboa.tecnico.cmov.airdesk.fragment;
 
 import android.app.Activity;
-import android.content.Intent;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
-import android.support.v4.app.FragmentManager;
-import android.support.v4.app.FragmentTransaction;
-import android.view.ContextMenu;
 import android.view.LayoutInflater;
-import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.AdapterView;
-import android.widget.Button;
-import android.widget.ListView;
 import android.widget.TableLayout;
 import android.widget.TextView;
-import android.widget.Toast;
 
-import java.io.File;
-
-import pt.ulisboa.tecnico.cmov.airdesk.AirDeskActivity;
 import pt.ulisboa.tecnico.cmov.airdesk.R;
-import pt.ulisboa.tecnico.cmov.airdesk.WorkspaceDetailsActivity;
-import pt.ulisboa.tecnico.cmov.airdesk.adapter.WorkspaceListAdapter;
-import pt.ulisboa.tecnico.cmov.airdesk.core.tag.Tag;
-import pt.ulisboa.tecnico.cmov.airdesk.core.user.User;
 import pt.ulisboa.tecnico.cmov.airdesk.core.workspace.Workspace;
-import pt.ulisboa.tecnico.cmov.airdesk.core.workspace.WorkspaceManager;
 
-public class WorkspacesViewDetailsFragment extends Fragment {
+public class WorkspacesDetailsFragment extends Fragment {
 
     TextView mNameInformationText;
     TextView mOwnerInformationText;
@@ -39,10 +22,12 @@ public class WorkspacesViewDetailsFragment extends Fragment {
     TableLayout mTagsTableLayout;
     TableLayout mUsersTableLayout;
 
-    public WorkspacesViewDetailsFragment() {}
+    Workspace mWorkspace;
 
-    public static WorkspacesViewDetailsFragment newInstance() {
-        return new WorkspacesViewDetailsFragment();
+    public WorkspacesDetailsFragment() {}
+
+    public static WorkspacesDetailsFragment newInstance() {
+        return new WorkspacesDetailsFragment();
     }
 
     @Override
@@ -58,6 +43,11 @@ public class WorkspacesViewDetailsFragment extends Fragment {
         mTagsTableLayout.setStretchAllColumns(true);
         mUsersTableLayout = (TableLayout) workspaceFragmentView.findViewById(R.id.usersTableView);
         mUsersTableLayout.setStretchAllColumns(true);
+
+        mNameInformationText.setText(mWorkspace.getName());
+        mOwnerInformationText.setText(mWorkspace.getOwner().getNick());
+        mQuotaInformationText.setText(String.valueOf(mWorkspace.getQuota()));
+        mPrivacyInformationText.setText(mWorkspace.isPrivate()? "Private" : "Public");
 
         //mOwnerInformationText.setText(workspace.getOwner().getEmail());
 
@@ -82,5 +72,9 @@ public class WorkspacesViewDetailsFragment extends Fragment {
     @Override
     public void onAttach(Activity activity) {
         super.onAttach(activity);
+    }
+
+    public void sendWorkspaceDetails(Workspace workspace){
+        mWorkspace = workspace;
     }
 }

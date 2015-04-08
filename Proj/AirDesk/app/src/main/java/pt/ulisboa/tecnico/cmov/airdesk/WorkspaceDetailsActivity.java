@@ -1,34 +1,17 @@
 package pt.ulisboa.tecnico.cmov.airdesk;
 
-import android.app.ActionBar;
-import android.app.Activity;
-import android.content.ClipData;
+import android.content.Intent;
 import android.os.Bundle;
-import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
-import android.support.v4.app.FragmentTransaction;
 import android.support.v7.app.ActionBarActivity;
-import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
-import android.view.View;
-import android.view.ViewGroup;
-import android.widget.EditText;
-import android.widget.Switch;
-import android.widget.TableLayout;
-import android.widget.TableRow;
-import android.widget.TextView;
-import android.widget.ViewSwitcher;
 
-import java.io.File;
-
-import pt.ulisboa.tecnico.cmov.airdesk.core.tag.Tag;
-import pt.ulisboa.tecnico.cmov.airdesk.core.user.User;
 import pt.ulisboa.tecnico.cmov.airdesk.core.workspace.Workspace;
 import pt.ulisboa.tecnico.cmov.airdesk.core.workspace.WorkspaceManager;
-import pt.ulisboa.tecnico.cmov.airdesk.fragment.WorkspacesEditDetailsFragment;
-import pt.ulisboa.tecnico.cmov.airdesk.fragment.WorkspacesFragment;
-import pt.ulisboa.tecnico.cmov.airdesk.fragment.WorkspacesViewDetailsFragment;
+import pt.ulisboa.tecnico.cmov.airdesk.fragment.WorkspacesDetailsEditFragment;
+import pt.ulisboa.tecnico.cmov.airdesk.fragment.WorkspacesDetailsFragment;
+import pt.ulisboa.tecnico.cmov.airdesk.util.Constants;
 
 public class WorkspaceDetailsActivity extends ActionBarActivity {
 
@@ -39,6 +22,9 @@ public class WorkspaceDetailsActivity extends ActionBarActivity {
 
     boolean mEditMode;
     FragmentManager fragmentManager = getSupportFragmentManager();
+    Workspace workspace;
+    WorkspacesDetailsEditFragment editDetailsFragment;
+    WorkspacesDetailsFragment detailsFragment;
 
 
     @Override
@@ -46,18 +32,25 @@ public class WorkspaceDetailsActivity extends ActionBarActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_workspace_details_wfragments);
 
-        mEditMode = getIntent().getBooleanExtra(EDIT_MODE, false);
+        Intent intent = getIntent();
+        mEditMode = intent.getBooleanExtra(EDIT_MODE, false);
 
-        Workspace workspace = getIntent().getParcelableExtra("workspaceSelected");
+        int workspaceIndex = intent.getIntExtra(Constants.WORKSPACE_INDEX, -1);
+        workspace = WorkspaceManager.getInstance().getWorkspaceAtIndex(workspaceIndex);
     }
 
     @Override
     protected void onStart() {
         super.onStart();
         if(mEditMode){
-            fragmentManager.beginTransaction().replace(R.id.details_container, WorkspacesEditDetailsFragment.newInstance()).commit();
+            editDetailsFragment = WorkspacesDetailsEditFragment.newInstance();
+            fragmentManager.beginTransaction().replace(R.id.details_container, editDetailsFragment).commit();
+            editDetailsFragment.sendWorkspaceDetails(workspace);
+
         } else {
-            fragmentManager.beginTransaction().replace(R.id.details_container, WorkspacesViewDetailsFragment.newInstance()).commit();
+            detailsFragment = WorkspacesDetailsFragment.newInstance();
+            fragmentManager.beginTransaction().replace(R.id.details_container, detailsFragment).commit();
+            detailsFragment.sendWorkspaceDetails(workspace);
         }
     }
 
@@ -122,10 +115,17 @@ public class WorkspaceDetailsActivity extends ActionBarActivity {
     private void updateView(MenuItem item){
         if(mEditMode){
             item.setIcon(android.R.drawable.ic_menu_info_details);
-            fragmentManager.beginTransaction().replace(R.id.details_container, WorkspacesEditDetailsFragment.newInstance()).commit();
+            editDetailsFragment = WorkspacesDetailsEditFragment.newInstance();
+            fragmentManager.beginTransaction().replace(R.id.details_container, editDetailsFragment).commit();
+            editDetailsFragment.sendWorkspaceDetails(workspace);
         } else {
             item.setIcon(android.R.drawable.ic_menu_edit);
-            fragmentManager.beginTransaction().replace(R.id.details_container, WorkspacesViewDetailsFragment.newInstance()).commit();
+
+            workspace = editDetailsFragment.getEditedWorkspace();
+
+            detailsFragment = WorkspacesDetailsFragment.newInstance();
+            fragmentManager.beginTransaction().replace(R.id.details_container, detailsFragment).commit();
+            detailsFragment.sendWorkspaceDetails(workspace);
         }
     }
 }

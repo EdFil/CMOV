@@ -3,28 +3,18 @@ package pt.ulisboa.tecnico.cmov.airdesk.fragment;
 import android.app.Activity;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
-import android.support.v4.app.FragmentManager;
-import android.support.v4.app.FragmentTransaction;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.AdapterView;
-import android.widget.Button;
 import android.widget.EditText;
-import android.widget.ListView;
 import android.widget.Switch;
 import android.widget.TableLayout;
-import android.widget.TextView;
 
-import pt.ulisboa.tecnico.cmov.airdesk.AirDeskActivity;
 import pt.ulisboa.tecnico.cmov.airdesk.R;
-import pt.ulisboa.tecnico.cmov.airdesk.adapter.WorkspaceListAdapter;
-import pt.ulisboa.tecnico.cmov.airdesk.core.tag.Tag;
 import pt.ulisboa.tecnico.cmov.airdesk.core.user.User;
 import pt.ulisboa.tecnico.cmov.airdesk.core.workspace.Workspace;
-import pt.ulisboa.tecnico.cmov.airdesk.core.workspace.WorkspaceManager;
 
-public class WorkspacesEditDetailsFragment extends Fragment {
+public class WorkspacesDetailsEditFragment extends Fragment {
 
     EditText mNameInformationEdit;
     EditText mOwnerInformationEdit;
@@ -34,10 +24,12 @@ public class WorkspacesEditDetailsFragment extends Fragment {
     TableLayout mTagsTableLayout;
     TableLayout mUsersTableLayout;
 
-    public WorkspacesEditDetailsFragment() {}
+    Workspace mWorkspace;
 
-    public static WorkspacesEditDetailsFragment newInstance() {
-        return new WorkspacesEditDetailsFragment();
+    public WorkspacesDetailsEditFragment() {}
+
+    public static WorkspacesDetailsEditFragment newInstance() {
+        return new WorkspacesDetailsEditFragment();
     }
 
     @Override
@@ -54,6 +46,11 @@ public class WorkspacesEditDetailsFragment extends Fragment {
         mUsersTableLayout = (TableLayout) workspaceFragmentView.findViewById(R.id.usersTable);
         mUsersTableLayout.setStretchAllColumns(true);
 
+        mNameInformationEdit.setText(mWorkspace.getName());
+        mOwnerInformationEdit.setText(mWorkspace.getOwner().getNick());
+        mQuotaInformationEdit.setText(String.valueOf(mWorkspace.getQuota()));
+        mPrivacyInformationSwitch.setChecked(!mWorkspace.isPrivate());
+
 //        for(Tag tag : workspace.getTags())
 //            addTagToTable(tag.getText());
 //
@@ -68,5 +65,16 @@ public class WorkspacesEditDetailsFragment extends Fragment {
     @Override
     public void onAttach(Activity activity) {
         super.onAttach(activity);
+    }
+
+    public void sendWorkspaceDetails(Workspace workspace){
+        mWorkspace = workspace;
+    }
+
+    public Workspace getEditedWorkspace() {
+        mWorkspace.setName(mNameInformationEdit.getText().toString());
+        mWorkspace.setQuota(Long.parseLong(mQuotaInformationEdit.getText().toString().trim()));
+        mWorkspace.setIsPrivate(!mPrivacyInformationSwitch.isChecked());
+        return mWorkspace;
     }
 }
