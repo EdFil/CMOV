@@ -55,7 +55,7 @@ public class FilesFragment extends Fragment {
         // Request the MANAGER for the FILES (and its ADAPTER) of the WORKSPACE
         mFiles = manager.getFilesFromWorkspace(mWorkspace);
         mFileListAdapter = new FileListAdapter(container.getContext(), mFiles);
-        manager.setFileListAdapter(mFileListAdapter);
+//        manager.setFileListAdapter(mFileListAdapter);
 
 
         ListView listView = (ListView) fileFragmentView.findViewById(R.id.filesList);

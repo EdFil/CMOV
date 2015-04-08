@@ -26,6 +26,7 @@ import pt.ulisboa.tecnico.cmov.airdesk.adapter.TagListAdapter;
 import pt.ulisboa.tecnico.cmov.airdesk.adapter.WorkspaceListAdapter;
 import pt.ulisboa.tecnico.cmov.airdesk.core.tag.Tag;
 import pt.ulisboa.tecnico.cmov.airdesk.core.user.User;
+import pt.ulisboa.tecnico.cmov.airdesk.core.user.UserManager;
 import pt.ulisboa.tecnico.cmov.airdesk.core.workspace.WorkspaceManager;
 import pt.ulisboa.tecnico.cmov.airdesk.core.workspace.exception.WorkspaceException;
 
@@ -151,12 +152,8 @@ public class NewWorkspaceFragment extends DialogFragment {
                     tags.add(new Tag(((TextView)(tagList.getChildAt(i)).findViewById(R.id.tagName)).getText().toString()));
 
                 try {
-                    // Get user account where the workspace is going to be inserted to
-                    SharedPreferences pref = v.getContext().getSharedPreferences("UserPref", Context.MODE_PRIVATE);
-                    User owner = new User(pref.getString("user_email", null), pref.getString("user_nick", null));
-
                     // Create workspace with associated user (owner) in database
-                    WorkspaceManager.getInstance().addNewWorkspace(workspaceName, owner, (long)workspaceQuota, !privacySwitch.isChecked(), tags);
+                    WorkspaceManager.getInstance().addNewWorkspace(workspaceName, UserManager.getInstance().getOwner(), (long)workspaceQuota, !privacySwitch.isChecked(), tags);
                     Toast.makeText(view.getContext(), "Workspace created", Toast.LENGTH_SHORT).show();
 
                     // Close dialog fragment

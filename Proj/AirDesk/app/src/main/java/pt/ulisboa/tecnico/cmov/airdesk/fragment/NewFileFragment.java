@@ -79,7 +79,7 @@ public class NewFileFragment extends DialogFragment {
         super.onDetach();
 
         // Update the list of files
-        WorkspaceManager.getInstance().updateFileList();
+//        WorkspaceManager.getInstance().updateFileList();
 
     }
 }
