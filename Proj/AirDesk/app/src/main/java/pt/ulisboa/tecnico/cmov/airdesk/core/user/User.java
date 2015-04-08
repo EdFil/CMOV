@@ -12,16 +12,19 @@ import pt.ulisboa.tecnico.cmov.airdesk.core.workspace.LocalWorkspace;
 
 public class User implements Parcelable {
 
+    private long mDatabaseId;
     private String mEmail;
     private String mNick;
 
-    public User(String email, String nick){
+    public User(long databaseId, String email, String nick){
+        mDatabaseId = databaseId;
         mEmail = email;
         mNick = nick;
     }
 
     public String getEmail() { return mEmail; }
     public String getNick() { return mNick; }
+    public long getDatabaseId() { return mDatabaseId; }
 
     @Override
     public boolean equals(Object o) {

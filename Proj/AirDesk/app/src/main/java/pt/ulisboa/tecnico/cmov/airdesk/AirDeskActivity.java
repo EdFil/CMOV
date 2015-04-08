@@ -17,13 +17,13 @@ import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ListView;
-import android.widget.Switch;
 import android.widget.TextView;
 import android.widget.Toast;
 
 import pt.ulisboa.tecnico.cmov.airdesk.core.workspace.Workspace;
 import pt.ulisboa.tecnico.cmov.airdesk.core.workspace.WorkspaceManager;
 import pt.ulisboa.tecnico.cmov.airdesk.fragment.FilesFragment;
+import pt.ulisboa.tecnico.cmov.airdesk.core.user.UserManager;
 import pt.ulisboa.tecnico.cmov.airdesk.fragment.NavigationDrawerFragment;
 import pt.ulisboa.tecnico.cmov.airdesk.fragment.NewFileFragment;
 import pt.ulisboa.tecnico.cmov.airdesk.fragment.NewWorkspaceFragment;
@@ -50,7 +50,6 @@ public class AirDeskActivity extends ActionBarActivity
         setContentView(R.layout.activity_air_desk);
         // Init the manager of the workspaces so it has the context of the application
         WorkspaceManager.initWorkspaceManager(getApplicationContext());
-        checkUserLogin();
         setNavigationDrawer();
     }
 
@@ -90,17 +89,6 @@ public class AirDeskActivity extends ActionBarActivity
         email.setText(pref.getString("user_email", "Email"));
     }
 
-
-    // Check if user is logged in and acts upon it
-    private void checkUserLogin() {
-        // Ready the User
-        SharedPreferences pref = getSharedPreferences("UserPref", MODE_PRIVATE);
-        if(!pref.contains("user_email")){
-            Intent intent = new Intent(this, LoginActivity.class);
-            startActivityForResult(intent, Constants.LOGIN_REQUEST);
-        }
-    }
-
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         // Check which request we're responding to
@@ -138,6 +126,14 @@ public class AirDeskActivity extends ActionBarActivity
             // Search Workspace
             case 3:
                 break;
+            case 5:
+                // Returns the result to the AirDeskActivity
+                Intent intent = new Intent(getApplicationContext(), LoginActivity.class);
+                intent.putExtra(Constants.LOG_OUT_MESSAGE, true);
+                startActivityForResult(intent, Constants.LOGIN_REQUEST);
+
+
+
             default:
                 fragmentManager.beginTransaction().replace(R.id.container, PlaceholderFragment.newInstance(position)).commit();
         }

@@ -2,6 +2,7 @@ package pt.ulisboa.tecnico.cmov.airdesk.core.workspace;
 
 import android.os.Parcel;
 import android.os.Parcelable;
+import android.util.Log;
 
 import java.io.File;
 import java.util.ArrayList;
@@ -19,6 +20,7 @@ import pt.ulisboa.tecnico.cmov.airdesk.core.workspace.exception.WorkspaceRemoveO
 
 public class Workspace implements Parcelable {
 
+    private static final String TAG = Workspace.class.getSimpleName();
     private String mName;
     private User mOwner;
     private long mQuota;
@@ -29,7 +31,8 @@ public class Workspace implements Parcelable {
     private List<File> mFiles;
     private WorkspaceManager mWorkspaceManager;
 
-    public Workspace(String name, User owner, long quota, boolean isPrivate, Collection<Tag> tags, Collection<User> users, Collection<File> files, WorkspaceManager workspaceManager){
+    public Workspace(long workspaceId, String name, User owner, long quota, boolean isPrivate, Collection<Tag> tags, Collection<User> users, Collection<File> files, WorkspaceManager workspaceManager){
+        setDatabaseId(workspaceId);
         setWorkspaceManager(workspaceManager);
         setName(name);
         setOwner(owner);
@@ -56,7 +59,6 @@ public class Workspace implements Parcelable {
             throw new NullPointerException("Workspace cannot be null");
         if(name.isEmpty())
             throw new WorkspaceNameIsEmptyException();
-        // TODO: Check if name already exists
         mName = name;
     }
 
@@ -67,6 +69,7 @@ public class Workspace implements Parcelable {
     }
 
     public void setQuota(long quota) throws WorkspaceNegativeQuotaException{
+        //TODO: Check when setting a quota bellow the used space
         if(quota < 0)
             throw new WorkspaceNegativeQuotaException();
         if(quota == 0)
@@ -87,7 +90,7 @@ public class Workspace implements Parcelable {
 
     public void setTags(Collection<Tag> tags) {
         if(!isPrivate() && tags.isEmpty())
-            throw new WorkspacePublicNoTagsException();
+            Log.i(TAG, "Tags is empty in a public workspace");
         mTags = new ArrayList<Tag>(tags);
         for(Tag tag : mTags){
             tag.setWorkspace(this);
