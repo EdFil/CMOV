@@ -48,23 +48,7 @@ public class WorkspaceDetailsActivity extends ActionBarActivity {
 
         mEditMode = getIntent().getBooleanExtra(EDIT_MODE, false);
 
-
         Workspace workspace = getIntent().getParcelableExtra("workspaceSelected");
-
-
-
-//        long bytesUsed = 0;
-//        for(File file : workspace.getFiles())
-//            bytesUsed += file.length();
-//
-//        mQuotaInformationText.setText("Used " + bytesUsed + " out of " + workspace.getQuota());
-//        mPrivacyInformationText.setText(workspace.isPrivate() ? "True" : "False");
-//
-//        for(Tag tag : workspace.getTags())
-//            addTagToTable(tag.getText());
-//
-//        for(User user : workspace.getUsers())
-//            addUserToTable(user.getEmail());
     }
 
     @Override
