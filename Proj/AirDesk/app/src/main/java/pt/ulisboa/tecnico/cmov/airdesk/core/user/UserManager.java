@@ -3,6 +3,8 @@ package pt.ulisboa.tecnico.cmov.airdesk.core.user;
 import android.content.Context;
 
 import java.util.ArrayList;
+import java.util.Collection;
+import java.util.List;
 
 import pt.ulisboa.tecnico.cmov.airdesk.database.AirDeskDbHelper;
 
@@ -31,12 +33,12 @@ public class UserManager {
     // ------------------------
 
     private Context mContext = null;
-    private ArrayList<User> mUserList;
+    private List<User> mUserList;
     private User mOwner;
 
     protected UserManager(Context context){
         mContext = context;
-        mUserList = new ArrayList<>();
+        mUserList = new ArrayList<>(AirDeskDbHelper.getInstance(context).getAllUsers());
     }
 
     public Context getContext() { return mContext; }
@@ -60,7 +62,17 @@ public class UserManager {
         return null;
     }
 
+    public User getUserByEmail(String storedEmail) {
+        for(User user : mUserList)
+            if(user.getEmail().equals(storedEmail))
+                return user;
+        return null;
+    }
+
     public User getOwner() { return mOwner; }
     public void setOwner(User owner) { mOwner = owner; }
+
+
+    public List<User> getUsers() { return mUserList; }
 
 }

@@ -2,6 +2,7 @@ package pt.ulisboa.tecnico.cmov.airdesk;
 
 import android.app.Activity;
 import android.app.AlertDialog;
+import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
@@ -20,7 +21,9 @@ import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import pt.ulisboa.tecnico.cmov.airdesk.core.user.UserManager;
 import pt.ulisboa.tecnico.cmov.airdesk.core.workspace.WorkspaceManager;
+import pt.ulisboa.tecnico.cmov.airdesk.database.AirDeskDbHelper;
 import pt.ulisboa.tecnico.cmov.airdesk.fragment.NavigationDrawerFragment;
 import pt.ulisboa.tecnico.cmov.airdesk.fragment.WorkspacesFragment;
 
@@ -40,7 +43,7 @@ public class AirDeskActivity extends ActionBarActivity implements NavigationDraw
         setContentView(R.layout.activity_air_desk);
         // Init the manager of the workspaces so it has the context of the application
         WorkspaceManager.initWorkspaceManager(getApplicationContext());
-        checkUserLogin();
+        UserManager.initUserManager(getApplicationContext());
         setNavigationDrawer();
     }
 
@@ -78,17 +81,6 @@ public class AirDeskActivity extends ActionBarActivity implements NavigationDraw
         TextView email = (TextView) findViewById(R.id.email);
         nick.setText(pref.getString("user_nick", "Nickname"));
         email.setText(pref.getString("user_email", "Email"));
-    }
-
-
-    // Check if user is logged in and acts upon it
-    private void checkUserLogin() {
-        // Ready the User
-        SharedPreferences pref = getSharedPreferences("UserPref", MODE_PRIVATE);
-        if(!pref.contains("user_email")){
-            Intent intent = new Intent(this, LoginActivity.class);
-            startActivityForResult(intent, LoginActivity.LOGIN_REQUEST);
-        }
     }
 
     @Override
@@ -129,6 +121,14 @@ public class AirDeskActivity extends ActionBarActivity implements NavigationDraw
             // Search Workspace
             case 3:
                 break;
+            case 5:
+                // Returns the result to the AirDeskActivity
+                Intent intent = new Intent(getApplicationContext(), LoginActivity.class);
+                intent.putExtra(LoginActivity.LOG_OUT, true);
+                startActivityForResult(intent, LoginActivity.LOGIN_REQUEST);
+
+
+
             default:
                 fragmentManager.beginTransaction().replace(R.id.container, PlaceholderFragment.newInstance(position)).commit();
         }

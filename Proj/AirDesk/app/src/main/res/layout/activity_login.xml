@@ -27,13 +27,29 @@
         android:inputType="textPersonName" />
 
 
-    <Button
-        android:id="@+id/login"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_gravity="end"
-        android:onClick="onLoginCLicked"
-        android:text="Login" />
+    <RelativeLayout
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content">
+
+        <Button
+            android:id="@+id/login"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:onClick="onLoginCLicked"
+            android:layout_alignParentRight="true"
+            android:text="Login" />
+
+        <CheckBox
+            android:id="@+id/rememberMe"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Remember me"
+            android:button="@null"
+            android:layout_centerVertical="true"
+            android:drawableRight="?android:attr/listChoiceIndicatorSingle"/>
+
+        </RelativeLayout>
+
 
 
 </LinearLayout>

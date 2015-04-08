@@ -222,6 +222,26 @@ public class AirDeskDbHelper extends SQLiteOpenHelper {
         return tags;
     }
 
+    public Collection<User> getAllUsers() {
+        SQLiteDatabase db = mInstance.getReadableDatabase();
+        ArrayList<User> users = new ArrayList<>();
+
+        Cursor cursor = db.rawQuery("SELECT * FROM " + UsersEntry.TABLE_NAME, null);
+
+        int columnIdIndex = cursor.getColumnIndex(UsersEntry._ID);
+        int columnEmailIndex = cursor.getColumnIndex(UsersEntry.COLUMN_USER_EMAIL);
+        int columnNickIndex = cursor.getColumnIndex(UsersEntry.COLUMN_USER_NICK);
+
+        while(cursor.moveToNext()){
+            users.add(new User(cursor.getLong(columnIdIndex), cursor.getString(columnEmailIndex), cursor.getString(columnNickIndex)));
+        }
+
+        cursor.close();
+        db.close();
+
+        return users;
+    }
+
     public Collection<User> getWorkspaceUsers(long workspaceId){
         SQLiteDatabase db = mInstance.getReadableDatabase();
         ArrayList<User> users = new ArrayList<>();
@@ -507,4 +527,5 @@ public class AirDeskDbHelper extends SQLiteOpenHelper {
 
         return cursor.moveToFirst();
     }
+
 }
