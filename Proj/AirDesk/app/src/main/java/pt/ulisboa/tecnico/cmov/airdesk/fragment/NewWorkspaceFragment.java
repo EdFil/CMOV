@@ -114,7 +114,7 @@ public class NewWorkspaceFragment extends DialogFragment {
                     view.findViewById(R.id.removeTagButton).setOnClickListener(new View.OnClickListener() {
                         @Override
                         public void onClick(View v) {
-                            mTagListLayout.removeView((PredicateLayout)v.getParent());
+                            mTagListLayout.removeView((LinearLayout)v.getParent());
                         }
                     });
                     tagString.getText().clear();
@@ -133,7 +133,7 @@ public class NewWorkspaceFragment extends DialogFragment {
                 ArrayList<Tag> tags = new ArrayList<>();
 
                 for(int i = 0; i < mTagListLayout.getChildCount(); i++)
-                    tags.add(new Tag(((TextView) (mTagListLayout.getChildAt(0)).findViewById(R.id.tagName)).getText().toString()));
+                    tags.add(new Tag(((TextView)((LinearLayout)mTagListLayout.getChildAt(i)).getChildAt(0)).getText().toString()));
 
                 try {
                     // Create workspace with associated user (owner) in database

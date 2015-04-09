@@ -1,0 +1,38 @@
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+
+    tools:context=".AirDeskActivity$WorkspacesFragment" >
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:gravity="bottom">
+
+        <EditText
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_weight="4"/>
+
+        <ImageButton
+            android:id="@+id/newWorkspaceButton"
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_weight="1"
+            android:layout_gravity="center"
+            android:adjustViewBounds="true"
+            android:scaleType="centerInside"
+            android:background="@android:drawable/ic_menu_search"
+            />
+
+        </LinearLayout>
+
+    <ListView
+        android:id="@+id/workspaceList"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"></ListView>
+
+
+</LinearLayout>

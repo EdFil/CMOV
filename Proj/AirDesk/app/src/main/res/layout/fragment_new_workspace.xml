@@ -87,7 +87,8 @@
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
-                    android:hint="New tag"/>
+                    android:hint="New tag"
+                    android:maxLength="10"/>
 
                 <Button
                     android:id="@+id/addTagButton"
