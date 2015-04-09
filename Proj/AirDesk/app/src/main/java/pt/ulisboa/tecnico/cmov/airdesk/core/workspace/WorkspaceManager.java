@@ -51,9 +51,16 @@ public class WorkspaceManager {
         mForeignWorkspaces = new ArrayList<>();
     }
 
-    public void refreshWorkspaceList(){
-        mLocalWorkspaces = getLocalWorkspacesFromDB();
-        mForeignWorkspaces = new ArrayList<>();
+    public void refreshWorkspaceLists(){
+        List<Workspace> workspaces = getWorkspacesFromDB();
+        mLocalWorkspaces.clear();
+        mForeignWorkspaces.clear();
+        for(Workspace workspace : workspaces) {
+            if(workspace instanceof LocalWorkspace)
+                mLocalWorkspaces.add((LocalWorkspace) workspace);
+            else
+                mForeignWorkspaces.add((ForeignWorkspace) workspace);
+        }
     }
 
     public Workspace addNewWorkspace(String name, User owner, long quota, boolean isPrivate, Collection<Tag> tags) {
@@ -157,10 +164,9 @@ public class WorkspaceManager {
         return FileManager.getAvailableSpace(mContext);
     }
 
-    public List<LocalWorkspace> getLocalWorkspacesFromDB() {
+    public List<Workspace> getWorkspacesFromDB() {
         AirDeskDbHelper db = AirDeskDbHelper.getInstance(getContext());
-        mLocalWorkspaces = db.getLocalWorkspaceInfo(UserManager.getInstance().getOwner().getDatabaseId());
-        return mLocalWorkspaces;
+        return db.getWorkspacesInfo(UserManager.getInstance().getOwner().getDatabaseId());
     }
 
 
