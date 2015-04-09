@@ -20,6 +20,7 @@ import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import pt.ulisboa.tecnico.cmov.airdesk.core.user.UserManager;
 import pt.ulisboa.tecnico.cmov.airdesk.core.workspace.Workspace;
 import pt.ulisboa.tecnico.cmov.airdesk.core.workspace.WorkspaceManager;
 import pt.ulisboa.tecnico.cmov.airdesk.fragment.FilesFragment;
@@ -76,8 +77,8 @@ public class AirDeskActivity extends ActionBarActivity
         SharedPreferences pref = getSharedPreferences("UserPref", MODE_PRIVATE);
         TextView nick = (TextView) findViewById(R.id.nick);
         TextView email = (TextView) findViewById(R.id.email);
-        nick.setText(pref.getString("user_nick", "Nickname"));
-        email.setText(pref.getString("user_email", "Email"));
+        nick.setText(UserManager.getInstance().getOwner().getNick());
+        email.setText(UserManager.getInstance().getOwner().getEmail());
     }
 
     @Override
@@ -110,7 +111,8 @@ public class AirDeskActivity extends ActionBarActivity
                 fragmentManager.beginTransaction().replace(R.id.container, WorkspacesFragment.newInstance()).commit();
                 break;
             // Search Workspace
-            case 3:
+            case 4:
+                startActivity(new Intent(getApplicationContext(), ManageAccountActivity.class));
                 break;
             case 5:
                 // Returns the result to the AirDeskActivity
@@ -213,11 +215,11 @@ public class AirDeskActivity extends ActionBarActivity
     }
 
     @Override
-    public void updateWorkspaceList(Workspace workspace) {
+    public void updateWorkspaceList() {
         WorkspacesFragment workspaceFrag = (WorkspacesFragment) getSupportFragmentManager().findFragmentById(R.id.container);
 
         if (workspaceFrag != null)
-            workspaceFrag.addWorkspace(workspace);
+            workspaceFrag.addWorkspace();
     }
 
     /**

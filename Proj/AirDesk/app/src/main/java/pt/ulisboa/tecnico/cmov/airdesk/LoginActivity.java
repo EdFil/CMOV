@@ -37,9 +37,9 @@ public class LoginActivity extends ActionBarActivity {
         UserManager.getInstance().initUserManager(getApplicationContext());
         mSharedPreferences = getSharedPreferences(Constants.SHARED_PREF_FILE, MODE_PRIVATE);
 
-        if(logout) {
+        if (logout) {
             mSharedPreferences.edit().remove(Constants.EMAIL_KEY).commit();
-        }else {
+        } else {
             String storedEmail = mSharedPreferences.getString(Constants.EMAIL_KEY, null);
             if (storedEmail != null) {
                 User user = UserManager.getInstance().getUserByEmail(storedEmail);
@@ -64,17 +64,20 @@ public class LoginActivity extends ActionBarActivity {
         mEmailView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                User user = (User)parent.getItemAtPosition(position);
+                User user = (User) parent.getItemAtPosition(position);
                 mEmailView.setText(user.getEmail());
                 mNickView.setText(user.getNick());
             }
         });
     }
 
-    public void onLoginCLicked(View view){
+    public void onLoginCLicked(View view) {
         // Verify that input is correct
-        if(mNickView.length() < 4 || !mEmailView.getText().toString().contains("@")) {
-            Toast.makeText(getApplicationContext(), "Invalid info", Toast.LENGTH_SHORT);
+        if (mNickView.length() < 4) {
+            Toast.makeText(getApplicationContext(), "Nick is too short, 4 chars minimum.", Toast.LENGTH_SHORT);
+            return;
+        }else if (!mEmailView.getText().toString().contains("@")) {
+            Toast.makeText(getApplicationContext(), "Invalid Email Address", Toast.LENGTH_SHORT);
             return;
         }
 
@@ -83,7 +86,7 @@ public class LoginActivity extends ActionBarActivity {
 
         SharedPreferences.Editor editor = mSharedPreferences.edit();
 
-        if(mRememberMe.isChecked()){
+        if (mRememberMe.isChecked()) {
             editor.putString(Constants.EMAIL_KEY, user.getEmail());
             editor.commit();
         } else {
@@ -96,6 +99,6 @@ public class LoginActivity extends ActionBarActivity {
     }
 
     public void onUserEmailClick(View view) {
-        ((AutoCompleteTextView)view).showDropDown();
+        ((AutoCompleteTextView) view).showDropDown();
     }
 }

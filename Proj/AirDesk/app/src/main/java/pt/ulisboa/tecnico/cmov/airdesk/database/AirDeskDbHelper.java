@@ -122,6 +122,16 @@ public class AirDeskDbHelper extends SQLiteOpenHelper {
         return rowId;
     }
 
+    public void deleteWorkspace(long workspaceId){
+        SQLiteDatabase db = mInstance.getWritableDatabase();
+        db.delete(TagsEntry.TABLE_NAME, TagsEntry.COLUMN_WORKSPACE_KEY + "='" + workspaceId + "'", null);
+        db.delete(UsersWorkspacesEntry.TABLE_NAME, UsersWorkspacesEntry.COLUMN_WORKSPACE_KEY + "='" + workspaceId + "'", null);
+        db.delete(FilesEntry.TABLE_NAME, FilesEntry.COLUMN_WORKSPACE_KEY + "='" + workspaceId + "'", null);
+        db.delete(WorkspaceEntry.TABLE_NAME, WorkspaceEntry._ID + "=" + workspaceId, null);
+        db.close();
+    }
+
+
     public long insertUser(String email, String nick) {
         SQLiteDatabase db = mInstance.getWritableDatabase();
         ContentValues values = new ContentValues();
@@ -132,6 +142,13 @@ public class AirDeskDbHelper extends SQLiteOpenHelper {
         db.close();
 
         return rowId;
+    }
+
+
+    public void deleteUser(long userId) {
+        SQLiteDatabase db = mInstance.getWritableDatabase();
+        db.delete(UsersEntry.TABLE_NAME, UsersEntry._ID + "=" + userId, null);
+        db.close();
     }
 
     public void addFileToWorkspace(long workspaceId, String filePath, String lastEdited) {
@@ -186,21 +203,6 @@ public class AirDeskDbHelper extends SQLiteOpenHelper {
         String whereClause = String.format("%s=? AND %s=?;", UsersWorkspacesEntry.COLUMN_WORKSPACE_KEY, UsersWorkspacesEntry.COLUMN_USER_KEY);
         String[] whereArgs = new String[] { String.valueOf(workspaceId), String.valueOf(userId) };
         db.delete(UsersWorkspacesEntry.TABLE_NAME, whereClause, whereArgs);
-        db.close();
-    }
-
-    public void deleteWorkspace(long workspaceId){
-        SQLiteDatabase db = mInstance.getWritableDatabase();
-        db.delete(TagsEntry.TABLE_NAME, TagsEntry.COLUMN_WORKSPACE_KEY + "='" + workspaceId + "'", null);
-        db.delete(UsersWorkspacesEntry.TABLE_NAME, UsersWorkspacesEntry.COLUMN_WORKSPACE_KEY + "='" + workspaceId + "'", null);
-        db.delete(FilesEntry.TABLE_NAME, FilesEntry.COLUMN_WORKSPACE_KEY + "='" + workspaceId + "'", null);
-
-        // Delete Workspace
-        String whereClause = AirDeskContract.WorkspaceEntry._ID + "=?";
-        String[] whereArgs = new String[]{ String.valueOf(workspaceId) };
-
-        db.delete(AirDeskContract.WorkspaceEntry.TABLE_NAME, whereClause, whereArgs);
-
         db.close();
     }
 

@@ -47,6 +47,7 @@ public class WorkspaceManager {
 
     protected WorkspaceManager(Context context){
         mContext = context;
+        mWorkspaces = new ArrayList<>();
     }
 
     public Workspace addNewWorkspace(String name, User owner, long quota, boolean isPrivate, Collection<Tag> tags) {
@@ -67,6 +68,7 @@ public class WorkspaceManager {
         users.add(owner);
 
         LocalWorkspace newWorkspace = new LocalWorkspace(workspaceId, name, owner, quota, isPrivate, tags, users, files, this);
+        mWorkspaces.add(newWorkspace);
 
         return newWorkspace;
     }
@@ -130,8 +132,9 @@ public class WorkspaceManager {
 
     public void updateWorkspace(Workspace workspace, String workspaceName, Long quotaValue, Boolean isPrivate){
         if(workspaceName != null) {
+            String oldName = workspace.getName();
             workspace.setName(workspaceName);
-            FileManager.renameFolder(getContext(), workspace.getName(), workspaceName);
+            FileManager.renameFolder(getContext(), oldName, workspaceName);
         }
         if(quotaValue != null)
             workspace.setQuota(quotaValue.longValue());
@@ -158,10 +161,11 @@ public class WorkspaceManager {
         return mWorkspaces;
     }
 
-    public void deleteAllWorkspaces() {
+    public void deleteAllUserWorkspaces() {
         int i = mWorkspaces.size() - 1;
-        while (i >= 0)
+        while (i >= 0) {
             deleteWorkspace(i--);
+        }
     }
 
     public Workspace getWorkspaceAtIndex(int workspaceIndex) {

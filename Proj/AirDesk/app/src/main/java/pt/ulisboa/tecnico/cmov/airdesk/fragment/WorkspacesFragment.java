@@ -145,13 +145,12 @@ public class WorkspacesFragment extends Fragment {
         ((AirDeskActivity) activity).onSectionAttached(1);
     }
 
-    public void addWorkspace(Workspace workspace) {
-        mWorkspaces.add(workspace);
+    public void addWorkspace() {
         updateWorkspaceList();
     }
 
     public void deleteAllWorkspaces() {
-        manager.deleteAllWorkspaces();
+        manager.deleteAllUserWorkspaces();
         updateWorkspaceList();
     }
 

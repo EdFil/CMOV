@@ -96,4 +96,8 @@ public class FileManager {
         File file = new File(rootFolder + "/" + folderName, fileName); //Getting a folder within the dir
         file.renameTo(new File(rootFolder + "/" + folderName, newFileName));
     }
+
+    public static void deleteRootFolder(Context context) {
+        deleteDir(context.getDir(WORKSPACES_FOLDER_NAME, Context.MODE_PRIVATE));
+    }
 }
