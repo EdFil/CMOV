@@ -27,28 +27,38 @@ import pt.ulisboa.tecnico.cmov.airdesk.util.Constants;
 
 public class ForeignWorkspacesFragment extends Fragment {
 
-//    Context context = getActivity().getApplicationContext();
+    /**
+     * The fragment argument representing the section number for this
+     * fragment.
+     */
+    private static final String ARG_SECTION_NUMBER = "section_number";
     public static final String TAG = ForeignWorkspacesFragment.class.getSimpleName();
 
     WorkspaceManager manager;
 
     WorkspaceListAdapter mWorkspaceListAdapter;
-    private boolean isLocalWorkspaceAdapter;
 
     public ForeignWorkspacesFragment() {}
 
-    public static ForeignWorkspacesFragment newInstance() {
-        return new ForeignWorkspacesFragment();
+    public static ForeignWorkspacesFragment newInstance(int sectionNumber) {
+        ForeignWorkspacesFragment fragment = new ForeignWorkspacesFragment();
+        Bundle args = new Bundle();
+        args.putInt(ARG_SECTION_NUMBER, sectionNumber);
+        fragment.setArguments(args);
+        return fragment;
+    }
+
+    @Override
+    public void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        manager = WorkspaceManager.getInstance();
+        manager.refreshWorkspaceLists();
+        mWorkspaceListAdapter = new WorkspaceListAdapter(getActivity(), WorkspaceManager.getInstance().getForeignWorkspaces());
     }
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-        Context context = container.getContext();
         View workspaceFragmentView = inflater.inflate(R.layout.fragment_workspaces, container, false);
-
-        WorkspaceManager.getInstance().refreshWorkspaceList();
-
-        mWorkspaceListAdapter = new WorkspaceListAdapter(context, WorkspaceManager.getInstance().getForeignWorkspaces());
 
 
         ListView listView = (ListView) workspaceFragmentView.findViewById(R.id.myWorkspacesList);
@@ -83,7 +93,7 @@ public class ForeignWorkspacesFragment extends Fragment {
         newWorkspaceButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View buttonView) {
-                NewWorkspaceFragment.newInstance().show(getActivity().getFragmentManager(), "New Workspace");
+                NewForeignWorkspaceFragment.newInstance().show(getActivity().getFragmentManager(), "New Workspace");
             }
         });
 
@@ -93,7 +103,7 @@ public class ForeignWorkspacesFragment extends Fragment {
     @Override
     public void onResume() {
         super.onResume();
-        ((AirDeskActivity) getActivity()).updateActionBarTitle();
+//        ((AirDeskActivity) getActivity()).updateActionBarTitle();
         updateWorkspaceList();
     }
 
@@ -139,7 +149,7 @@ public class ForeignWorkspacesFragment extends Fragment {
     @Override
     public void onAttach(Activity activity) {
         super.onAttach(activity);
-        ((AirDeskActivity) activity).onSectionAttached(1);
+        ((AirDeskActivity) activity).onSectionAttached(getArguments().getInt(ARG_SECTION_NUMBER));
     }
 
     public void addWorkspace() {

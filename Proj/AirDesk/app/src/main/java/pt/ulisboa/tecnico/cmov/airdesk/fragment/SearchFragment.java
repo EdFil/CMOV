@@ -1,7 +1,6 @@
 package pt.ulisboa.tecnico.cmov.airdesk.fragment;
 
 import android.app.Activity;
-import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
@@ -14,36 +13,38 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.Button;
+import android.widget.EditText;
+import android.widget.ImageButton;
 import android.widget.ListView;
 import android.widget.Toast;
+
+import java.util.ArrayList;
 
 import pt.ulisboa.tecnico.cmov.airdesk.AirDeskActivity;
 import pt.ulisboa.tecnico.cmov.airdesk.R;
 import pt.ulisboa.tecnico.cmov.airdesk.WorkspaceDetailsActivity;
 import pt.ulisboa.tecnico.cmov.airdesk.adapter.WorkspaceListAdapter;
-import pt.ulisboa.tecnico.cmov.airdesk.core.workspace.LocalWorkspace;
 import pt.ulisboa.tecnico.cmov.airdesk.core.workspace.Workspace;
 import pt.ulisboa.tecnico.cmov.airdesk.core.workspace.WorkspaceManager;
 import pt.ulisboa.tecnico.cmov.airdesk.util.Constants;
 
-public class LocalWorkspacesFragment extends Fragment {
+public class SearchFragment extends Fragment {
 
     /**
      * The fragment argument representing the section number for this
      * fragment.
      */
     private static final String ARG_SECTION_NUMBER = "section_number";
-
-    public static final String TAG = LocalWorkspacesFragment.class.getSimpleName();
+    public static final String TAG = SearchFragment.class.getSimpleName();
 
     WorkspaceManager manager;
 
     WorkspaceListAdapter mWorkspaceListAdapter;
 
-    public LocalWorkspacesFragment() {}
+    public SearchFragment() {}
 
-    public static LocalWorkspacesFragment newInstance(int sectionNumber) {
-        LocalWorkspacesFragment fragment = new LocalWorkspacesFragment();
+    public static SearchFragment newInstance(int sectionNumber) {
+        SearchFragment fragment = new SearchFragment();
         Bundle args = new Bundle();
         args.putInt(ARG_SECTION_NUMBER, sectionNumber);
         fragment.setArguments(args);
@@ -54,15 +55,14 @@ public class LocalWorkspacesFragment extends Fragment {
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         manager = WorkspaceManager.getInstance();
-        manager.refreshWorkspaceLists();
-        mWorkspaceListAdapter = new WorkspaceListAdapter(getActivity(), WorkspaceManager.getInstance().getLocalWorkspaces());
+        mWorkspaceListAdapter = new WorkspaceListAdapter(getActivity(), new ArrayList<Workspace>());
     }
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-        View workspaceFragmentView = inflater.inflate(R.layout.fragment_workspaces, container, false);
+        View searchFragmentView = inflater.inflate(R.layout.fragment_search_workspace, container, false);
 
-        ListView listView = (ListView) workspaceFragmentView.findViewById(R.id.myWorkspacesList);
+        ListView listView = (ListView) searchFragmentView.findViewById(R.id.workspacesList);
         listView.setAdapter(mWorkspaceListAdapter);
 
         // When selecting a workspace replaces this fragment for the FilesFragment
@@ -70,19 +70,7 @@ public class LocalWorkspacesFragment extends Fragment {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
 
-                FragmentManager fragmentManager = getActivity().getSupportFragmentManager();
-                FragmentTransaction transaction = fragmentManager.beginTransaction();
-
-                FilesFragment filesFragment = new FilesFragment();
-                Bundle bundle = new Bundle();
-                bundle.putParcelable("Workspace", (Workspace) parent.getItemAtPosition(position));
-                filesFragment.setArguments(bundle);
-
-                transaction.replace(R.id.container, filesFragment);
-                transaction.addToBackStack(null);
-
-                // Commit the transaction
-                transaction.commit();
+                // TODO : O QUE ACONTECE QUANDO SELECIONAMOS UM WORKSPACE
             }
         });
 
@@ -90,22 +78,25 @@ public class LocalWorkspacesFragment extends Fragment {
         registerForContextMenu(listView);
 
         // Setup create new workspace button
-        Button newWorkspaceButton = (Button) workspaceFragmentView.findViewById(R.id.newWorkspaceButton);
+        ImageButton newWorkspaceButton = (ImageButton) searchFragmentView.findViewById(R.id.searchButton);
         newWorkspaceButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View buttonView) {
-                NewLocalWorkspaceFragment.newInstance().show(getActivity().getFragmentManager(), "New Workspace");
+                mWorkspaceListAdapter.clear();
+
+                EditText editText = (EditText) getActivity().findViewById(R.id.workspacesTags);
+                String tag = editText.getText().toString();
+
+
+                // TODO : QUERY NO MANAGE PARA DEVOLVER A TAG PROCURADA
+
+                Workspace workspace = WorkspaceManager.getInstance().getLocalWorkspaces().get(0);
+                mWorkspaceListAdapter.add(workspace);
+                mWorkspaceListAdapter.notifyDataSetChanged();
             }
         });
 
-        return workspaceFragmentView;
-    }
-
-    @Override
-    public void onResume() {
-        super.onResume();
-        ((AirDeskActivity) getActivity()).updateActionBarTitle();
-        updateWorkspaceList();
+        return searchFragmentView;
     }
 
     // This will be invoked when an item in the listView is long pressed

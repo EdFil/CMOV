@@ -24,11 +24,10 @@ import pt.ulisboa.tecnico.cmov.airdesk.R;
 import pt.ulisboa.tecnico.cmov.airdesk.adapter.TagListAdapter;
 import pt.ulisboa.tecnico.cmov.airdesk.core.tag.Tag;
 import pt.ulisboa.tecnico.cmov.airdesk.core.user.UserManager;
-import pt.ulisboa.tecnico.cmov.airdesk.core.workspace.Workspace;
 import pt.ulisboa.tecnico.cmov.airdesk.core.workspace.WorkspaceManager;
 import pt.ulisboa.tecnico.cmov.airdesk.core.workspace.exception.WorkspaceException;
 
-public class NewWorkspaceFragment extends DialogFragment {
+public class NewForeignWorkspaceFragment extends DialogFragment {
 
     List<String> mTagCache;
     TagListAdapter mTagListAdapter;
@@ -46,8 +45,8 @@ public class NewWorkspaceFragment extends DialogFragment {
         public void updateWorkspaceList();
     }
 
-    public static NewWorkspaceFragment newInstance() {
-        return new NewWorkspaceFragment();
+    public static NewForeignWorkspaceFragment newInstance() {
+        return new NewForeignWorkspaceFragment();
     }
 
     @Override
