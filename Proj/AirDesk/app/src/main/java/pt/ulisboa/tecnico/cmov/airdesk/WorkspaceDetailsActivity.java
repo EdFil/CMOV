@@ -50,36 +50,6 @@ public class WorkspaceDetailsActivity extends ActionBarActivity {
         }
     }
 
-//    private void addTagToTable(String tag) {
-//        TextView tagText = new TextView(this);
-//        tagText.setText(tag);
-//        tagText.setTextAppearance(this, android.R.style.TextAppearance_DeviceDefault_Medium);
-//        TableRow rowToInsertTag;
-//        int numRows = mTagsTableLayout.getChildCount();
-//        if(numRows == 0 || ((TableRow)mTagsTableLayout.getChildAt(numRows - 1)).getChildCount() >= NUM_COLUMNS_PER_ROW) {
-//            rowToInsertTag = new TableRow(this);
-//            mTagsTableLayout.addView(rowToInsertTag);
-//        } else {
-//            rowToInsertTag = (TableRow)mTagsTableLayout.getChildAt(numRows - 1);
-//        }
-//        rowToInsertTag.addView(tagText, ActionBar.LayoutParams.WRAP_CONTENT);
-//    }
-//
-//    private void addUserToTable(String tag) {
-//        TextView userText = new TextView(this);
-//        userText.setText(tag);
-//        userText.setTextAppearance(this, android.R.style.TextAppearance_DeviceDefault_Medium);
-//        TableRow rowToInsertTag;
-//        int numRows = mUsersTableLayout.getChildCount();
-//        if(numRows == 0 || ((TableRow)mUsersTableLayout.getChildAt(numRows - 1)).getChildCount() >= NUM_COLUMNS_PER_ROW) {
-//            rowToInsertTag = new TableRow(this);
-//            mUsersTableLayout.addView(rowToInsertTag);
-//        } else {
-//            rowToInsertTag = (TableRow)mUsersTableLayout.getChildAt(numRows - 1);
-//        }
-//        rowToInsertTag.addView(userText, ActionBar.LayoutParams.WRAP_CONTENT);
-//    }
-
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         getMenuInflater().inflate(R.menu.menu_workspace_details, menu);

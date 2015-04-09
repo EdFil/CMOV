@@ -121,6 +121,13 @@ public class Workspace implements Parcelable {
     // Class functions
     public void addTag(Tag tag) { mTags.add(tag); }
     public void removeTag(Tag tag) { mTags.remove(tag); }
+    public void removeTagFromString(String tagName) {
+        for (Tag tag : mTags)
+            if (tag.getText() == tagName) {
+                mTags.remove(tag);
+                break;
+            }
+    }
 
     public void addUser(User user) { mUsers.add(user); }
     public void removeUser(User user) {

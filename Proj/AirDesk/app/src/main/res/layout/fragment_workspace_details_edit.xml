@@ -8,7 +8,7 @@
 
 
     <TextView
-        android:layout_width="fill_parent"
+        android:layout_width="match_parent"
         android:layout_height="0dp"
         android:layout_weight="7"
         android:gravity="center"
@@ -17,166 +17,171 @@
         android:textAppearance="?android:attr/textAppearanceLargeInverse" />
 
     <LinearLayout
-        android:layout_width="fill_parent"
+        android:layout_width="match_parent"
         android:layout_height="0dp"
         android:layout_weight="5.5"
-        android:paddingLeft="@dimen/activity_horizontal_margin">
+        android:paddingLeft="@dimen/activity_horizontal_margin"
+        android:paddingRight="@dimen/activity_horizontal_margin">
 
         <TextView
             android:layout_width="0dp"
-            android:layout_height="fill_parent"
+            android:layout_height="match_parent"
             android:layout_weight="0.15"
             android:gravity="center_vertical"
-            android:text="Name:"
+            android:text="Name: "
             android:textAppearance="?android:attr/textAppearanceMedium"
             android:textStyle="bold" />
 
         <EditText
             android:id="@+id/nameInformationEdit"
             android:layout_width="0dp"
-            android:layout_height="fill_parent"
+            android:layout_height="match_parent"
             android:layout_weight="0.7"
             android:layout_gravity="bottom"
             android:text="Workspace Name"
             android:textAppearance="?android:attr/textAppearanceSmall" />
     </LinearLayout>
 
-        <LinearLayout
-            android:layout_width="fill_parent"
-            android:layout_height="0dp"
-            android:layout_weight="5.5"
-            android:paddingLeft="@dimen/activity_horizontal_margin">
-
-            <TextView
-                android:layout_width="0dp"
-                android:layout_height="fill_parent"
-                android:layout_weight="0.15"
-                android:gravity="center_vertical"
-                android:text="Owner:"
-                android:textAppearance="?android:attr/textAppearanceMedium"
-                android:textStyle="bold" />
-
-            <EditText
-                android:id="@+id/ownerInformationEdit"
-                android:layout_width="0dp"
-                android:layout_height="fill_parent"
-                android:layout_weight="0.7"
-                android:layout_gravity="bottom"
-                android:text="Owner Nick Name"
-                android:textAppearance="?android:attr/textAppearanceSmall" />
-
-            </LinearLayout>
-
-        <LinearLayout
-            android:layout_width="fill_parent"
-            android:layout_height="0dp"
-            android:layout_weight="5.5"
-            android:paddingLeft="@dimen/activity_horizontal_margin">
-
-            <TextView
-                android:layout_width="0dp"
-                android:layout_height="fill_parent"
-                android:layout_weight="0.15"
-                android:gravity="center_vertical"
-                android:text="Quota:"
-                android:textAppearance="?android:attr/textAppearanceMedium"
-                android:textStyle="bold" />
-
-                <EditText
-                    android:id="@+id/quotaInformationEdit"
-                    android:layout_width="0dp"
-                    android:layout_height="fill_parent"
-                    android:layout_weight="0.7"
-                    android:layout_gravity="bottom"
-                    android:inputType="text"
-                    android:text="Workspace Quota"
-                    android:textAppearance="?android:attr/textAppearanceSmall" />
-
-        </LinearLayout>
-
-        <LinearLayout
-            android:layout_width="fill_parent"
-            android:layout_height="0dp"
-            android:layout_weight="6"
-            android:paddingLeft="@dimen/activity_horizontal_margin">
-            <TextView
-                android:layout_width="0dp"
-                android:layout_height="fill_parent"
-                android:layout_weight="0.16"
-                android:gravity="center"
-                android:text="Access:"
-                android:textAppearance="?android:attr/textAppearanceMedium"
-                android:textStyle="bold" />
-            <TextView
-                android:layout_width="0dp"
-                android:layout_height="fill_parent"
-                android:layout_weight="0.3"
-                android:gravity="center"
-                android:text="Private"
-                android:textAppearance="?android:attr/textAppearanceMedium"
-                android:textStyle="bold" />
-
-                <Switch
-                    android:id="@+id/privateInformationSwitch"
-                    android:layout_width="0dp"
-                    android:layout_height="fill_parent"
-                    android:layout_weight="0.1"/>
-
-            <TextView
-                android:layout_width="0dp"
-                android:layout_height="fill_parent"
-                android:layout_weight="0.3"
-                android:gravity="center"
-                android:text="Public"
-                android:textAppearance="?android:attr/textAppearanceMedium"
-                android:textStyle="bold" />
-
-        </LinearLayout>
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight="5.5"
+        android:paddingLeft="@dimen/activity_horizontal_margin"
+        android:paddingRight="@dimen/activity_horizontal_margin">
 
         <TextView
-            android:layout_width="fill_parent"
-            android:layout_height="0dp"
-            android:layout_weight="7"
-            android:background="@color/abc_search_url_text_normal"
-            android:clickable="true"
-            android:gravity="center"
-            android:text="Tags"
-            android:textAppearance="?android:attr/textAppearanceLargeInverse" />
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_weight="0.15"
+            android:gravity="center_vertical"
+            android:text="Quota: "
+            android:textAppearance="?android:attr/textAppearanceMedium"
+            android:textStyle="bold" />
 
-        <ScrollView
-            android:layout_width="fill_parent"
-            android:layout_height="0dp"
-            android:layout_weight="20">
+            <EditText
+                android:id="@+id/quotaInformationEdit"
+                android:layout_width="0dp"
+                android:layout_height="match_parent"
+                android:layout_weight="0.7"
+                android:layout_gravity="bottom"
+                android:inputType="text"
+                android:text="Workspace Quota"
+                android:textAppearance="?android:attr/textAppearanceSmall" />
+
+    </LinearLayout>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight="6"
+        android:paddingLeft="@dimen/activity_horizontal_margin"
+        android:paddingRight="@dimen/activity_horizontal_margin">
+        <TextView
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_weight="0.15"
+            android:gravity="center"
+            android:text="Access: "
+            android:textAppearance="?android:attr/textAppearanceMedium"
+            android:textStyle="bold" />
+        <TextView
+            android:id="@+id/privateInformationText"
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_weight="0.25"
+            android:gravity="center"
+            android:text="Private"
+            android:textAppearance="?android:attr/textAppearanceMedium"
+            android:textStyle="bold" />
+
+            <Switch
+                android:id="@+id/privateInformationSwitch"
+                android:layout_width="0dp"
+                android:layout_height="match_parent"
+                android:layout_weight="0.1"/>
+
+        <TextView
+            android:id="@+id/publicInformationText"
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_weight="0.25"
+            android:gravity="center"
+            android:text="Public"
+            android:textAppearance="?android:attr/textAppearanceMedium"
+            android:textStyle="bold" />
+
+    </LinearLayout>
+
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight="7"
+        android:background="@color/abc_search_url_text_normal"
+        android:clickable="true"
+        android:gravity="center"
+        android:text="Tags"
+        android:textAppearance="?android:attr/textAppearanceLargeInverse" />
+
+    <ScrollView
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight="20"
+        android:paddingLeft="@dimen/activity_horizontal_margin"
+        android:paddingRight="@dimen/activity_horizontal_margin">
 
             <TableLayout
                 android:id="@+id/tagsTable"
-                android:layout_width="fill_parent"
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content">
-
             </TableLayout>
 
-        </ScrollView>
+    </ScrollView>
 
-        <TextView
-            android:layout_width="fill_parent"
-            android:layout_height="0dp"
-            android:layout_weight="7"
-            android:background="@color/abc_search_url_text_normal"
-            android:clickable="true"
-            android:gravity="center"
-            android:text="Users"
-            android:textAppearance="?android:attr/textAppearanceLargeInverse" />
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:paddingRight="@dimen/activity_horizontal_margin"
+        android:paddingLeft="@dimen/activity_horizontal_margin">
 
-        <ScrollView
-            android:layout_width="fill_parent"
-            android:layout_height="0dp"
-            android:layout_weight="20"/>
+        <EditText
+            android:id="@+id/newTagInformationEdit"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:hint="New tag"/>
+
+        <Button
+            android:id="@+id/addTagButtonEdit"
+            android:layout_width="0dp"
+            android:layout_weight="0.25"
+            android:layout_height="wrap_content"
+            android:background="@android:drawable/ic_menu_add" />
+
+    </LinearLayout>
+
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight="7"
+        android:background="@color/abc_search_url_text_normal"
+        android:clickable="true"
+        android:gravity="center"
+        android:text="Users"
+        android:textAppearance="?android:attr/textAppearanceLargeInverse" />
+
+    <ScrollView
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight="20"
+        android:paddingRight="@dimen/activity_horizontal_margin"
+        android:paddingLeft="@dimen/activity_horizontal_margin">
 
         <TableLayout
             android:id="@+id/usersTable"
-            android:layout_width="fill_parent"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content">
-
         </TableLayout>
+
+    </ScrollView>
 
 </LinearLayout>
