@@ -17,8 +17,6 @@ import android.widget.Button;
 import android.widget.ListView;
 import android.widget.Toast;
 
-import java.util.List;
-
 import pt.ulisboa.tecnico.cmov.airdesk.AirDeskActivity;
 import pt.ulisboa.tecnico.cmov.airdesk.R;
 import pt.ulisboa.tecnico.cmov.airdesk.WorkspaceDetailsActivity;
@@ -34,13 +32,15 @@ public class WorkspacesFragment extends Fragment {
 
     WorkspaceManager manager;
 
-    private List<Workspace> mWorkspaces;
     WorkspaceListAdapter mWorkspaceListAdapter;
+    private boolean isLocalWorkspaceAdapter;
 
     public WorkspacesFragment() {}
 
-    public static WorkspacesFragment newInstance() {
-        return new WorkspacesFragment();
+    public static WorkspacesFragment newInstance(boolean isLocalWorkspace) {
+        WorkspacesFragment wf = new WorkspacesFragment();
+        wf.setLocalWorkspaceFragment(isLocalWorkspace);
+        return wf;
     }
 
     @Override
@@ -48,11 +48,11 @@ public class WorkspacesFragment extends Fragment {
         Context context = container.getContext();
         View workspaceFragmentView = inflater.inflate(R.layout.fragment_workspaces, container, false);
 
-        // Get manager
-        manager = WorkspaceManager.getInstance();
-
-        mWorkspaces = manager.getWorkspacesFromDB();
-        mWorkspaceListAdapter = new WorkspaceListAdapter(context, mWorkspaces);
+        WorkspaceManager.getInstance().refreshWorkspaceList();
+        if(isLocalWorkspaceAdapter)
+            mWorkspaceListAdapter = new WorkspaceListAdapter(context, WorkspaceManager.getInstance().getLocalWorkspaces());
+        else
+            mWorkspaceListAdapter = new WorkspaceListAdapter(context, WorkspaceManager.getInstance().getForeignWorkspaces());
 
         ListView listView = (ListView) workspaceFragmentView.findViewById(R.id.myWorkspacesList);
         listView.setAdapter(mWorkspaceListAdapter);
@@ -137,6 +137,10 @@ public class WorkspacesFragment extends Fragment {
                 break;
         }
         return true;
+    }
+
+    public void setLocalWorkspaceFragment(boolean isLocalWorkspace) {
+        isLocalWorkspaceAdapter = isLocalWorkspace;
     }
 
     @Override

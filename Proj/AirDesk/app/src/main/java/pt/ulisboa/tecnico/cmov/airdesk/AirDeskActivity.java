@@ -105,11 +105,11 @@ public class AirDeskActivity extends ActionBarActivity
                 break;
             // MyWorkspaces : Owned workspace list fragment
             case 1:
-                fragmentManager.beginTransaction().replace(R.id.container, WorkspacesFragment.newInstance()).commit();
+                fragmentManager.beginTransaction().replace(R.id.container, WorkspacesFragment.newInstance(true)).commit();
                 break;
             // Foreign Workspaces : Workspaces accessible but not owned
             case 2:
-                fragmentManager.beginTransaction().replace(R.id.container, WorkspacesFragment.newInstance()).commit();
+                fragmentManager.beginTransaction().replace(R.id.container, WorkspacesFragment.newInstance(false)).commit();
                 break;
             // Search Workspace
             case 4:
@@ -122,6 +122,29 @@ public class AirDeskActivity extends ActionBarActivity
                 startActivityForResult(intent, Constants.LOGIN_REQUEST);
             default:
                 fragmentManager.beginTransaction().replace(R.id.container, PlaceholderFragment.newInstance(position)).commit();
+        }
+    }
+
+    @Override
+    public void onBackPressed() {
+        if(getSupportFragmentManager().getBackStackEntryCount() == 0) {
+            new AlertDialog.Builder(this)
+                    .setTitle("Exit Application")
+                    .setMessage("Are you sure you want to leave?")
+                    .setPositiveButton(android.R.string.yes, new DialogInterface.OnClickListener() {
+                        public void onClick(DialogInterface dialog, int which) {
+                            AirDeskActivity.super.onBackPressed();
+                        }
+                    })
+                    .setNegativeButton(android.R.string.no, new DialogInterface.OnClickListener() {
+                        public void onClick(DialogInterface dialog, int which) {
+                            // do nothing
+                        }
+                    })
+                    .setIcon(android.R.drawable.ic_dialog_alert)
+                    .show();
+        } else {
+            super.onBackPressed();
         }
     }
 

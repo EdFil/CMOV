@@ -20,11 +20,11 @@ import pt.ulisboa.tecnico.cmov.airdesk.core.user.UserManager;
 import pt.ulisboa.tecnico.cmov.airdesk.core.workspace.LocalWorkspace;
 import pt.ulisboa.tecnico.cmov.airdesk.core.workspace.Workspace;
 import pt.ulisboa.tecnico.cmov.airdesk.core.workspace.WorkspaceManager;
-import pt.ulisboa.tecnico.cmov.airdesk.database.AirDeskContract.WorkspaceEntry;
 import pt.ulisboa.tecnico.cmov.airdesk.database.AirDeskContract.FilesEntry;
 import pt.ulisboa.tecnico.cmov.airdesk.database.AirDeskContract.TagsEntry;
 import pt.ulisboa.tecnico.cmov.airdesk.database.AirDeskContract.UsersEntry;
 import pt.ulisboa.tecnico.cmov.airdesk.database.AirDeskContract.UsersWorkspacesEntry;
+import pt.ulisboa.tecnico.cmov.airdesk.database.AirDeskContract.WorkspaceEntry;
 
 public class AirDeskDbHelper extends SQLiteOpenHelper {
 
@@ -298,7 +298,7 @@ public class AirDeskDbHelper extends SQLiteOpenHelper {
         return files;
     }
 
-    public ArrayList<Workspace> getAllLocalWorkspaceInfo(long userId) {
+    public ArrayList<LocalWorkspace> getLocalWorkspaceInfo(long userId) {
         HashMap<Long, ArrayList<Tag>> tagList = getAllTagsInMap();
         HashMap<Long, ArrayList<User>> userList = getAllUsersInMap();
         HashMap<Long, ArrayList<File>> fileList = getAllFilesInMap();
@@ -306,7 +306,7 @@ public class AirDeskDbHelper extends SQLiteOpenHelper {
         SQLiteDatabase db = mInstance.getReadableDatabase();
 
         Cursor workspaceCursor = db.rawQuery("SELECT * FROM " + WorkspaceEntry.TABLE_NAME + " WHERE " + WorkspaceEntry.COLUMN_WORKSPACE_USER + " = " + userId, null);
-        ArrayList<Workspace> workspaces = new ArrayList<Workspace>();
+        ArrayList<LocalWorkspace> workspaces = new ArrayList<>();
 
         while (workspaceCursor.moveToNext()) {
             long workspaceId = workspaceCursor.getLong(workspaceCursor.getColumnIndex(AirDeskContract.WorkspaceEntry._ID));
