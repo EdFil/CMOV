@@ -28,7 +28,7 @@ import pt.ulisboa.tecnico.cmov.airdesk.fragment.LocalWorkspacesFragment;
 import pt.ulisboa.tecnico.cmov.airdesk.fragment.NavigationDrawerFragment;
 import pt.ulisboa.tecnico.cmov.airdesk.fragment.NewFileFragment;
 import pt.ulisboa.tecnico.cmov.airdesk.fragment.NewLocalWorkspaceFragment;
-import pt.ulisboa.tecnico.cmov.airdesk.fragment.SearchFragment;
+import pt.ulisboa.tecnico.cmov.airdesk.fragment.SearchWorkspaceFragment;
 import pt.ulisboa.tecnico.cmov.airdesk.util.Constants;
 
 public class AirDeskActivity extends ActionBarActivity
@@ -109,8 +109,9 @@ public class AirDeskActivity extends ActionBarActivity
             case 2:
                 fragmentManager.beginTransaction().replace(R.id.container, ForeignWorkspacesFragment.newInstance(position)).commit();
                 break;
+            // Search Workspace
             case 3:
-                fragmentManager.beginTransaction().replace(R.id.container, SearchFragment.newInstance(position)).commit();
+                fragmentManager.beginTransaction().replace(R.id.container, SearchWorkspaceFragment.newInstance(position)).commit();
                 break;
             // Search Workspace
             case 4:

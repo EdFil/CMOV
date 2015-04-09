@@ -4,15 +4,12 @@ import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
-import android.support.v4.app.FragmentManager;
-import android.support.v4.app.FragmentTransaction;
 import android.view.ContextMenu;
 import android.view.LayoutInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
-import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.ListView;
@@ -28,23 +25,23 @@ import pt.ulisboa.tecnico.cmov.airdesk.core.workspace.Workspace;
 import pt.ulisboa.tecnico.cmov.airdesk.core.workspace.WorkspaceManager;
 import pt.ulisboa.tecnico.cmov.airdesk.util.Constants;
 
-public class SearchFragment extends Fragment {
+public class SearchWorkspaceFragment extends Fragment {
 
     /**
      * The fragment argument representing the section number for this
      * fragment.
      */
     private static final String ARG_SECTION_NUMBER = "section_number";
-    public static final String TAG = SearchFragment.class.getSimpleName();
+    public static final String TAG = SearchWorkspaceFragment.class.getSimpleName();
 
     WorkspaceManager manager;
 
     WorkspaceListAdapter mWorkspaceListAdapter;
 
-    public SearchFragment() {}
+    public SearchWorkspaceFragment() {}
 
-    public static SearchFragment newInstance(int sectionNumber) {
-        SearchFragment fragment = new SearchFragment();
+    public static SearchWorkspaceFragment newInstance(int sectionNumber) {
+        SearchWorkspaceFragment fragment = new SearchWorkspaceFragment();
         Bundle args = new Bundle();
         args.putInt(ARG_SECTION_NUMBER, sectionNumber);
         fragment.setArguments(args);
