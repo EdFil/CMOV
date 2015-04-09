@@ -131,9 +131,9 @@ public class WorkspaceManager {
         return tag;
     }
 
-    public void removeTagFromWorkspace(Tag tag, Workspace workspace) {
-        workspace.removeTag(tag);
-        AirDeskDbHelper.getInstance(getContext()).removeTagFromWorkspace(workspace.getDatabaseId(), tag.getText());
+    public void removeTagFromWorkspace(String tag, Workspace workspace) {
+        workspace.removeTagFromString(tag);
+        AirDeskDbHelper.getInstance(getContext()).removeTagFromWorkspace(workspace.getDatabaseId(), tag);
     }
 
     public void updateWorkspace(Workspace workspace, String workspaceName, Long quotaValue, Boolean isPrivate){

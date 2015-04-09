@@ -101,7 +101,7 @@ public class ForeignWorkspacesFragment extends Fragment {
     @Override
     public void onCreateContextMenu(ContextMenu menu, View v, ContextMenu.ContextMenuInfo menuInfo) {
         super.onCreateContextMenu(menu, v, menuInfo);
-        getActivity().getMenuInflater().inflate(R.menu.menu_my_workspaces, menu);
+        getActivity().getMenuInflater().inflate(R.menu.menu_foreign_workspaces, menu);
     }
 
     // This will be invoked when a menu item is selected
@@ -112,25 +112,25 @@ public class ForeignWorkspacesFragment extends Fragment {
 
         Intent intent;
         switch(item.getItemId()){
-            case R.id.menu_my_edit:
+            case R.id.menu_foreign_edit:
                 intent = new Intent(getActivity(), WorkspaceDetailsActivity.class);
                 intent.putExtra(WorkspaceDetailsActivity.EDIT_MODE, true);
                 intent.putExtra(Constants.WORKSPACE_INDEX, info.position);
                 getActivity().startActivity(intent);
                 break;
-            case R.id.menu_my_details:
+            case R.id.menu_foreign_details:
                 intent = new Intent(getActivity(), WorkspaceDetailsActivity.class);
                 intent.putExtra(WorkspaceDetailsActivity.EDIT_MODE, false);
                 intent.putExtra(Constants.WORKSPACE_INDEX, info.position);
                 getActivity().startActivity(intent);
                 break;
-            case R.id.menu_my_delete:
+            case R.id.menu_foreign_delete:
                 WorkspaceManager.getInstance().deleteWorkspace(info.position);
                 updateWorkspaceList();
                 break;
-            case R.id.menu_my_invite:
-                // TODO : INVITE FOR WORKSPACE
-                Toast.makeText(getActivity(), "TODO Invite", Toast.LENGTH_SHORT).show();
+            case R.id.menu_foreign_leave:
+                // TODO : LEAVE WORKSPACE
+                Toast.makeText(getActivity(), "TODO Leave", Toast.LENGTH_SHORT).show();
                 break;
         }
         return true;
