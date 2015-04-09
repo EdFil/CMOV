@@ -20,13 +20,14 @@ import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import pt.ulisboa.tecnico.cmov.airdesk.core.workspace.Workspace;
+import pt.ulisboa.tecnico.cmov.airdesk.core.user.UserManager;
 import pt.ulisboa.tecnico.cmov.airdesk.core.workspace.WorkspaceManager;
 import pt.ulisboa.tecnico.cmov.airdesk.fragment.FilesFragment;
+import pt.ulisboa.tecnico.cmov.airdesk.fragment.ForeignWorkspacesFragment;
+import pt.ulisboa.tecnico.cmov.airdesk.fragment.LocalWorkspacesFragment;
 import pt.ulisboa.tecnico.cmov.airdesk.fragment.NavigationDrawerFragment;
 import pt.ulisboa.tecnico.cmov.airdesk.fragment.NewFileFragment;
 import pt.ulisboa.tecnico.cmov.airdesk.fragment.NewWorkspaceFragment;
-import pt.ulisboa.tecnico.cmov.airdesk.fragment.WorkspacesFragment;
 import pt.ulisboa.tecnico.cmov.airdesk.util.Constants;
 
 public class AirDeskActivity extends ActionBarActivity
@@ -46,6 +47,7 @@ public class AirDeskActivity extends ActionBarActivity
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_air_desk);
+
         // Init the manager of the workspaces so it has the context of the application
         WorkspaceManager.initWorkspaceManager(getApplicationContext());
         setNavigationDrawer();
@@ -76,8 +78,8 @@ public class AirDeskActivity extends ActionBarActivity
         SharedPreferences pref = getSharedPreferences("UserPref", MODE_PRIVATE);
         TextView nick = (TextView) findViewById(R.id.nick);
         TextView email = (TextView) findViewById(R.id.email);
-        nick.setText(pref.getString("user_nick", "Nickname"));
-        email.setText(pref.getString("user_email", "Email"));
+        nick.setText(UserManager.getInstance().getOwner().getNick());
+        email.setText(UserManager.getInstance().getOwner().getEmail());
     }
 
     @Override
@@ -103,14 +105,15 @@ public class AirDeskActivity extends ActionBarActivity
                 break;
             // MyWorkspaces : Owned workspace list fragment
             case 1:
-                fragmentManager.beginTransaction().replace(R.id.container, WorkspacesFragment.newInstance()).commit();
+                fragmentManager.beginTransaction().replace(R.id.container, LocalWorkspacesFragment.newInstance()).commit();
                 break;
             // Foreign Workspaces : Workspaces accessible but not owned
             case 2:
-                fragmentManager.beginTransaction().replace(R.id.container, WorkspacesFragment.newInstance()).commit();
+                fragmentManager.beginTransaction().replace(R.id.container, ForeignWorkspacesFragment.newInstance()).commit();
                 break;
             // Search Workspace
-            case 3:
+            case 4:
+                startActivity(new Intent(getApplicationContext(), ManageAccountActivity.class));
                 break;
             case 5:
                 // Returns the result to the AirDeskActivity
@@ -119,6 +122,29 @@ public class AirDeskActivity extends ActionBarActivity
                 startActivityForResult(intent, Constants.LOGIN_REQUEST);
             default:
                 fragmentManager.beginTransaction().replace(R.id.container, PlaceholderFragment.newInstance(position)).commit();
+        }
+    }
+
+    @Override
+    public void onBackPressed() {
+        if(getSupportFragmentManager().getBackStackEntryCount() == 0) {
+            new AlertDialog.Builder(this)
+                    .setTitle("Exit Application")
+                    .setMessage("Are you sure you want to leave?")
+                    .setPositiveButton(android.R.string.yes, new DialogInterface.OnClickListener() {
+                        public void onClick(DialogInterface dialog, int which) {
+                            AirDeskActivity.super.onBackPressed();
+                        }
+                    })
+                    .setNegativeButton(android.R.string.no, new DialogInterface.OnClickListener() {
+                        public void onClick(DialogInterface dialog, int which) {
+                            // do nothing
+                        }
+                    })
+                    .setIcon(android.R.drawable.ic_dialog_alert)
+                    .show();
+        } else {
+            super.onBackPressed();
         }
     }
 
@@ -170,7 +196,7 @@ public class AirDeskActivity extends ActionBarActivity
         // as you specify a parent activity in AndroidManifest.xml.
 
         if (item.getItemId() == R.id.refresh) {
-            WorkspacesFragment workspacesFrag = (WorkspacesFragment) getSupportFragmentManager().findFragmentById(R.id.container);
+            LocalWorkspacesFragment workspacesFrag = (LocalWorkspacesFragment) getSupportFragmentManager().findFragmentById(R.id.container);
             if(workspacesFrag != null)
                 workspacesFrag.updateWorkspaceList();
             else {
@@ -187,7 +213,7 @@ public class AirDeskActivity extends ActionBarActivity
                         .setMessage("Are you sure you want to delete all your workspaces?")
                         .setPositiveButton(android.R.string.yes, new DialogInterface.OnClickListener() {
                             public void onClick(DialogInterface dialog, int which) {
-                                WorkspacesFragment workspacesFrag = (WorkspacesFragment) getSupportFragmentManager().findFragmentById(R.id.container);
+                                LocalWorkspacesFragment workspacesFrag = (LocalWorkspacesFragment) getSupportFragmentManager().findFragmentById(R.id.container);
                                 if (workspacesFrag != null)
                                     workspacesFrag.deleteAllWorkspaces();
                                 Toast.makeText(getBaseContext(), "DELETED", Toast.LENGTH_SHORT).show();
@@ -218,11 +244,11 @@ public class AirDeskActivity extends ActionBarActivity
     }
 
     @Override
-    public void updateWorkspaceList(Workspace workspace) {
-        WorkspacesFragment workspaceFrag = (WorkspacesFragment) getSupportFragmentManager().findFragmentById(R.id.container);
+    public void updateWorkspaceList() {
+        LocalWorkspacesFragment workspaceFrag = (LocalWorkspacesFragment) getSupportFragmentManager().findFragmentById(R.id.container);
 
         if (workspaceFrag != null)
-            workspaceFrag.addWorkspace(workspace);
+            workspaceFrag.addWorkspace();
     }
 
     /**
@@ -261,5 +287,4 @@ public class AirDeskActivity extends ActionBarActivity
             ((AirDeskActivity) activity).onSectionAttached(getArguments().getInt(ARG_SECTION_NUMBER));
         }
     }
-
 }

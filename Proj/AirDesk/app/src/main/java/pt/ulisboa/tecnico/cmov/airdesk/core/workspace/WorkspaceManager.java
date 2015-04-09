@@ -15,7 +15,6 @@ import pt.ulisboa.tecnico.cmov.airdesk.core.user.User;
 import pt.ulisboa.tecnico.cmov.airdesk.core.user.UserManager;
 import pt.ulisboa.tecnico.cmov.airdesk.core.workspace.exception.WorkspaceAlreadyExistsException;
 import pt.ulisboa.tecnico.cmov.airdesk.core.workspace.exception.WorkspaceNameIsEmptyException;
-import pt.ulisboa.tecnico.cmov.airdesk.database.AirDeskContract;
 import pt.ulisboa.tecnico.cmov.airdesk.database.AirDeskDbHelper;
 import pt.ulisboa.tecnico.cmov.airdesk.util.FileManager;
 
@@ -28,7 +27,8 @@ public class WorkspaceManager {
     public static final String TAG = WorkspaceManager.class.getSimpleName();
 
     private static WorkspaceManager mInstance;
-    private List<Workspace> mWorkspaces;
+    private List<LocalWorkspace> mLocalWorkspaces;
+    private List<ForeignWorkspace> mForeignWorkspaces;
 
     public static synchronized WorkspaceManager getInstance() {
         return mInstance;
@@ -47,6 +47,13 @@ public class WorkspaceManager {
 
     protected WorkspaceManager(Context context){
         mContext = context;
+        mLocalWorkspaces = new ArrayList<>();
+        mForeignWorkspaces = new ArrayList<>();
+    }
+
+    public void refreshWorkspaceList(){
+        mLocalWorkspaces = getLocalWorkspacesFromDB();
+        mForeignWorkspaces = new ArrayList<>();
     }
 
     public Workspace addNewWorkspace(String name, User owner, long quota, boolean isPrivate, Collection<Tag> tags) {
@@ -67,19 +74,20 @@ public class WorkspaceManager {
         users.add(owner);
 
         LocalWorkspace newWorkspace = new LocalWorkspace(workspaceId, name, owner, quota, isPrivate, tags, users, files, this);
+        mLocalWorkspaces.add(newWorkspace);
 
         return newWorkspace;
     }
 
     public void deleteWorkspace(int workspaceIndex){
-        Workspace workspace = mWorkspaces.get(workspaceIndex);
+        Workspace workspace = mLocalWorkspaces.get(workspaceIndex);
         AirDeskDbHelper.getInstance(getContext()).deleteWorkspace(workspace.getDatabaseId());
         FileManager.deleteFolder(getContext(), workspace.getName());
-        mWorkspaces.remove(workspaceIndex);
+        mLocalWorkspaces.remove(workspaceIndex);
     }
 
     public void deleteWorkspace(Workspace workspace){
-        mWorkspaces.remove(workspace);
+        mLocalWorkspaces.remove(workspace);
     }
 
     public List<File> getFilesFromWorkspace(Workspace workspace) {
@@ -130,8 +138,9 @@ public class WorkspaceManager {
 
     public void updateWorkspace(Workspace workspace, String workspaceName, Long quotaValue, Boolean isPrivate){
         if(workspaceName != null) {
+            String oldName = workspace.getName();
             workspace.setName(workspaceName);
-            FileManager.renameFolder(getContext(), workspace.getName(), workspaceName);
+            FileManager.renameFolder(getContext(), oldName, workspaceName);
         }
         if(quotaValue != null)
             workspace.setQuota(quotaValue.longValue());
@@ -148,28 +157,33 @@ public class WorkspaceManager {
         return FileManager.getAvailableSpace(mContext);
     }
 
-    public List<Workspace> getWorkspacesFromDB() {
+    public List<LocalWorkspace> getLocalWorkspacesFromDB() {
         AirDeskDbHelper db = AirDeskDbHelper.getInstance(getContext());
-        mWorkspaces = db.getAllLocalWorkspaceInfo(UserManager.getInstance().getOwner().getDatabaseId());
-        return mWorkspaces;
+        mLocalWorkspaces = db.getLocalWorkspaceInfo(UserManager.getInstance().getOwner().getDatabaseId());
+        return mLocalWorkspaces;
     }
 
-    public List<Workspace> getWorkspaces() {
-        return mWorkspaces;
-    }
 
-    public void deleteAllWorkspaces() {
-        int i = mWorkspaces.size() - 1;
-        while (i >= 0)
+    public void deleteAllUserWorkspaces() {
+        int i = mLocalWorkspaces.size() - 1;
+        while (i >= 0) {
             deleteWorkspace(i--);
+        }
     }
 
     public Workspace getWorkspaceAtIndex(int workspaceIndex) {
-        return mWorkspaces.get(workspaceIndex);
+        return mLocalWorkspaces.get(workspaceIndex);
     }
 
     public void setWorkspaceAtIndex(int workspaceIndex, Workspace editedWorkspace){
-        Workspace workspace = mWorkspaces.get(workspaceIndex);
+        Workspace workspace = mLocalWorkspaces.get(workspaceIndex);
         workspace = editedWorkspace;
+    }
+
+    public List<LocalWorkspace> getLocalWorkspaces() {
+        return mLocalWorkspaces;
+    }
+    public List<ForeignWorkspace> getForeignWorkspaces() {
+        return mForeignWorkspaces;
     }
 }

@@ -10,13 +10,15 @@ import android.widget.TextView;
 import java.util.List;
 
 import pt.ulisboa.tecnico.cmov.airdesk.R;
+import pt.ulisboa.tecnico.cmov.airdesk.core.workspace.ForeignWorkspace;
+import pt.ulisboa.tecnico.cmov.airdesk.core.workspace.LocalWorkspace;
 import pt.ulisboa.tecnico.cmov.airdesk.core.workspace.Workspace;
 
 public class WorkspaceListAdapter extends ArrayAdapter<Workspace> {
 
 
-    public WorkspaceListAdapter(Context context, List<Workspace> notes) {
-        super(context, 0, notes);
+    public WorkspaceListAdapter(Context context, List<?> workspaces) {
+        super(context, 0, (List<Workspace>) workspaces);
     }
 
     @Override
@@ -28,9 +30,9 @@ public class WorkspaceListAdapter extends ArrayAdapter<Workspace> {
             convertView = LayoutInflater.from(getContext()).inflate(R.layout.list_item_workspace, parent, false);
         }
         // Lookup view for data population
-        TextView noteTitle = (TextView) convertView.findViewById(R.id.itemName);
+        TextView workspaceTitle = (TextView) convertView.findViewById(R.id.itemName);
         // Populate the data into the template view using the data object
-        noteTitle.setText(workspace.getName());
+        workspaceTitle.setText(workspace.getName());
         // Return the completed view to render on screen
         return convertView;
     }

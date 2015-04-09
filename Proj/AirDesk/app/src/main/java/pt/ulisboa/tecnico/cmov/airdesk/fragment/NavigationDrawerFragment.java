@@ -96,7 +96,6 @@ public class NavigationDrawerFragment extends Fragment {
     @Override
     public void onStart() {
         super.onStart();
-        selectItem(mCurrentSelectedPosition);
     }
 
     @Override

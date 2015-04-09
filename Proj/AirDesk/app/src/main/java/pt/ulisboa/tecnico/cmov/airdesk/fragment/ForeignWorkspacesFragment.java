@@ -17,8 +17,6 @@ import android.widget.Button;
 import android.widget.ListView;
 import android.widget.Toast;
 
-import java.util.List;
-
 import pt.ulisboa.tecnico.cmov.airdesk.AirDeskActivity;
 import pt.ulisboa.tecnico.cmov.airdesk.R;
 import pt.ulisboa.tecnico.cmov.airdesk.WorkspaceDetailsActivity;
@@ -27,20 +25,20 @@ import pt.ulisboa.tecnico.cmov.airdesk.core.workspace.Workspace;
 import pt.ulisboa.tecnico.cmov.airdesk.core.workspace.WorkspaceManager;
 import pt.ulisboa.tecnico.cmov.airdesk.util.Constants;
 
-public class WorkspacesFragment extends Fragment {
+public class ForeignWorkspacesFragment extends Fragment {
 
 //    Context context = getActivity().getApplicationContext();
-    public static final String TAG = WorkspacesFragment.class.getSimpleName();
+    public static final String TAG = ForeignWorkspacesFragment.class.getSimpleName();
 
     WorkspaceManager manager;
 
-    private List<Workspace> mWorkspaces;
     WorkspaceListAdapter mWorkspaceListAdapter;
+    private boolean isLocalWorkspaceAdapter;
 
-    public WorkspacesFragment() {}
+    public ForeignWorkspacesFragment() {}
 
-    public static WorkspacesFragment newInstance() {
-        return new WorkspacesFragment();
+    public static ForeignWorkspacesFragment newInstance() {
+        return new ForeignWorkspacesFragment();
     }
 
     @Override
@@ -48,11 +46,10 @@ public class WorkspacesFragment extends Fragment {
         Context context = container.getContext();
         View workspaceFragmentView = inflater.inflate(R.layout.fragment_workspaces, container, false);
 
-        // Get manager
-        manager = WorkspaceManager.getInstance();
+        WorkspaceManager.getInstance().refreshWorkspaceList();
 
-        mWorkspaces = manager.getWorkspacesFromDB();
-        mWorkspaceListAdapter = new WorkspaceListAdapter(context, mWorkspaces);
+        mWorkspaceListAdapter = new WorkspaceListAdapter(context, WorkspaceManager.getInstance().getForeignWorkspaces());
+
 
         ListView listView = (ListView) workspaceFragmentView.findViewById(R.id.myWorkspacesList);
         listView.setAdapter(mWorkspaceListAdapter);
@@ -145,13 +142,12 @@ public class WorkspacesFragment extends Fragment {
         ((AirDeskActivity) activity).onSectionAttached(1);
     }
 
-    public void addWorkspace(Workspace workspace) {
-        mWorkspaces.add(workspace);
+    public void addWorkspace() {
         updateWorkspaceList();
     }
 
     public void deleteAllWorkspaces() {
-        manager.deleteAllWorkspaces();
+        manager.deleteAllUserWorkspaces();
         updateWorkspaceList();
     }
 

@@ -43,7 +43,7 @@ public class NewWorkspaceFragment extends DialogFragment {
 
     // AirDeskActivity must implement this interface
     public interface OnNewWorkspaceFragmentListener {
-        public void updateWorkspaceList(Workspace workspace);
+        public void updateWorkspaceList();
     }
 
     public static NewWorkspaceFragment newInstance() {
@@ -154,8 +154,8 @@ public class NewWorkspaceFragment extends DialogFragment {
 
                 try {
                     // Create workspace with associated user (owner) in database
-                    Workspace workspace = WorkspaceManager.getInstance().addNewWorkspace(workspaceName, UserManager.getInstance().getOwner(), (long)workspaceQuota, !privacySwitch.isChecked(), tags);
-                    mCallback.updateWorkspaceList(workspace);
+                    WorkspaceManager.getInstance().addNewWorkspace(workspaceName, UserManager.getInstance().getOwner(), (long)workspaceQuota, !privacySwitch.isChecked(), tags);
+                    mCallback.updateWorkspaceList();
                     Toast.makeText(view.getContext(), "Workspace created", Toast.LENGTH_SHORT).show();
 
                     // Close dialog fragment

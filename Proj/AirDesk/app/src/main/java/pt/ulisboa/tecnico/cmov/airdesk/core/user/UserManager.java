@@ -3,9 +3,9 @@ package pt.ulisboa.tecnico.cmov.airdesk.core.user;
 import android.content.Context;
 
 import java.util.ArrayList;
-import java.util.Collection;
 import java.util.List;
 
+import pt.ulisboa.tecnico.cmov.airdesk.core.workspace.WorkspaceManager;
 import pt.ulisboa.tecnico.cmov.airdesk.database.AirDeskDbHelper;
 import pt.ulisboa.tecnico.cmov.airdesk.util.FileManager;
 
@@ -79,4 +79,11 @@ public class UserManager {
 
     public List<User> getUsers() { return mUserList; }
 
+    public void deleteUser(User user) {
+        WorkspaceManager.getInstance().deleteAllUserWorkspaces();
+        AirDeskDbHelper.getInstance(getContext()).deleteUser(user.getDatabaseId());
+        FileManager.deleteRootFolder(getContext());
+        mOwner = null;
+        mUserList.remove(user);
+    }
 }
