@@ -25,4 +25,5 @@
 
     <string name="hello_world">Hello world!</string>
     <string name="title_activity_Workspace_Details">Workspace Details</string>
+    <string name="title_activity_invite_for_workspace">InviteForWorkspaceActivity</string>
 </resources>

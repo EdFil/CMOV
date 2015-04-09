@@ -16,9 +16,9 @@
     <Button
         android:id="@+id/removeTagButton"
         android:layout_width="0dp"
-        android:layout_weight="0.25"
+        android:layout_weight="0.15"
         android:layout_height="wrap_content"
-        android:background="@android:drawable/ic_menu_close_clear_cancel"/>
+        android:background="@android:drawable/ic_delete"/>
 
 
 </LinearLayout>

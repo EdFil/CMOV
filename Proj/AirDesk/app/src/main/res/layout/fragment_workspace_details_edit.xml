@@ -130,7 +130,7 @@
         android:paddingRight="@dimen/activity_horizontal_margin">
 
             <TableLayout
-                android:id="@+id/tagsTable"
+                android:id="@+id/tagsTableEdit"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content">
             </TableLayout>
@@ -153,7 +153,7 @@
         <Button
             android:id="@+id/addTagButtonEdit"
             android:layout_width="0dp"
-            android:layout_weight="0.25"
+            android:layout_weight="0.15"
             android:layout_height="wrap_content"
             android:background="@android:drawable/ic_menu_add" />
 
@@ -177,7 +177,7 @@
         android:paddingLeft="@dimen/activity_horizontal_margin">
 
         <TableLayout
-            android:id="@+id/usersTable"
+            android:id="@+id/usersTableEdit"
             android:layout_width="match_parent"
             android:layout_height="wrap_content">
         </TableLayout>

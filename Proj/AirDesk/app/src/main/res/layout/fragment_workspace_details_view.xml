@@ -145,7 +145,7 @@
         android:paddingLeft="@dimen/activity_horizontal_margin">
 
         <TableLayout
-            android:id="@+id/tagsTableView"
+            android:id="@+id/tagsTable"
             android:layout_width="fill_parent"
             android:layout_height="wrap_content">
         </TableLayout>
@@ -170,7 +170,7 @@
         android:paddingLeft="@dimen/activity_horizontal_margin">
 
         <TableLayout
-            android:id="@+id/usersTableView"
+            android:id="@+id/usersTable"
             android:layout_width="fill_parent"
             android:layout_height="wrap_content"
             android:paddingRight="@dimen/activity_horizontal_margin"
