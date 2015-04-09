@@ -23,7 +23,7 @@ import pt.ulisboa.tecnico.cmov.airdesk.core.workspace.WorkspaceManager;
 
 public class WorkspacesDetailsEditFragment extends Fragment {
 
-    private static final int NUM_COLUMNS_PER_ROW = 4;
+    private static final int NUM_COLUMNS_PER_ROW = 2;
 
     EditText mNameInformationEdit;
     EditText mQuotaInformationEdit;
@@ -61,10 +61,10 @@ public class WorkspacesDetailsEditFragment extends Fragment {
         mAddTagButtonEdit.setVisibility(mWorkspace.isPrivate() ? View.INVISIBLE : View.VISIBLE);
         mNewTagInformationEdit.setVisibility(mWorkspace.isPrivate() ? View.INVISIBLE : View.VISIBLE);
 
-        mTagsTableLayout = (TableLayout) workspaceFragmentView.findViewById(R.id.tagsTable);
+        mTagsTableLayout = (TableLayout) workspaceFragmentView.findViewById(R.id.tagsTableEdit);
         mTagsTableLayout.setStretchAllColumns(true);
 
-        mUsersTableLayout = (TableLayout) workspaceFragmentView.findViewById(R.id.usersTable);
+        mUsersTableLayout = (TableLayout) workspaceFragmentView.findViewById(R.id.usersTableEdit);
         mUsersTableLayout.setStretchAllColumns(true);
 
         // Set initial values

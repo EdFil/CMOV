@@ -20,7 +20,7 @@ import pt.ulisboa.tecnico.cmov.airdesk.core.workspace.Workspace;
 
 public class WorkspacesDetailsFragment extends Fragment {
 
-    private static final int NUM_COLUMNS_PER_ROW = 4;
+    private static final int NUM_COLUMNS_PER_ROW = 2;
 
     TextView mNameInformationText;
     TextView mOwnerInformationText;
@@ -47,9 +47,9 @@ public class WorkspacesDetailsFragment extends Fragment {
         mQuotaInformationText = (TextView) workspaceFragmentView.findViewById(R.id.quotaInformationText);
         mPrivacyInformationText = (TextView) workspaceFragmentView.findViewById(R.id.privacyInformationText);
 
-        mTagsTableLayout = (TableLayout) workspaceFragmentView.findViewById(R.id.tagsTableView);
+        mTagsTableLayout = (TableLayout) workspaceFragmentView.findViewById(R.id.tagsTable);
         mTagsTableLayout.setStretchAllColumns(true);
-        mUsersTableLayout = (TableLayout) workspaceFragmentView.findViewById(R.id.usersTableView);
+        mUsersTableLayout = (TableLayout) workspaceFragmentView.findViewById(R.id.usersTable);
         mUsersTableLayout.setStretchAllColumns(true);
 
         mNameInformationText.setText(mWorkspace.getName());

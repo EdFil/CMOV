@@ -18,6 +18,7 @@ import android.widget.ListView;
 import android.widget.Toast;
 
 import pt.ulisboa.tecnico.cmov.airdesk.AirDeskActivity;
+import pt.ulisboa.tecnico.cmov.airdesk.InviteForWorkspaceActivity;
 import pt.ulisboa.tecnico.cmov.airdesk.R;
 import pt.ulisboa.tecnico.cmov.airdesk.WorkspaceDetailsActivity;
 import pt.ulisboa.tecnico.cmov.airdesk.adapter.WorkspaceListAdapter;
@@ -30,7 +31,7 @@ public class LocalWorkspacesFragment extends Fragment {
 //    Context context = getActivity().getApplicationContext();
     public static final String TAG = LocalWorkspacesFragment.class.getSimpleName();
 
-    WorkspaceManager manager;
+    WorkspaceManager workspaceManager;
 
     WorkspaceListAdapter mWorkspaceListAdapter;
     private boolean isLocalWorkspaceAdapter;
@@ -46,9 +47,10 @@ public class LocalWorkspacesFragment extends Fragment {
         Context context = container.getContext();
         View workspaceFragmentView = inflater.inflate(R.layout.fragment_workspaces, container, false);
 
-        WorkspaceManager.getInstance().refreshWorkspaceList();
+        workspaceManager = WorkspaceManager.getInstance();
+        workspaceManager.refreshWorkspaceList();
 
-        mWorkspaceListAdapter = new WorkspaceListAdapter(context, WorkspaceManager.getInstance().getLocalWorkspaces());
+        mWorkspaceListAdapter = new WorkspaceListAdapter(context, workspaceManager.getLocalWorkspaces());
 
 
         ListView listView = (ListView) workspaceFragmentView.findViewById(R.id.myWorkspacesList);
@@ -125,12 +127,13 @@ public class LocalWorkspacesFragment extends Fragment {
                 getActivity().startActivity(intent);
                 break;
             case R.id.menu_my_delete:
-                WorkspaceManager.getInstance().deleteWorkspace(info.position);
+                workspaceManager.deleteWorkspace(info.position);
                 updateWorkspaceList();
                 break;
             case R.id.menu_my_invite:
-                // TODO : INVITE FOR WORKSPACE
-                Toast.makeText(getActivity(), "TODO Invite", Toast.LENGTH_SHORT).show();
+                intent = new Intent(getActivity(), InviteForWorkspaceActivity.class);
+                intent.putExtra(Constants.WORKSPACE_INDEX, info.position);
+                getActivity().startActivity(intent);
                 break;
         }
         return true;
@@ -147,7 +150,7 @@ public class LocalWorkspacesFragment extends Fragment {
     }
 
     public void deleteAllWorkspaces() {
-        manager.deleteAllUserWorkspaces();
+        workspaceManager.deleteAllUserWorkspaces();
         updateWorkspaceList();
     }
 
