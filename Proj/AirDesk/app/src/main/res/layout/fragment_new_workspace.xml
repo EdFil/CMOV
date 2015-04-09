@@ -49,41 +49,62 @@
         android:textOff="Private"
         android:textOn="Public" />
 
-    <TextView
-        android:id="@+id/tags"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:text="Workspace tags"
-        android:textStyle="bold"
-        android:textAppearance="?android:attr/textAppearanceLarge"
-        android:paddingTop="@dimen/activity_vertical_margin"/>
-
-    <ListView
-        android:id="@+id/tagList"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:clickable="true" />
-    <!-- The elements for this list are on "tag list adapter LAYOUT" -->
-
-    <LinearLayout
+    <ViewSwitcher
+        android:id="@+id/tagViewSwitcher"
         android:layout_width="match_parent"
         android:layout_height="wrap_content">
 
-        <EditText
-            android:id="@+id/newTag"
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:layout_weight="1"
-            android:hint="New tag"/>
+        <Space
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content" />
 
-        <Button
-            android:id="@+id/addTagButton"
-            android:layout_width="0dp"
-            android:layout_weight="0.25"
+        <LinearLayout
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:background="@android:drawable/ic_menu_add" />
+            android:orientation="vertical">
 
-    </LinearLayout>
+            <TextView
+                android:id="@+id/tags"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="Workspace tags"
+                android:textStyle="bold"
+                android:textAppearance="?android:attr/textAppearanceLarge"
+                android:paddingTop="@dimen/activity_vertical_margin"/>
+
+            <pt.ulisboa.tecnico.cmov.airdesk.custom.PredicateLayout
+                android:id="@+id/tagList"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:clickable="true" />
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content">
+
+                <EditText
+                    android:id="@+id/newTag"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:hint="New tag"/>
+
+                <Button
+                    android:id="@+id/addTagButton"
+                    android:layout_width="0dp"
+                    android:layout_weight="0.25"
+                    android:layout_height="wrap_content"
+                    android:background="@android:drawable/ic_menu_add" />
+
+            </LinearLayout>
+
+            </LinearLayout>
+
+        </ViewSwitcher>
+
+    <!-- The elements for this list are on "tag list adapter LAYOUT" -->
+
+
 
 
     <LinearLayout

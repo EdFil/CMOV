@@ -12,10 +12,11 @@ import android.view.Window;
 import android.widget.Button;
 import android.widget.CompoundButton;
 import android.widget.EditText;
-import android.widget.ListView;
+import android.widget.LinearLayout;
 import android.widget.Switch;
 import android.widget.TextView;
 import android.widget.Toast;
+import android.widget.ViewSwitcher;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -24,19 +25,19 @@ import pt.ulisboa.tecnico.cmov.airdesk.R;
 import pt.ulisboa.tecnico.cmov.airdesk.adapter.TagListAdapter;
 import pt.ulisboa.tecnico.cmov.airdesk.core.tag.Tag;
 import pt.ulisboa.tecnico.cmov.airdesk.core.user.UserManager;
-import pt.ulisboa.tecnico.cmov.airdesk.core.workspace.Workspace;
 import pt.ulisboa.tecnico.cmov.airdesk.core.workspace.WorkspaceManager;
 import pt.ulisboa.tecnico.cmov.airdesk.core.workspace.exception.WorkspaceException;
+import pt.ulisboa.tecnico.cmov.airdesk.custom.PredicateLayout;
 
 public class NewWorkspaceFragment extends DialogFragment {
 
     List<String> mTagCache;
-    TagListAdapter mTagListAdapter;
 
     Button cancelButton, createButton, addTagButton;
     EditText workspaceNameText, quotaValueText, newTagText;
     Switch privacySwitch;
-    ListView tagList;
+    ViewSwitcher mTagViewSwitcher;
+    PredicateLayout mTagListLayout;
     TextView tags;
 
     OnNewWorkspaceFragmentListener mCallback;
@@ -51,7 +52,7 @@ public class NewWorkspaceFragment extends DialogFragment {
     }
 
     @Override
-    public View onCreateView(LayoutInflater inflater, final ViewGroup container, Bundle savedInstanceState) {
+    public View onCreateView(final LayoutInflater inflater, final ViewGroup container, Bundle savedInstanceState) {
 
         getDialog().getWindow().requestFeature(Window.FEATURE_NO_TITLE);
 
@@ -67,11 +68,8 @@ public class NewWorkspaceFragment extends DialogFragment {
         quotaValueText = (EditText) view.findViewById(R.id.editQuota);
         privacySwitch = (Switch) view.findViewById(R.id.privateSwitch);
         tags = (TextView) view.findViewById(R.id.tags);
-        tagList = (ListView) view.findViewById(R.id.tagList);
-
-        addTagButton.setVisibility(View.INVISIBLE);
-        newTagText.setVisibility(View.INVISIBLE);
-        tags.setVisibility(View.INVISIBLE);
+        mTagListLayout = (PredicateLayout) view.findViewById(R.id.tagList);
+        mTagViewSwitcher = (ViewSwitcher) view.findViewById(R.id.tagViewSwitcher);
 
         cancelButton.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -93,35 +91,12 @@ public class NewWorkspaceFragment extends DialogFragment {
             }
         }});
 
-
-        mTagListAdapter = new TagListAdapter(view.getContext(), new ArrayList<String>());
-        tagList.setAdapter(mTagListAdapter);
-
-
         // OnChangeListener for switch
         privacySwitch.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
             // b = isPrivate
             @Override
             public void onCheckedChanged(CompoundButton compoundButton, boolean b) {
-
-                // if private hide, if public make visible
-                addTagButton.setVisibility(b ? View.VISIBLE : View.INVISIBLE);
-                newTagText.setVisibility(b ? View.VISIBLE : View.INVISIBLE);
-                tags.setVisibility(b ? View.VISIBLE : View.INVISIBLE);
-
-                if(!b) {
-
-                    // if the switch is switched to Private, clear list from adapter
-                    // but save on mTagCache (auxiliary list)
-                    mTagCache.clear();
-                    for(int i = 0; i < mTagListAdapter.getCount(); i++){
-                        mTagCache.add(mTagListAdapter.getItem(i));
-                    }
-                    mTagListAdapter.clear();
-                }
-                else{
-                    mTagListAdapter.addAll(mTagCache);
-                }
+                mTagViewSwitcher.showNext();
             }
         });
 
@@ -133,7 +108,15 @@ public class NewWorkspaceFragment extends DialogFragment {
                 String tag = tagString.getText().toString().trim();
 
                 if (tag.length() > 0) {
-                    mTagListAdapter.add(tag);
+                    View view = inflater.inflate(R.layout.tag_list_adapter, null);
+                    mTagListLayout.addView(view);
+                    ((TextView)view.findViewById(R.id.tagName)).setText(tag);
+                    view.findViewById(R.id.removeTagButton).setOnClickListener(new View.OnClickListener() {
+                        @Override
+                        public void onClick(View v) {
+                            mTagListLayout.removeView((PredicateLayout)v.getParent());
+                        }
+                    });
                     tagString.getText().clear();
                 }
             }
@@ -149,8 +132,8 @@ public class NewWorkspaceFragment extends DialogFragment {
 
                 ArrayList<Tag> tags = new ArrayList<>();
 
-                for(int i = 0; i < tagList.getChildCount(); i++)
-                    tags.add(new Tag(((TextView)(tagList.getChildAt(i)).findViewById(R.id.tagName)).getText().toString()));
+                for(int i = 0; i < mTagListLayout.getChildCount(); i++)
+                    tags.add(new Tag(((TextView) (mTagListLayout.getChildAt(0)).findViewById(R.id.tagName)).getText().toString()));
 
                 try {
                     // Create workspace with associated user (owner) in database
