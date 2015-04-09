@@ -3,24 +3,15 @@ package pt.ulisboa.tecnico.cmov.airdesk;
 import android.app.AlertDialog;
 import android.content.DialogInterface;
 import android.content.Intent;
-import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.support.v7.app.ActionBarActivity;
-import android.util.Log;
 import android.view.View;
-import android.widget.AdapterView;
-import android.widget.AutoCompleteTextView;
 import android.widget.Button;
-import android.widget.CheckBox;
-import android.widget.EditText;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import pt.ulisboa.tecnico.cmov.airdesk.adapter.UserListAdapter;
 import pt.ulisboa.tecnico.cmov.airdesk.core.user.User;
 import pt.ulisboa.tecnico.cmov.airdesk.core.user.UserManager;
-import pt.ulisboa.tecnico.cmov.airdesk.fragment.WorkspacesFragment;
-import pt.ulisboa.tecnico.cmov.airdesk.util.Constants;
 
 public class ManageAccountActivity extends ActionBarActivity {
 

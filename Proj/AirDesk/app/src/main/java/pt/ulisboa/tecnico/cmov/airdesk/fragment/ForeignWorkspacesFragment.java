@@ -25,22 +25,20 @@ import pt.ulisboa.tecnico.cmov.airdesk.core.workspace.Workspace;
 import pt.ulisboa.tecnico.cmov.airdesk.core.workspace.WorkspaceManager;
 import pt.ulisboa.tecnico.cmov.airdesk.util.Constants;
 
-public class WorkspacesFragment extends Fragment {
+public class ForeignWorkspacesFragment extends Fragment {
 
 //    Context context = getActivity().getApplicationContext();
-    public static final String TAG = WorkspacesFragment.class.getSimpleName();
+    public static final String TAG = ForeignWorkspacesFragment.class.getSimpleName();
 
     WorkspaceManager manager;
 
     WorkspaceListAdapter mWorkspaceListAdapter;
     private boolean isLocalWorkspaceAdapter;
 
-    public WorkspacesFragment() {}
+    public ForeignWorkspacesFragment() {}
 
-    public static WorkspacesFragment newInstance(boolean isLocalWorkspace) {
-        WorkspacesFragment wf = new WorkspacesFragment();
-        wf.setLocalWorkspaceFragment(isLocalWorkspace);
-        return wf;
+    public static ForeignWorkspacesFragment newInstance() {
+        return new ForeignWorkspacesFragment();
     }
 
     @Override
@@ -49,10 +47,9 @@ public class WorkspacesFragment extends Fragment {
         View workspaceFragmentView = inflater.inflate(R.layout.fragment_workspaces, container, false);
 
         WorkspaceManager.getInstance().refreshWorkspaceList();
-        if(isLocalWorkspaceAdapter)
-            mWorkspaceListAdapter = new WorkspaceListAdapter(context, WorkspaceManager.getInstance().getLocalWorkspaces());
-        else
-            mWorkspaceListAdapter = new WorkspaceListAdapter(context, WorkspaceManager.getInstance().getForeignWorkspaces());
+
+        mWorkspaceListAdapter = new WorkspaceListAdapter(context, WorkspaceManager.getInstance().getForeignWorkspaces());
+
 
         ListView listView = (ListView) workspaceFragmentView.findViewById(R.id.myWorkspacesList);
         listView.setAdapter(mWorkspaceListAdapter);
@@ -137,10 +134,6 @@ public class WorkspacesFragment extends Fragment {
                 break;
         }
         return true;
-    }
-
-    public void setLocalWorkspaceFragment(boolean isLocalWorkspace) {
-        isLocalWorkspaceAdapter = isLocalWorkspace;
     }
 
     @Override

@@ -21,13 +21,13 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import pt.ulisboa.tecnico.cmov.airdesk.core.user.UserManager;
-import pt.ulisboa.tecnico.cmov.airdesk.core.workspace.Workspace;
 import pt.ulisboa.tecnico.cmov.airdesk.core.workspace.WorkspaceManager;
 import pt.ulisboa.tecnico.cmov.airdesk.fragment.FilesFragment;
+import pt.ulisboa.tecnico.cmov.airdesk.fragment.ForeignWorkspacesFragment;
+import pt.ulisboa.tecnico.cmov.airdesk.fragment.LocalWorkspacesFragment;
 import pt.ulisboa.tecnico.cmov.airdesk.fragment.NavigationDrawerFragment;
 import pt.ulisboa.tecnico.cmov.airdesk.fragment.NewFileFragment;
 import pt.ulisboa.tecnico.cmov.airdesk.fragment.NewWorkspaceFragment;
-import pt.ulisboa.tecnico.cmov.airdesk.fragment.WorkspacesFragment;
 import pt.ulisboa.tecnico.cmov.airdesk.util.Constants;
 
 public class AirDeskActivity extends ActionBarActivity
@@ -105,11 +105,11 @@ public class AirDeskActivity extends ActionBarActivity
                 break;
             // MyWorkspaces : Owned workspace list fragment
             case 1:
-                fragmentManager.beginTransaction().replace(R.id.container, WorkspacesFragment.newInstance(true)).commit();
+                fragmentManager.beginTransaction().replace(R.id.container, LocalWorkspacesFragment.newInstance()).commit();
                 break;
             // Foreign Workspaces : Workspaces accessible but not owned
             case 2:
-                fragmentManager.beginTransaction().replace(R.id.container, WorkspacesFragment.newInstance(false)).commit();
+                fragmentManager.beginTransaction().replace(R.id.container, ForeignWorkspacesFragment.newInstance()).commit();
                 break;
             // Search Workspace
             case 4:
@@ -196,7 +196,7 @@ public class AirDeskActivity extends ActionBarActivity
         // as you specify a parent activity in AndroidManifest.xml.
 
         if (item.getItemId() == R.id.refresh) {
-            WorkspacesFragment workspacesFrag = (WorkspacesFragment) getSupportFragmentManager().findFragmentById(R.id.container);
+            LocalWorkspacesFragment workspacesFrag = (LocalWorkspacesFragment) getSupportFragmentManager().findFragmentById(R.id.container);
             if(workspacesFrag != null)
                 workspacesFrag.updateWorkspaceList();
             else {
@@ -213,7 +213,7 @@ public class AirDeskActivity extends ActionBarActivity
                         .setMessage("Are you sure you want to delete all your workspaces?")
                         .setPositiveButton(android.R.string.yes, new DialogInterface.OnClickListener() {
                             public void onClick(DialogInterface dialog, int which) {
-                                WorkspacesFragment workspacesFrag = (WorkspacesFragment) getSupportFragmentManager().findFragmentById(R.id.container);
+                                LocalWorkspacesFragment workspacesFrag = (LocalWorkspacesFragment) getSupportFragmentManager().findFragmentById(R.id.container);
                                 if (workspacesFrag != null)
                                     workspacesFrag.deleteAllWorkspaces();
                                 Toast.makeText(getBaseContext(), "DELETED", Toast.LENGTH_SHORT).show();
@@ -245,7 +245,7 @@ public class AirDeskActivity extends ActionBarActivity
 
     @Override
     public void updateWorkspaceList() {
-        WorkspacesFragment workspaceFrag = (WorkspacesFragment) getSupportFragmentManager().findFragmentById(R.id.container);
+        LocalWorkspacesFragment workspaceFrag = (LocalWorkspacesFragment) getSupportFragmentManager().findFragmentById(R.id.container);
 
         if (workspaceFrag != null)
             workspaceFrag.addWorkspace();

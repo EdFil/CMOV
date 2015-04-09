@@ -163,9 +163,6 @@ public class WorkspaceManager {
         return mLocalWorkspaces;
     }
 
-    public List<LocalWorkspace> getLocalWorkspaces() {
-        return mLocalWorkspaces;
-    }
 
     public void deleteAllUserWorkspaces() {
         int i = mLocalWorkspaces.size() - 1;
@@ -183,6 +180,9 @@ public class WorkspaceManager {
         workspace = editedWorkspace;
     }
 
+    public List<LocalWorkspace> getLocalWorkspaces() {
+        return mLocalWorkspaces;
+    }
     public List<ForeignWorkspace> getForeignWorkspaces() {
         return mForeignWorkspaces;
     }
