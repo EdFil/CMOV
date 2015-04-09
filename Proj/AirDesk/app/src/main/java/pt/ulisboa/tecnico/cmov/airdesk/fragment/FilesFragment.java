@@ -26,6 +26,7 @@ import pt.ulisboa.tecnico.cmov.airdesk.R;
 import pt.ulisboa.tecnico.cmov.airdesk.adapter.FileListAdapter;
 import pt.ulisboa.tecnico.cmov.airdesk.core.workspace.Workspace;
 import pt.ulisboa.tecnico.cmov.airdesk.core.workspace.WorkspaceManager;
+import pt.ulisboa.tecnico.cmov.airdesk.util.Constants;
 import pt.ulisboa.tecnico.cmov.airdesk.util.FileManager;
 
 public class FilesFragment extends Fragment {
@@ -66,12 +67,6 @@ public class FilesFragment extends Fragment {
                 String fileName = ((File) parent.getItemAtPosition(position)).getName();
                 File file = FileManager.fileNameToFile(getActivity(), mWorkspace.getName(), fileName);
 
-//                FragmentManager fragmentManager = getActivity().getSupportFragmentManager();
-//                FragmentTransaction transaction = fragmentManager.beginTransaction();
-//                transaction.addToBackStack(null);
-//                // Commit the transaction
-//                transaction.commit();
-
                 Intent intent = new Intent(getActivity(), FileActivity.class);
                 intent.putExtra("textFile", file);
                 startActivity(intent);
@@ -102,8 +97,8 @@ public class FilesFragment extends Fragment {
     }
 
     @Override
-    public void onStart() {
-        super.onStart();
+    public void onResume() {
+        super.onResume();
 
         // Define action bar title as the Workspace Name
         ((AirDeskActivity) getActivity()).getSupportActionBar().setTitle(mWorkspace.getName());
@@ -154,10 +149,12 @@ public class FilesFragment extends Fragment {
         ((AirDeskActivity) activity).onSectionAttached(1);
     }
 
-
     public void updateFileList() {
         mFileListAdapter.notifyDataSetChanged();
     }
 
 
+    public static Fragment newInstance() {
+        return new FilesFragment();
+    }
 }

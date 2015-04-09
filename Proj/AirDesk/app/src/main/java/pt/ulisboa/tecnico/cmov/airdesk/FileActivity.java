@@ -163,5 +163,4 @@ public class FileActivity extends ActionBarActivity {
 
         return sb.toString();
     }
-
 }

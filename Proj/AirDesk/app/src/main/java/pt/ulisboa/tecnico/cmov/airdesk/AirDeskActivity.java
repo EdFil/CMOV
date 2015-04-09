@@ -47,6 +47,7 @@ public class AirDeskActivity extends ActionBarActivity
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_air_desk);
+
         // Init the manager of the workspaces so it has the context of the application
         WorkspaceManager.initWorkspaceManager(getApplicationContext());
         setNavigationDrawer();
@@ -172,19 +173,24 @@ public class AirDeskActivity extends ActionBarActivity
         // as you specify a parent activity in AndroidManifest.xml.
 
         if (item.getItemId() == R.id.refresh) {
-            WorkspacesFragment frag = (WorkspacesFragment) getSupportFragmentManager().findFragmentById(R.id.container);
-            frag.updateWorkspaceList();
+            WorkspacesFragment workspacesFrag = (WorkspacesFragment) getSupportFragmentManager().findFragmentById(R.id.container);
+            if(workspacesFrag != null)
+                workspacesFrag.updateWorkspaceList();
+            else {
+                FilesFragment filesFragment = (FilesFragment) getSupportFragmentManager().findFragmentById(R.id.container);
+                if (filesFragment != null)
+                    filesFragment.updateFileList();
+            }
             return true;
         }
 
-        if(item.getItemId() == R.id.delete_all){
+        if(item.getItemId() == R.id.delete_all) {
                 new AlertDialog.Builder(this)
                         .setTitle("Delete All")
                         .setMessage("Are you sure you want to delete all your workspaces?")
                         .setPositiveButton(android.R.string.yes, new DialogInterface.OnClickListener() {
                             public void onClick(DialogInterface dialog, int which) {
                                 WorkspacesFragment workspacesFrag = (WorkspacesFragment) getSupportFragmentManager().findFragmentById(R.id.container);
-
                                 if (workspacesFrag != null)
                                     workspacesFrag.deleteAllWorkspaces();
                                 Toast.makeText(getBaseContext(), "DELETED", Toast.LENGTH_SHORT).show();
@@ -258,5 +264,4 @@ public class AirDeskActivity extends ActionBarActivity
             ((AirDeskActivity) activity).onSectionAttached(getArguments().getInt(ARG_SECTION_NUMBER));
         }
     }
-
 }
