@@ -80,9 +80,6 @@ public class SearchWorkspaceFragment extends Fragment {
             }
         });
 
-        // Register the list of Files for the ContextMenu
-        registerForContextMenu(listView);
-
         // Setup create new workspace button
         ImageButton newWorkspaceButton = (ImageButton) searchFragmentView.findViewById(R.id.searchButton);
         newWorkspaceButton.setOnClickListener(new View.OnClickListener() {
@@ -106,58 +103,12 @@ public class SearchWorkspaceFragment extends Fragment {
         return searchFragmentView;
     }
 
-    // This will be invoked when an item in the listView is long pressed
-    @Override
-    public void onCreateContextMenu(ContextMenu menu, View v, ContextMenu.ContextMenuInfo menuInfo) {
-        super.onCreateContextMenu(menu, v, menuInfo);
-        getActivity().getMenuInflater().inflate(R.menu.menu_context_my_workspaces, menu);
-    }
 
-    // This will be invoked when a menu item is selected
-    @Override
-    public boolean onContextItemSelected(MenuItem item) {
-
-        AdapterView.AdapterContextMenuInfo info = (AdapterView.AdapterContextMenuInfo) item.getMenuInfo();
-
-        Intent intent;
-        switch(item.getItemId()){
-            case R.id.menu_my_edit:
-                intent = new Intent(getActivity(), WorkspaceDetailsActivity.class);
-                intent.putExtra(WorkspaceDetailsActivity.EDIT_MODE, true);
-                intent.putExtra(Constants.WORKSPACE_INDEX, info.position);
-                getActivity().startActivity(intent);
-                break;
-            case R.id.menu_my_details:
-                intent = new Intent(getActivity(), WorkspaceDetailsActivity.class);
-                intent.putExtra(WorkspaceDetailsActivity.EDIT_MODE, false);
-                intent.putExtra(Constants.WORKSPACE_INDEX, info.position);
-                getActivity().startActivity(intent);
-                break;
-            case R.id.menu_my_delete:
-                WorkspaceManager.getInstance().deleteWorkspace(info.position);
-                updateWorkspaceList();
-                break;
-            case R.id.menu_my_invite:
-                // TODO : INVITE FOR WORKSPACE
-                Toast.makeText(getActivity(), "TODO Invite", Toast.LENGTH_SHORT).show();
-                break;
-        }
-        return true;
-    }
 
     @Override
     public void onAttach(Activity activity) {
         super.onAttach(activity);
         ((AirDeskActivity) activity).onSectionAttached(getArguments().getInt(ARG_SECTION_NUMBER));
-    }
-
-    public void addWorkspace() {
-        updateWorkspaceList();
-    }
-
-    public void deleteAllWorkspaces() {
-        manager.deleteAllUserWorkspaces();
-        updateWorkspaceList();
     }
 
     public void updateWorkspaceList() {

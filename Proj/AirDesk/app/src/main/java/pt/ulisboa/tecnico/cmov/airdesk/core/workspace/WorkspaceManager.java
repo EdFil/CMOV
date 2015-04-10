@@ -113,17 +113,33 @@ public class WorkspaceManager {
         return newWorkspace;
     }
 
-    public void deleteWorkspace(int workspaceIndex){
-        Workspace workspace = mLocalWorkspaces.get(workspaceIndex);
-        AirDeskDbHelper.getInstance(getContext()).deleteWorkspace(workspace.getDatabaseId());
-        FileManager.deleteFolder(getContext(), workspace.getName());
-        mLocalWorkspaces.remove(workspaceIndex);
+    public void deleteWorkspace(boolean isLocalWS, int workspaceIndex){
+        if(isLocalWS) {
+            Workspace workspace = mLocalWorkspaces.get(workspaceIndex);
+            AirDeskDbHelper.getInstance(getContext()).deleteWorkspace(workspace.getDatabaseId());
+            FileManager.deleteFolder(getContext(), workspace.getName());
+            mLocalWorkspaces.remove(workspaceIndex);
+        }
+        else{
+            Workspace workspace = mForeignWorkspaces.get(workspaceIndex);
+            AirDeskDbHelper.getInstance(getContext()).deleteWorkspace(workspace.getDatabaseId());
+            FileManager.deleteFolder(getContext(), workspace.getName());
+            mForeignWorkspaces.remove(workspaceIndex);
+        }
     }
 
-    public void deleteAllUserWorkspaces() {
-        int i = mLocalWorkspaces.size() - 1;
-        while (i >= 0) {
-            deleteWorkspace(i--);
+    public void deleteAllUserWorkspaces(boolean isLocalWS) {
+        if(isLocalWS) {
+            int i = mLocalWorkspaces.size() - 1;
+            while (i >= 0) {
+                deleteWorkspace(isLocalWS, i--);
+            }
+        }
+        else {
+            int i = mForeignWorkspaces.size() - 1;
+            while (i >= 0) {
+                deleteWorkspace(isLocalWS, i--);
+            }
         }
     }
 

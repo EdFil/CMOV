@@ -132,6 +132,7 @@ public class FilesFragment extends Fragment {
     public boolean onOptionsItemSelected(MenuItem item) {
         switch (item.getItemId()) {
             case R.id.refresh_files:
+                updateFileList();
                 break;
             case R.id.delete_all_files:
                 new AlertDialog.Builder(getActivity())

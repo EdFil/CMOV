@@ -1,6 +1,7 @@
 package pt.ulisboa.tecnico.cmov.airdesk.fragment;
 
 import android.app.Activity;
+import android.content.Context;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v7.app.ActionBar;
@@ -10,6 +11,7 @@ import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.CompoundButton;
 import android.widget.EditText;
+import android.widget.LinearLayout;
 import android.widget.Switch;
 import android.widget.TableLayout;
 import android.widget.TableRow;
@@ -21,10 +23,12 @@ import pt.ulisboa.tecnico.cmov.airdesk.core.tag.Tag;
 import pt.ulisboa.tecnico.cmov.airdesk.core.user.User;
 import pt.ulisboa.tecnico.cmov.airdesk.core.workspace.Workspace;
 import pt.ulisboa.tecnico.cmov.airdesk.core.workspace.WorkspaceManager;
+import pt.ulisboa.tecnico.cmov.airdesk.custom.PredicateLayout;
 
 public class WorkspacesDetailsEditFragment extends Fragment {
 
     private static final int NUM_COLUMNS_PER_ROW = 2;
+    boolean isLocal;
 
     EditText mNameInformationEdit;
     EditText mQuotaInformationEdit;
@@ -35,8 +39,11 @@ public class WorkspacesDetailsEditFragment extends Fragment {
 
     Button mAddTagButtonEdit;
 
+    PredicateLayout mTagListLayout;
     TableLayout mTagsTableLayout;
     TableLayout mUsersTableLayout;
+
+    LinearLayout quotaLayout;
 
     Workspace mWorkspace;
 
@@ -57,13 +64,23 @@ public class WorkspacesDetailsEditFragment extends Fragment {
         mPrivateInformationText = (TextView) workspaceFragmentView.findViewById(R.id.privateInformationText);
         mPublicInformationText = (TextView) workspaceFragmentView.findViewById(R.id.publicInformationText);
 
+        quotaLayout = (LinearLayout) workspaceFragmentView.findViewById(R.id.quotaLayout);
+
+        if(isLocal)
+            quotaLayout.setVisibility(View.VISIBLE);
+        else
+            quotaLayout.setVisibility(View.GONE);
+
         mNewTagInformationEdit = (EditText) workspaceFragmentView.findViewById(R.id.newTagInformationEdit);
         mAddTagButtonEdit = (Button) workspaceFragmentView.findViewById(R.id.addTagButtonEdit);
         mAddTagButtonEdit.setVisibility(mWorkspace.isPrivate() ? View.INVISIBLE : View.VISIBLE);
         mNewTagInformationEdit.setVisibility(mWorkspace.isPrivate() ? View.INVISIBLE : View.VISIBLE);
 
-        mTagsTableLayout = (TableLayout) workspaceFragmentView.findViewById(R.id.tagsTableEdit);
-        mTagsTableLayout.setStretchAllColumns(true);
+        mTagListLayout = (PredicateLayout) workspaceFragmentView.findViewById(R.id.tagListEdit);
+
+//        mTagsTableLayout = (TableLayout) workspaceFragmentView.findViewById(R.id.tagsTableEdit);
+//        mTagsTableLayout.setStretchAllColumns(true);
+
 
         mUsersTableLayout = (TableLayout) workspaceFragmentView.findViewById(R.id.usersTableEdit);
         mUsersTableLayout.setStretchAllColumns(true);
@@ -124,8 +141,9 @@ public class WorkspacesDetailsEditFragment extends Fragment {
         super.onAttach(activity);
     }
 
-    public void sendWorkspaceDetails(Workspace workspace){
+    public void sendWorkspaceDetails(Workspace workspace, boolean isLocal){
         mWorkspace = workspace;
+        this.isLocal = isLocal;
     }
 
     public Workspace getEditedWorkspace() {
@@ -140,19 +158,35 @@ public class WorkspacesDetailsEditFragment extends Fragment {
         return mWorkspace;
     }
 
-    private void addTagToTable(String tag) {
-        TextView tagText = new TextView(getActivity());
-        tagText.setText(tag);
-        tagText.setTextAppearance(getActivity(), android.R.style.TextAppearance_DeviceDefault_Medium);
-        TableRow rowToInsertTag;
-        int numRows = mTagsTableLayout.getChildCount();
-        if(numRows == 0 || ((TableRow)mTagsTableLayout.getChildAt(numRows - 1)).getChildCount() >= NUM_COLUMNS_PER_ROW) {
-            rowToInsertTag = new TableRow(getActivity());
-            mTagsTableLayout.addView(rowToInsertTag);
-        } else {
-            rowToInsertTag = (TableRow)mTagsTableLayout.getChildAt(numRows - 1);
+    private void addTagToTable(final String tag) {
+        if (tag.length() > 0) {
+            LayoutInflater inflater = (LayoutInflater)getActivity().getSystemService(Context.LAYOUT_INFLATER_SERVICE);
+            View view = inflater.inflate(R.layout.tag_list_adapter, null);
+            mTagListLayout.addView(view);
+            ((TextView)view.findViewById(R.id.tagName)).setText(tag);
+            view.findViewById(R.id.removeTagButton).setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    mTagListLayout.removeView((LinearLayout) v.getParent());
+                    WorkspaceManager.getInstance().removeTagFromWorkspace(tag, mWorkspace);
+
+                }
+            });
         }
-        rowToInsertTag.addView(tagText, ActionBar.LayoutParams.WRAP_CONTENT);
+
+
+//        TextView tagText = new TextView(getActivity());
+//        tagText.setText(tag);
+//        tagText.setTextAppearance(getActivity(), android.R.style.TextAppearance_DeviceDefault_Medium);
+//        TableRow rowToInsertTag;
+//        int numRows = mTagsTableLayout.getChildCount();
+//        if(numRows == 0 || ((TableRow)mTagsTableLayout.getChildAt(numRows - 1)).getChildCount() >= NUM_COLUMNS_PER_ROW) {
+//            rowToInsertTag = new TableRow(getActivity());
+//            mTagsTableLayout.addView(rowToInsertTag);
+//        } else {
+//            rowToInsertTag = (TableRow)mTagsTableLayout.getChildAt(numRows - 1);
+//        }
+//        rowToInsertTag.addView(tagText, ActionBar.LayoutParams.WRAP_CONTENT);
     }
 
     private void addUserToTable(String tag) {

@@ -54,6 +54,19 @@ public class AirDeskActivity extends ActionBarActivity
         setNavigationDrawer();
     }
 
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        if (!mNavigationDrawerFragment.isDrawerOpen()) {
+            // Only show items in the action bar relevant to this screen
+            // if the drawer is not showing. Otherwise, let the drawer
+            // decide what to show in the action bar.
+            getMenuInflater().inflate(R.menu.menu_air_desk, menu);
+            restoreActionBar();
+            return true;
+        }
+        return super.onCreateOptionsMenu(menu);
+    }
+
     private void setNavigationDrawer() {
         // Adding of the header to the drawer list
         ListView listView = (ListView) findViewById(R.id.list_fragment);
@@ -178,61 +191,6 @@ public class AirDeskActivity extends ActionBarActivity
         actionBar.setTitle(mTitle);
     }
 
-    @Override
-    public boolean onCreateOptionsMenu(Menu menu) {
-        if (!mNavigationDrawerFragment.isDrawerOpen()) {
-            // Only show items in the action bar relevant to this screen
-            // if the drawer is not showing. Otherwise, let the drawer
-            // decide what to show in the action bar.
-            getMenuInflater().inflate(R.menu.menu_air_desk, menu);
-            restoreActionBar();
-            return true;
-        }
-        return super.onCreateOptionsMenu(menu);
-    }
-
-    @Override
-    public boolean onOptionsItemSelected(MenuItem item) {
-        // Handle action bar item clicks here. The action bar will
-        // automatically handle clicks on the Home/Up button, so long
-        // as you specify a parent activity in AndroidManifest.xml.
-
-        if (item.getItemId() == R.id.refresh_workspaces) {
-            LocalWorkspacesFragment workspacesFrag = (LocalWorkspacesFragment) getSupportFragmentManager().findFragmentById(R.id.container);
-            if(workspacesFrag != null)
-                workspacesFrag.updateWorkspaceList();
-            else {
-                FilesFragment filesFragment = (FilesFragment) getSupportFragmentManager().findFragmentById(R.id.container);
-                if (filesFragment != null)
-                    filesFragment.updateFileList();
-            }
-            return true;
-        }
-
-        if(item.getItemId() == R.id.delete_all_workspaces) {
-                new AlertDialog.Builder(this)
-                        .setTitle("Delete All")
-                        .setMessage("Are you sure you want to delete all your workspaces?")
-                        .setPositiveButton(android.R.string.yes, new DialogInterface.OnClickListener() {
-                            public void onClick(DialogInterface dialog, int which) {
-                                LocalWorkspacesFragment workspacesFrag = (LocalWorkspacesFragment) getSupportFragmentManager().findFragmentById(R.id.container);
-                                if (workspacesFrag != null)
-                                    workspacesFrag.deleteAllWorkspaces();
-                                Toast.makeText(getBaseContext(), "DELETED", Toast.LENGTH_SHORT).show();
-                            }
-                        })
-                        .setNegativeButton(android.R.string.no, new DialogInterface.OnClickListener() {
-                            public void onClick(DialogInterface dialog, int which) {
-                                // do nothing
-                            }
-                        })
-                        .setIcon(android.R.drawable.ic_dialog_alert)
-                        .show();
-        }
-
-        return super.onOptionsItemSelected(item);
-    }
-
     //////////////////////////////////////////////////////////
     // Methods dealing with FILE FRAGMENTS
     //////////////////////////////////////////////////////////
@@ -253,9 +211,10 @@ public class AirDeskActivity extends ActionBarActivity
             workspaceFrag.addWorkspace();
     }
 
-        public void updateActionBarTitle() {
+    public void updateActionBarTitle() {
         getSupportActionBar().setTitle(mTitle);
     }
+
     /**
      * A placeholder fragment containing a simple view.
      */

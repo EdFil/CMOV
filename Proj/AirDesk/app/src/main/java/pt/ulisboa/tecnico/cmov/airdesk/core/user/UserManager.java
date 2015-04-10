@@ -80,10 +80,13 @@ public class UserManager {
     public List<User> getUsers() { return mUserList; }
 
     public void deleteUser(User user) {
-        WorkspaceManager.getInstance().deleteAllUserWorkspaces();
+        WorkspaceManager.getInstance().deleteAllUserWorkspaces(true);
+        WorkspaceManager.getInstance().deleteAllUserWorkspaces(false);
         AirDeskDbHelper.getInstance(getContext()).deleteUser(user.getDatabaseId());
         FileManager.deleteRootFolder(getContext());
         mOwner = null;
         mUserList.remove(user);
     }
+
+
 }
