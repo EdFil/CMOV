@@ -4,13 +4,13 @@
     tools:context=".AirDeskActivity">
 
     <item
-        android:id="@+id/refresh"
+        android:id="@+id/refresh_workspaces"
         android:title="@string/refresh"
         app:showAsAction="never"
         />
 
     <item
-        android:id="@+id/delete_all"
+        android:id="@+id/delete_all_workspaces"
         android:title="@string/delete_all"
         app:showAsAction="never" />
 </menu>

@@ -100,7 +100,7 @@ public class SearchWorkspaceFragment extends Fragment {
     @Override
     public void onCreateContextMenu(ContextMenu menu, View v, ContextMenu.ContextMenuInfo menuInfo) {
         super.onCreateContextMenu(menu, v, menuInfo);
-        getActivity().getMenuInflater().inflate(R.menu.menu_my_workspaces, menu);
+        getActivity().getMenuInflater().inflate(R.menu.menu_context_my_workspaces, menu);
     }
 
     // This will be invoked when a menu item is selected

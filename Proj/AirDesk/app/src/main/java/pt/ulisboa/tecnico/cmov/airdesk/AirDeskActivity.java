@@ -184,7 +184,7 @@ public class AirDeskActivity extends ActionBarActivity
             // Only show items in the action bar relevant to this screen
             // if the drawer is not showing. Otherwise, let the drawer
             // decide what to show in the action bar.
-            getMenuInflater().inflate(R.menu.air_desk, menu);
+            getMenuInflater().inflate(R.menu.menu_air_desk, menu);
             restoreActionBar();
             return true;
         }
@@ -197,7 +197,7 @@ public class AirDeskActivity extends ActionBarActivity
         // automatically handle clicks on the Home/Up button, so long
         // as you specify a parent activity in AndroidManifest.xml.
 
-        if (item.getItemId() == R.id.refresh) {
+        if (item.getItemId() == R.id.refresh_workspaces) {
             LocalWorkspacesFragment workspacesFrag = (LocalWorkspacesFragment) getSupportFragmentManager().findFragmentById(R.id.container);
             if(workspacesFrag != null)
                 workspacesFrag.updateWorkspaceList();
@@ -209,7 +209,7 @@ public class AirDeskActivity extends ActionBarActivity
             return true;
         }
 
-        if(item.getItemId() == R.id.delete_all) {
+        if(item.getItemId() == R.id.delete_all_workspaces) {
                 new AlertDialog.Builder(this)
                         .setTitle("Delete All")
                         .setMessage("Are you sure you want to delete all your workspaces?")

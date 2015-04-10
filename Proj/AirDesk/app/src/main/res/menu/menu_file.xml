@@ -5,8 +5,13 @@
     tools:context="pt.ulisboa.tecnico.cmov.airdesk.FileActivity">
 
     <item
-        android:id="@+id/action_settings"
-        android:title="@string/action_settings"
-        android:orderInCategory="100"
+        android:id="@+id/refresh_files"
+        android:title="@string/refresh"
+        app:showAsAction="never"
+        />
+
+    <item
+        android:id="@+id/delete_all_files"
+        android:title="@string/delete_all"
         app:showAsAction="never" />
 </menu>

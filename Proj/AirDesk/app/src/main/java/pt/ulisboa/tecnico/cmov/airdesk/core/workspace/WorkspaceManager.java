@@ -94,6 +94,13 @@ public class WorkspaceManager {
         mLocalWorkspaces.remove(workspaceIndex);
     }
 
+    public void deleteAllUserWorkspaces() {
+        int i = mLocalWorkspaces.size() - 1;
+        while (i >= 0) {
+            deleteWorkspace(i--);
+        }
+    }
+
     public void deleteWorkspace(Workspace workspace){
         mLocalWorkspaces.remove(workspace);
     }
@@ -117,6 +124,14 @@ public class WorkspaceManager {
         FileManager.deleteFile(getContext(), workspace.getName(), file.getName());
         AirDeskDbHelper.getInstance(getContext()).removeFileFromWorkspace(workspace.getDatabaseId(), file.getPath());
         workspace.removeFile(file);
+    }
+
+    public void removeAllFilesFromWorkspace(Workspace workspace) {
+        List<File> allFiles = workspace.getFiles();
+        int i = allFiles.size() - 1;
+        while (i >= 0) {
+            removeFileFromWorkspace(allFiles.get(i--), workspace);
+        }
     }
 
     public User addUserToWorkspace(User user, Workspace workspace) {
@@ -168,14 +183,6 @@ public class WorkspaceManager {
     public List<Workspace> getWorkspacesFromDB() {
         AirDeskDbHelper db = AirDeskDbHelper.getInstance(getContext());
         return db.getWorkspacesInfo(UserManager.getInstance().getOwner().getDatabaseId());
-    }
-
-
-    public void deleteAllUserWorkspaces() {
-        int i = mLocalWorkspaces.size() - 1;
-        while (i >= 0) {
-            deleteWorkspace(i--);
-        }
     }
 
     public Workspace getWorkspaceAtIndex(int workspaceIndex) {

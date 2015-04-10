@@ -1,14 +1,16 @@
 package pt.ulisboa.tecnico.cmov.airdesk.fragment;
 
 import android.app.Activity;
+import android.app.AlertDialog;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
-import android.support.v4.app.FragmentManager;
-import android.support.v4.app.FragmentTransaction;
 import android.view.ContextMenu;
 import android.view.LayoutInflater;
+import android.view.Menu;
+import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
@@ -26,7 +28,6 @@ import pt.ulisboa.tecnico.cmov.airdesk.R;
 import pt.ulisboa.tecnico.cmov.airdesk.adapter.FileListAdapter;
 import pt.ulisboa.tecnico.cmov.airdesk.core.workspace.Workspace;
 import pt.ulisboa.tecnico.cmov.airdesk.core.workspace.WorkspaceManager;
-import pt.ulisboa.tecnico.cmov.airdesk.util.Constants;
 import pt.ulisboa.tecnico.cmov.airdesk.util.FileManager;
 
 public class FilesFragment extends Fragment {
@@ -38,7 +39,13 @@ public class FilesFragment extends Fragment {
     List<File> mFiles;
     FileListAdapter mFileListAdapter;
 
-    public FilesFragment() {}
+    public FilesFragment() {setHasOptionsMenu(true);}
+
+    @Override
+    public void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        setHasOptionsMenu(true);
+    }
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
@@ -72,6 +79,8 @@ public class FilesFragment extends Fragment {
                 intent.putExtra("workspaceIndex", mWorkspace);
                 startActivity(intent);
             }
+
+
         });
 
         // Register the list of Files for the ContextMenu
@@ -93,9 +102,15 @@ public class FilesFragment extends Fragment {
                 newFileFragment.show(getActivity().getFragmentManager(), "New File");
             }
         });
-
         return fileFragmentView;
     }
+
+//    @Override
+//    public void onActivityCreated(Bundle savedInstanceState) {
+//        super.onActivityCreated(savedInstanceState);
+//        // Indicate that this fragment would like to influence the set of actions in the action bar.
+//        setHasOptionsMenu(true);
+//    }
 
     @Override
     public void onResume() {
@@ -106,11 +121,46 @@ public class FilesFragment extends Fragment {
         updateFileList();
     }
 
+    @Override
+    public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
+        menu.clear();
+        inflater.inflate(R.menu.menu_file, menu);
+        super.onCreateOptionsMenu(menu, inflater);
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        switch (item.getItemId()) {
+            case R.id.refresh_files:
+                break;
+            case R.id.delete_all_files:
+                new AlertDialog.Builder(getActivity())
+                        .setTitle("Delete All")
+                        .setMessage("Are you sure you want to delete all your files from this workspace?")
+                        .setPositiveButton(android.R.string.yes, new DialogInterface.OnClickListener() {
+                            public void onClick(DialogInterface dialog, int which) {
+                                WorkspaceManager.getInstance().removeAllFilesFromWorkspace(mWorkspace);
+                                mFileListAdapter.notifyDataSetChanged();
+                                Toast.makeText(getActivity(), "DELETED", Toast.LENGTH_SHORT).show();
+                            }
+                        })
+                        .setNegativeButton(android.R.string.no, new DialogInterface.OnClickListener() {
+                            public void onClick(DialogInterface dialog, int which) {
+                                // do nothing
+                            }
+                        })
+                        .setIcon(android.R.drawable.ic_dialog_alert)
+                        .show();
+                break;
+        }
+        return super.onOptionsItemSelected(item);
+    }
+
     // This will be invoked when an item in the listView is long pressed
     @Override
     public void onCreateContextMenu(ContextMenu menu, View v, ContextMenu.ContextMenuInfo menuInfo) {
         super.onCreateContextMenu(menu, v, menuInfo);
-        getActivity().getMenuInflater().inflate(R.menu.menu_my_workspaces, menu);
+        getActivity().getMenuInflater().inflate(R.menu.menu_context_my_files, menu);
     }
 
     // This will be invoked when a menu item is selected
@@ -119,26 +169,11 @@ public class FilesFragment extends Fragment {
 
         AdapterView.AdapterContextMenuInfo info = (AdapterView.AdapterContextMenuInfo) item.getMenuInfo();
 
-        Intent intent;
         switch(item.getItemId()){
-            case R.id.menu_my_edit:
-//                intent = new Intent(getActivity(), WorkspaceDetailsActivity.class);
-//                intent.putExtra(WorkspaceDetailsActivity.EDIT_MODE, true);
-//                intent.putExtra(WorkspaceDetailsActivity.WORKSPACE_INDEX_TAG, info.position);
-//                getActivity().startActivity(intent);
-                break;
-            case R.id.menu_my_details:
-//                intent = new Intent(getActivity(), WorkspaceDetailsActivity.class);
-//                intent.putExtra(WorkspaceDetailsActivity.EDIT_MODE, false);
-//                intent.putExtra(WorkspaceDetailsActivity.WORKSPACE_INDEX_TAG, info.position);
-//                getActivity().startActivity(intent);
-                break;
-            case R.id.menu_my_delete:
-//                Workspace selectedWorkspace = (Workspace)((ListView)info.targetView.getParent()).getAdapter().getItem(info.position);
-//                WorkspaceManager.getInstance().deleteWorkspace(selectedWorkspace);
-                break;
-            case R.id.menu_my_invite:
-                Toast.makeText(getActivity(), "TODO Invite", Toast.LENGTH_SHORT).show();
+            case R.id.menu_file_delete:
+                File file = mFileListAdapter.getItem(info.position);
+                WorkspaceManager.getInstance().removeFileFromWorkspace(file, mWorkspace);
+                mFileListAdapter.notifyDataSetChanged();
                 break;
         }
         return true;
