@@ -70,18 +70,20 @@ public class WorkspaceManager {
         if(AirDeskDbHelper.getInstance(getContext()).isWorkspaceNameAvailable(name, owner.getEmail()))
             throw new WorkspaceAlreadyExistsException();
 
+        ArrayList<File> files = new ArrayList<>();
+        ArrayList<User> users = new ArrayList<>();
+        users.add(owner);
+
+        LocalWorkspace newWorkspace = new LocalWorkspace(name, owner, quota, isPrivate, tags, users, files, this);
+
         long workspaceId = AirDeskDbHelper.getInstance(getContext()).insertWorkspace(name, owner.getDatabaseId(), quota, isPrivate, owner.getDatabaseId());
         FileManager.createFolder(getContext(), name);
         for(Tag tag : tags) {
             AirDeskDbHelper.getInstance(getContext()).addTagToWorkspace(workspaceId, tag.getText());
         }
         AirDeskDbHelper.getInstance(getContext()).addUserToWorkspace(workspaceId, owner.getDatabaseId());
+        newWorkspace.setDatabaseId(workspaceId);
 
-        ArrayList<File> files = new ArrayList<>();
-        ArrayList<User> users = new ArrayList<>();
-        users.add(owner);
-
-        LocalWorkspace newWorkspace = new LocalWorkspace(workspaceId, name, owner, quota, isPrivate, tags, users, files, this);
         mLocalWorkspaces.add(newWorkspace);
 
         return newWorkspace;

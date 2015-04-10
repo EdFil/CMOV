@@ -23,6 +23,7 @@ import pt.ulisboa.tecnico.cmov.airdesk.core.workspace.ForeignWorkspace;
 import pt.ulisboa.tecnico.cmov.airdesk.core.workspace.LocalWorkspace;
 import pt.ulisboa.tecnico.cmov.airdesk.core.workspace.Workspace;
 import pt.ulisboa.tecnico.cmov.airdesk.core.workspace.WorkspaceManager;
+import pt.ulisboa.tecnico.cmov.airdesk.core.workspace.exception.WorkspaceException;
 import pt.ulisboa.tecnico.cmov.airdesk.database.AirDeskContract.FilesEntry;
 import pt.ulisboa.tecnico.cmov.airdesk.database.AirDeskContract.TagsEntry;
 import pt.ulisboa.tecnico.cmov.airdesk.database.AirDeskContract.UsersEntry;
@@ -122,6 +123,9 @@ public class AirDeskDbHelper extends SQLiteOpenHelper {
 
         long rowId = db.insert(AirDeskContract.WorkspaceEntry.TABLE_NAME, null, values);
         db.close();
+
+        if(rowId == -1)
+            throw new WorkspaceException("Could not add Workspace");
 
         return rowId;
     }
