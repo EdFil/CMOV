@@ -361,6 +361,45 @@ public class AirDeskDbHelper extends SQLiteOpenHelper {
         return workspaces;
     }
 
+    public List<ForeignWorkspace> getForeignWorkspacesByUserId(long userId) {
+        HashMap<Long, ArrayList<Tag>> tagList = getAllTagsInMap();
+        HashMap<Long, ArrayList<User>> userList = getAllUsersInMap();
+        HashMap<Long, ArrayList<File>> fileList = getAllFilesInMap();
+
+        SQLiteDatabase db = mInstance.getReadableDatabase();
+
+        Cursor workspaceCursor = db.rawQuery("SELECT * FROM " + WorkspaceEntry.TABLE_NAME + " WHERE " + WorkspaceEntry.COLUMN_WORKSPACE_USER + " = " + userId, null);
+
+        int columnIdIndex = workspaceCursor.getColumnIndex(WorkspaceEntry._ID);
+        int columnNameIndex = workspaceCursor.getColumnIndex(WorkspaceEntry.COLUMN_WORKSPACE_NAME);
+        int columnOwnerIndex = workspaceCursor.getColumnIndex(WorkspaceEntry.COLUMN_OWNER_KEY);
+        int columnQuotaIndex = workspaceCursor.getColumnIndex(WorkspaceEntry.COLUMN_WORKSPACE_QUOTA);
+        int columnIsPrivateIndex = workspaceCursor.getColumnIndex(WorkspaceEntry.COLUMN_WORKSPACE_IS_PRIVATE);
+        int columnUserIndex = workspaceCursor.getColumnIndex(WorkspaceEntry.COLUMN_WORKSPACE_USER);
+
+        List<ForeignWorkspace> workspaces = new ArrayList<>();
+
+        while (workspaceCursor.moveToNext()) {
+            User owner = UserManager.getInstance().getUserById(workspaceCursor.getLong(columnOwnerIndex));
+            User user = UserManager.getInstance().getUserById(workspaceCursor.getLong(columnUserIndex));
+
+            long workspaceId = workspaceCursor.getLong(columnIdIndex);
+
+                workspaces.add(new ForeignWorkspace(
+                        workspaceId,
+                        workspaceCursor.getString(columnNameIndex),
+                        owner,
+                        workspaceCursor.getLong(columnQuotaIndex),
+                        workspaceCursor.getInt(columnIsPrivateIndex) == 1 ? true : false,
+                        tagList.containsKey(workspaceId) ? tagList.get(workspaceId) : new ArrayList<Tag>(),
+                        userList.containsKey(workspaceId) ? userList.get(workspaceId) : new ArrayList<User>(),
+                        fileList.containsKey(workspaceId) ? fileList.get(workspaceId) : new ArrayList<File>(),
+                        WorkspaceManager.getInstance()));
+
+        }
+        return workspaces;
+    }
+
     public HashMap<Long, ArrayList<Tag>> getAllTagsInMap(){
         SQLiteDatabase db = mInstance.getReadableDatabase();
         HashMap<Long, ArrayList<Tag>> workspaceTags = new HashMap<Long, ArrayList<Tag>>();
@@ -583,36 +622,6 @@ public class AirDeskDbHelper extends SQLiteOpenHelper {
         db.update(WorkspaceEntry.TABLE_NAME, values, WorkspaceEntry._ID + "=" + workspaceId, null);
 
         db.close();
-    }
-
-    public ArrayList<LocalWorkspace> getForeignWorkspacesInfo(long userId) {
-        HashMap<Long, ArrayList<Tag>> tagList = getAllTagsInMap();
-        HashMap<Long, ArrayList<User>> userList = getAllUsersInMap();
-        HashMap<Long, ArrayList<File>> fileList = getAllFilesInMap();
-
-        SQLiteDatabase db = mInstance.getReadableDatabase();
-
-        Cursor workspaceCursor = db.rawQuery("SELECT * FROM " + WorkspaceEntry.TABLE_NAME + " WHERE " + WorkspaceEntry.COLUMN_WORKSPACE_USER + " = " + userId
-                , null);
-        ArrayList<LocalWorkspace> workspaces = new ArrayList<>();
-
-        while (workspaceCursor.moveToNext()) {
-            long workspaceId = workspaceCursor.getLong(workspaceCursor.getColumnIndex(AirDeskContract.WorkspaceEntry._ID));
-            workspaces.add(new LocalWorkspace(
-                    workspaceId,
-                    workspaceCursor.getString(workspaceCursor.getColumnIndex(AirDeskContract.WorkspaceEntry.COLUMN_WORKSPACE_NAME)),
-                    UserManager.getInstance().getUserById(workspaceCursor.getLong(workspaceCursor.getColumnIndex(AirDeskContract.WorkspaceEntry.COLUMN_OWNER_KEY))),
-                    workspaceCursor.getLong(workspaceCursor.getColumnIndex(AirDeskContract.WorkspaceEntry.COLUMN_WORKSPACE_QUOTA)),
-                    workspaceCursor.getInt(workspaceCursor.getColumnIndex(AirDeskContract.WorkspaceEntry.COLUMN_WORKSPACE_IS_PRIVATE)) == 1 ? true : false,
-                    tagList.containsKey(workspaceId) ? tagList.get(workspaceId) : new ArrayList<Tag>(),
-                    userList.containsKey(workspaceId) ? userList.get(workspaceId) : new ArrayList<User>(),
-                    fileList.containsKey(workspaceId) ? fileList.get(workspaceId) : new ArrayList<File>(),
-                    WorkspaceManager.getInstance()
-            ));
-            workspaces.get(workspaces.size() - 1).setDatabaseId(workspaceId);
-        }
-
-        return workspaces;
     }
 
     public List<ForeignWorkspace> getForeignWorkspacesWithTags(long ownerDbId, String[] tags) {

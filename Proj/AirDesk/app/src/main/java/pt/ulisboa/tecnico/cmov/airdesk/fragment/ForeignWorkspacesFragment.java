@@ -15,10 +15,13 @@ import android.widget.AdapterView;
 import android.widget.ListView;
 import android.widget.Toast;
 
+import java.util.List;
+
 import pt.ulisboa.tecnico.cmov.airdesk.AirDeskActivity;
 import pt.ulisboa.tecnico.cmov.airdesk.R;
 import pt.ulisboa.tecnico.cmov.airdesk.WorkspaceDetailsActivity;
 import pt.ulisboa.tecnico.cmov.airdesk.adapter.WorkspaceListAdapter;
+import pt.ulisboa.tecnico.cmov.airdesk.core.workspace.ForeignWorkspace;
 import pt.ulisboa.tecnico.cmov.airdesk.core.workspace.Workspace;
 import pt.ulisboa.tecnico.cmov.airdesk.core.workspace.WorkspaceManager;
 import pt.ulisboa.tecnico.cmov.airdesk.util.Constants;
@@ -74,8 +77,20 @@ public class ForeignWorkspacesFragment extends Fragment {
                 FragmentTransaction transaction = fragmentManager.beginTransaction();
 
                 FilesFragment filesFragment = new FilesFragment();
+
+                ForeignWorkspace foreignWorkspace = (ForeignWorkspace) parent.getItemAtPosition(position);
+                long foreignId = foreignWorkspace.getOwner().getDatabaseId();
+                String foreignName = foreignWorkspace.getName();
+
+                List<ForeignWorkspace> foreignWorkspaceList = WorkspaceManager.getInstance().getWorkspacesFromDB(foreignId);
+                for (ForeignWorkspace foreignWorkspaceElement : foreignWorkspaceList)
+                    if(foreignWorkspaceElement.getName().equals(foreignName)) {
+                        foreignWorkspace = foreignWorkspaceElement;
+                        break;
+                    }
+
                 Bundle bundle = new Bundle();
-                bundle.putParcelable("Workspace", (Workspace) parent.getItemAtPosition(position));
+                bundle.putParcelable("Workspace", foreignWorkspace);
                 filesFragment.setArguments(bundle);
 
                 transaction.replace(R.id.container, filesFragment);

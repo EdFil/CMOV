@@ -16,8 +16,6 @@ import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import org.w3c.dom.Text;
-
 import java.util.ArrayList;
 import java.util.List;
 
@@ -72,7 +70,6 @@ public class SearchWorkspaceFragment extends Fragment {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
 
-                // TODO : REMOVE DATABASEID FROM USAGE HEREEEE!
                 Workspace workspace = mWorkspaceListAdapter.getItem(position);
                 try {
                     WorkspaceManager.getInstance().insertWorkspaceToForeignWorkspaces(workspace);

@@ -1,9 +1,6 @@
 package pt.ulisboa.tecnico.cmov.airdesk.core.workspace;
 
 import android.content.Context;
-import android.database.sqlite.SQLiteConstraintException;
-import android.widget.EditText;
-import android.widget.Toast;
 
 import java.io.File;
 import java.text.SimpleDateFormat;
@@ -210,6 +207,13 @@ public class WorkspaceManager {
         AirDeskDbHelper db = AirDeskDbHelper.getInstance(getContext());
         return db.getWorkspacesInfo(UserManager.getInstance().getOwner().getDatabaseId());
     }
+
+    public List<ForeignWorkspace> getWorkspacesFromDB(long foreignId) {
+
+        AirDeskDbHelper db = AirDeskDbHelper.getInstance(getContext());
+        return db.getForeignWorkspacesByUserId(foreignId);
+    }
+
 
 
     public Workspace getWorkspaceAtIndex(boolean isLocalWS, int workspaceIndex) {
