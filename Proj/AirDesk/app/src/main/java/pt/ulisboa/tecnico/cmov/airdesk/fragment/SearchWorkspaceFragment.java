@@ -72,7 +72,12 @@ public class SearchWorkspaceFragment extends Fragment {
 
                 // TODO : REMOVE DATABASEID FROM USAGE HEREEEE!
                 Workspace workspace = mWorkspaceListAdapter.getItem(position);
-                WorkspaceManager.getInstance().insertWorkspaceToForeignWorkspaces(workspace);
+                try {
+                    WorkspaceManager.getInstance().insertWorkspaceToForeignWorkspaces(workspace);
+                    Toast.makeText(getActivity(), "Workspace added to Foreign Workspaces", Toast.LENGTH_SHORT).show();
+                } catch(Exception e) {
+                    Toast.makeText(getActivity(), "Workspace already at Foreign Workspaces", Toast.LENGTH_SHORT).show();
+                }
             }
         });
 

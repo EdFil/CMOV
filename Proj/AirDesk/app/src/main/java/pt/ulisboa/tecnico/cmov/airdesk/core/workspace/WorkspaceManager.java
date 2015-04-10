@@ -3,6 +3,7 @@ package pt.ulisboa.tecnico.cmov.airdesk.core.workspace;
 import android.content.Context;
 import android.database.sqlite.SQLiteConstraintException;
 import android.widget.EditText;
+import android.widget.Toast;
 
 import java.io.File;
 import java.text.SimpleDateFormat;
@@ -224,6 +225,6 @@ public class WorkspaceManager {
     }
 
     public void insertWorkspaceToForeignWorkspaces(Workspace workspace) {
-        addForeignWorkspace(workspace.getName(), workspace.getOwner(), workspace.getQuota(), workspace.isPrivate(), workspace.getTags(), workspace.getUsers(), workspace.getFiles(), WorkspaceManager.getInstance());
+        addForeignWorkspace(workspace.getName(), workspace.getOwner(), workspace.getMaxQuota(), workspace.isPrivate(), workspace.getTags(), workspace.getUsers(), workspace.getFiles(), WorkspaceManager.getInstance());
     }
 }
