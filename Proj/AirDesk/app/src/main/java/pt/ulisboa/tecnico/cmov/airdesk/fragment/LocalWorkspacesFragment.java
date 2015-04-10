@@ -1,6 +1,8 @@
 package pt.ulisboa.tecnico.cmov.airdesk.fragment;
 
 import android.app.Activity;
+import android.app.AlertDialog;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
@@ -8,12 +10,15 @@ import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
 import android.view.ContextMenu;
 import android.view.LayoutInflater;
+import android.view.Menu;
+import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.Button;
 import android.widget.ListView;
+import android.widget.Toast;
 
 import pt.ulisboa.tecnico.cmov.airdesk.AirDeskActivity;
 import pt.ulisboa.tecnico.cmov.airdesk.InviteForWorkspaceActivity;
@@ -38,7 +43,7 @@ public class LocalWorkspacesFragment extends Fragment {
 
     WorkspaceListAdapter mWorkspaceListAdapter;
 
-    public LocalWorkspacesFragment() {}
+    public LocalWorkspacesFragment() {setHasOptionsMenu(true);}
 
     public static LocalWorkspacesFragment newInstance(int sectionNumber) {
         LocalWorkspacesFragment fragment = new LocalWorkspacesFragment();
@@ -54,6 +59,7 @@ public class LocalWorkspacesFragment extends Fragment {
         manager = WorkspaceManager.getInstance();
         manager.refreshWorkspaceLists();
         mWorkspaceListAdapter = new WorkspaceListAdapter(getActivity(), WorkspaceManager.getInstance().getLocalWorkspaces());
+        setHasOptionsMenu(true);
     }
 
     @Override
@@ -136,7 +142,7 @@ public class LocalWorkspacesFragment extends Fragment {
                 getActivity().startActivity(intent);
                 break;
             case R.id.menu_my_delete:
-                WorkspaceManager.getInstance().deleteWorkspace(info.position);
+                WorkspaceManager.getInstance().deleteWorkspace(true, info.position);
                 updateWorkspaceList();
                 break;
             case R.id.menu_my_invite:
@@ -146,6 +152,46 @@ public class LocalWorkspacesFragment extends Fragment {
                 break;
         }
         return true;
+    }
+
+    @Override
+    public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
+        menu.clear();
+        inflater.inflate(R.menu.menu_air_desk, menu);
+        super.onCreateOptionsMenu(menu, inflater);
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        // Handle action bar item clicks here. The action bar will
+        // automatically handle clicks on the Home/Up button, so long
+        // as you specify a parent activity in AndroidManifest.xml.
+
+        if (item.getItemId() == R.id.refresh_workspaces) {
+            updateWorkspaceList();
+            return true;
+        }
+
+        if(item.getItemId() == R.id.delete_all_workspaces) {
+            new AlertDialog.Builder(getActivity())
+                    .setTitle("Delete All")
+                    .setMessage("Are you sure you want to delete all your workspaces?")
+                    .setPositiveButton(android.R.string.yes, new DialogInterface.OnClickListener() {
+                        public void onClick(DialogInterface dialog, int which) {
+                                deleteAllWorkspaces();
+                            Toast.makeText(getActivity(), "DELETED", Toast.LENGTH_SHORT).show();
+                        }
+                    })
+                    .setNegativeButton(android.R.string.no, new DialogInterface.OnClickListener() {
+                        public void onClick(DialogInterface dialog, int which) {
+                            // do nothing
+                        }
+                    })
+                    .setIcon(android.R.drawable.ic_dialog_alert)
+                    .show();
+        }
+
+        return super.onOptionsItemSelected(item);
     }
 
     @Override
@@ -159,7 +205,7 @@ public class LocalWorkspacesFragment extends Fragment {
     }
 
     public void deleteAllWorkspaces() {
-        manager.deleteAllUserWorkspaces();
+        manager.deleteAllUserWorkspaces(true);
         updateWorkspaceList();
     }
 

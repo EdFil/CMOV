@@ -53,7 +53,7 @@ public class InviteForWorkspaceActivity extends ActionBarActivity {
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
                 String userEmail = ((User) parent.getItemAtPosition(position)).getEmail();
                 User user = userManager.getUserByEmail(userEmail);
-                WorkspaceManager.getInstance().addUserToWorkspace(user, workspace);
+                WorkspaceManager.getInstance().insertWorkspaceToForeignWorkspaces(workspace, user);
                 usersToInvite.remove(user);
                 mUserListAdapter.notifyDataSetChanged();
             }
@@ -70,26 +70,26 @@ public class InviteForWorkspaceActivity extends ActionBarActivity {
             return list;
     }
 
-
-    @Override
-    public boolean onCreateOptionsMenu(Menu menu) {
-        // Inflate the menu; this adds items to the action bar if it is present.
-        getMenuInflater().inflate(R.menu.menu_invite_for_workspace, menu);
-        return true;
-    }
-
-    @Override
-    public boolean onOptionsItemSelected(MenuItem item) {
-        // Handle action bar item clicks here. The action bar will
-        // automatically handle clicks on the Home/Up button, so long
-        // as you specify a parent activity in AndroidManifest.xml.
-        int id = item.getItemId();
-
-        //noinspection SimplifiableIfStatement
-        if (id == R.id.action_settings) {
-            return true;
-        }
-
-        return super.onOptionsItemSelected(item);
-    }
+    // I guess this activity doesn't need a menu, but I will not delete it yet
+//    @Override
+//    public boolean onCreateOptionsMenu(Menu menu) {
+//        // Inflate the menu; this adds items to the action bar if it is present.
+//        getMenuInflater().inflate(R.menu.menu_invite_for_workspace, menu);
+//        return true;
+//    }
+//
+//    @Override
+//    public boolean onOptionsItemSelected(MenuItem item) {
+//        // Handle action bar item clicks here. The action bar will
+//        // automatically handle clicks on the Home/Up button, so long
+//        // as you specify a parent activity in AndroidManifest.xml.
+//        int id = item.getItemId();
+//
+//        //noinspection SimplifiableIfStatement
+//        if (id == R.id.action_settings) {
+//            return true;
+//        }
+//
+//        return super.onOptionsItemSelected(item);
+//    }
 }

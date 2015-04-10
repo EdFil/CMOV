@@ -23,6 +23,7 @@ import pt.ulisboa.tecnico.cmov.airdesk.AirDeskActivity;
 import pt.ulisboa.tecnico.cmov.airdesk.R;
 import pt.ulisboa.tecnico.cmov.airdesk.WorkspaceDetailsActivity;
 import pt.ulisboa.tecnico.cmov.airdesk.adapter.WorkspaceListAdapter;
+import pt.ulisboa.tecnico.cmov.airdesk.core.user.UserManager;
 import pt.ulisboa.tecnico.cmov.airdesk.core.workspace.ForeignWorkspace;
 import pt.ulisboa.tecnico.cmov.airdesk.core.workspace.Workspace;
 import pt.ulisboa.tecnico.cmov.airdesk.core.workspace.WorkspaceManager;
@@ -72,9 +73,9 @@ public class SearchWorkspaceFragment extends Fragment {
 
                 Workspace workspace = mWorkspaceListAdapter.getItem(position);
                 try {
-                    WorkspaceManager.getInstance().insertWorkspaceToForeignWorkspaces(workspace);
+                    WorkspaceManager.getInstance().insertWorkspaceToForeignWorkspaces(workspace, UserManager.getInstance().getOwner());
                     Toast.makeText(getActivity(), "Workspace added to Foreign Workspaces", Toast.LENGTH_SHORT).show();
-                } catch(Exception e) {
+                } catch (Exception e) {
                     Toast.makeText(getActivity(), "Workspace already at Foreign Workspaces", Toast.LENGTH_SHORT).show();
                 }
 
@@ -87,9 +88,6 @@ public class SearchWorkspaceFragment extends Fragment {
                 workspacesTagList.setVisibility(View.GONE);
             }
         });
-
-        // Register the list of Files for the ContextMenu
-        registerForContextMenu(listView);
 
         // Setup create new workspace button
         ImageButton newWorkspaceButton = (ImageButton) searchFragmentView.findViewById(R.id.searchButton);
@@ -120,58 +118,12 @@ public class SearchWorkspaceFragment extends Fragment {
         return searchFragmentView;
     }
 
-    // This will be invoked when an item in the listView is long pressed
-    @Override
-    public void onCreateContextMenu(ContextMenu menu, View v, ContextMenu.ContextMenuInfo menuInfo) {
-        super.onCreateContextMenu(menu, v, menuInfo);
-        getActivity().getMenuInflater().inflate(R.menu.menu_context_my_workspaces, menu);
-    }
 
-    // This will be invoked when a menu item is selected
-    @Override
-    public boolean onContextItemSelected(MenuItem item) {
-
-        AdapterView.AdapterContextMenuInfo info = (AdapterView.AdapterContextMenuInfo) item.getMenuInfo();
-
-        Intent intent;
-        switch(item.getItemId()){
-            case R.id.menu_my_edit:
-                intent = new Intent(getActivity(), WorkspaceDetailsActivity.class);
-                intent.putExtra(WorkspaceDetailsActivity.EDIT_MODE, true);
-                intent.putExtra(Constants.WORKSPACE_INDEX, info.position);
-                getActivity().startActivity(intent);
-                break;
-            case R.id.menu_my_details:
-                intent = new Intent(getActivity(), WorkspaceDetailsActivity.class);
-                intent.putExtra(WorkspaceDetailsActivity.EDIT_MODE, false);
-                intent.putExtra(Constants.WORKSPACE_INDEX, info.position);
-                getActivity().startActivity(intent);
-                break;
-            case R.id.menu_my_delete:
-                WorkspaceManager.getInstance().deleteWorkspace(info.position);
-                updateWorkspaceList();
-                break;
-            case R.id.menu_my_invite:
-                // TODO : INVITE FOR WORKSPACE
-                Toast.makeText(getActivity(), "TODO Invite", Toast.LENGTH_SHORT).show();
-                break;
-        }
-        return true;
-    }
 
     @Override
     public void onAttach(Activity activity) {
         super.onAttach(activity);
         ((AirDeskActivity) activity).onSectionAttached(getArguments().getInt(ARG_SECTION_NUMBER));
-    }
-
-    public void addWorkspace() {
-        updateWorkspaceList();
-    }
-
-    public void deleteAllWorkspaces() {
-        manager.deleteAllUserWorkspaces();
-        updateWorkspaceList();
     }
 
     public void updateWorkspaceList() {

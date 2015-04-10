@@ -88,21 +88,21 @@ public class WorkspaceManager {
         return newWorkspace;
     }
 
-    public Workspace addForeignWorkspace(String name, User owner, long quota, boolean isPrivate, Collection<Tag> tags, Collection<User> users, Collection<File> files) {
+    public Workspace addForeignWorkspace(User userReceiving, String name, User owner, long quota, boolean isPrivate, Collection<Tag> tags, Collection<User> users, Collection<File> files) {
         AirDeskDbHelper dbHelper = AirDeskDbHelper.getInstance(getContext());
 
         // WorkspaceId is created by the respective user's database
-        long workspaceId = dbHelper.insertWorkspace(name, owner.getDatabaseId(), quota, isPrivate, UserManager.getInstance().getOwner().getDatabaseId());
+        long workspaceId = dbHelper.insertWorkspace(name, owner.getDatabaseId(), quota, isPrivate, userReceiving.getDatabaseId());
         FileManager.createFolder(getContext(), name);
         for(Tag tag : tags) {
             dbHelper.addTagToWorkspace(workspaceId, tag.getText());
         }
         dbHelper.addUserToWorkspace(workspaceId, owner.getDatabaseId());
 
-        users.add(owner);
+        //users.add(owner);
 
         // TODO : WIFI - DIRECT THIS HAS TO CHANGE
-        users.add(UserManager.getInstance().getOwner());
+        users.add(userReceiving);
 
         ForeignWorkspace newWorkspace = new ForeignWorkspace(workspaceId, name, owner, quota, isPrivate, tags, users, files, this);
         mForeignWorkspaces.add(newWorkspace);
@@ -110,17 +110,33 @@ public class WorkspaceManager {
         return newWorkspace;
     }
 
-    public void deleteWorkspace(int workspaceIndex){
-        Workspace workspace = mLocalWorkspaces.get(workspaceIndex);
-        AirDeskDbHelper.getInstance(getContext()).deleteWorkspace(workspace.getDatabaseId());
-        FileManager.deleteFolder(getContext(), workspace.getName());
-        mLocalWorkspaces.remove(workspaceIndex);
+    public void deleteWorkspace(boolean isLocalWS, int workspaceIndex){
+        if(isLocalWS) {
+            Workspace workspace = mLocalWorkspaces.get(workspaceIndex);
+            AirDeskDbHelper.getInstance(getContext()).deleteWorkspace(workspace.getDatabaseId());
+            FileManager.deleteFolder(getContext(), workspace.getName());
+            mLocalWorkspaces.remove(workspaceIndex);
+        }
+        else{
+            Workspace workspace = mForeignWorkspaces.get(workspaceIndex);
+            AirDeskDbHelper.getInstance(getContext()).deleteWorkspace(workspace.getDatabaseId());
+            FileManager.deleteFolder(getContext(), workspace.getName());
+            mForeignWorkspaces.remove(workspaceIndex);
+        }
     }
 
-    public void deleteAllUserWorkspaces() {
-        int i = mLocalWorkspaces.size() - 1;
-        while (i >= 0) {
-            deleteWorkspace(i--);
+    public void deleteAllUserWorkspaces(boolean isLocalWS) {
+        if(isLocalWS) {
+            int i = mLocalWorkspaces.size() - 1;
+            while (i >= 0) {
+                deleteWorkspace(isLocalWS, i--);
+            }
+        }
+        else {
+            int i = mForeignWorkspaces.size() - 1;
+            while (i >= 0) {
+                deleteWorkspace(isLocalWS, i--);
+            }
         }
     }
 
@@ -240,7 +256,7 @@ public class WorkspaceManager {
         return mForeignWorkspaces;
     }
 
-    public void insertWorkspaceToForeignWorkspaces(Workspace workspace) {
-        addForeignWorkspace(workspace.getName(), workspace.getOwner(), workspace.getMaxQuota(), workspace.isPrivate(), workspace.getTags(), workspace.getUsers(), workspace.getFiles());
+    public void insertWorkspaceToForeignWorkspaces(Workspace workspace, User userReceivingWS) {
+        addForeignWorkspace(userReceivingWS, workspace.getName(), workspace.getOwner(), workspace.getMaxQuota(), workspace.isPrivate(), workspace.getTags(), workspace.getUsers(), workspace.getFiles());
     }
 }

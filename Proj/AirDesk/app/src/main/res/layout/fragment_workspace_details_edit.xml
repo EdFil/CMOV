@@ -43,6 +43,7 @@
     </LinearLayout>
 
     <LinearLayout
+        android:id="@+id/quotaLayout"
         android:layout_width="match_parent"
         android:layout_height="0dp"
         android:layout_weight="5.5"
@@ -126,14 +127,21 @@
         android:layout_width="match_parent"
         android:layout_height="0dp"
         android:layout_weight="20"
+        android:paddingTop="@dimen/activity_horizontal_margin"
         android:paddingLeft="@dimen/activity_horizontal_margin"
         android:paddingRight="@dimen/activity_horizontal_margin">
 
-            <TableLayout
-                android:id="@+id/tagsTableEdit"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content">
-            </TableLayout>
+        <pt.ulisboa.tecnico.cmov.airdesk.custom.PredicateLayout
+            android:id="@+id/tagListEdit"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:clickable="true" />
+
+            <!--<TableLayout-->
+                <!--android:id="@+id/tagsTableEdit"-->
+                <!--android:layout_width="match_parent"-->
+                <!--android:layout_height="wrap_content">-->
+            <!--</TableLayout>-->
 
     </ScrollView>
 
