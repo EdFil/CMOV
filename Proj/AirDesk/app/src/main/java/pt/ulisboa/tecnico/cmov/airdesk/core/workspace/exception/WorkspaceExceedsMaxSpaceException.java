@@ -10,7 +10,7 @@ import pt.ulisboa.tecnico.cmov.airdesk.util.FileManager;
  */
 public class WorkspaceExceedsMaxSpaceException extends WorkspaceException {
 
-    private static final String mMessage = "Workspace quota must be smalled than '%s'";
+    private static final String mMessage = "Workspace quota must be smaller than '%s'";
 
     public WorkspaceExceedsMaxSpaceException(Context context, long maxQuota) {
         super(String.format(mMessage, Formatter.formatFileSize(context, maxQuota)));

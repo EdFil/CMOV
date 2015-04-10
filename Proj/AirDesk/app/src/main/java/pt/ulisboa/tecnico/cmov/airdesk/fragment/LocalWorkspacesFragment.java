@@ -17,6 +17,7 @@ import android.widget.ListView;
 import android.widget.Toast;
 
 import pt.ulisboa.tecnico.cmov.airdesk.AirDeskActivity;
+import pt.ulisboa.tecnico.cmov.airdesk.InviteForWorkspaceActivity;
 import pt.ulisboa.tecnico.cmov.airdesk.R;
 import pt.ulisboa.tecnico.cmov.airdesk.WorkspaceDetailsActivity;
 import pt.ulisboa.tecnico.cmov.airdesk.adapter.WorkspaceListAdapter;
@@ -92,7 +93,7 @@ public class LocalWorkspacesFragment extends Fragment {
         newWorkspaceButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View buttonView) {
-                NewLocalWorkspaceFragment.newInstance().show(getActivity().getFragmentManager(), "New Workspace");
+                NewWorkspaceFragment.newInstance().show(getActivity().getFragmentManager(), "New Workspace");
             }
         });
 
@@ -138,8 +139,9 @@ public class LocalWorkspacesFragment extends Fragment {
                 updateWorkspaceList();
                 break;
             case R.id.menu_my_invite:
-                // TODO : INVITE FOR WORKSPACE
-                Toast.makeText(getActivity(), "TODO Invite", Toast.LENGTH_SHORT).show();
+                intent = new Intent(getActivity(), InviteForWorkspaceActivity.class);
+                intent.putExtra(Constants.WORKSPACE_INDEX, info.position);
+                getActivity().startActivity(intent);
                 break;
         }
         return true;

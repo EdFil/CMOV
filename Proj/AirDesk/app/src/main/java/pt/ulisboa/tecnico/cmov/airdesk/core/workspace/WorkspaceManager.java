@@ -2,6 +2,7 @@ package pt.ulisboa.tecnico.cmov.airdesk.core.workspace;
 
 import android.content.Context;
 import android.database.sqlite.SQLiteConstraintException;
+import android.widget.EditText;
 
 import java.io.File;
 import java.text.SimpleDateFormat;
@@ -70,18 +71,20 @@ public class WorkspaceManager {
         if(AirDeskDbHelper.getInstance(getContext()).isWorkspaceNameAvailable(name, owner.getEmail()))
             throw new WorkspaceAlreadyExistsException();
 
+        ArrayList<File> files = new ArrayList<>();
+        ArrayList<User> users = new ArrayList<>();
+        users.add(owner);
+
+        LocalWorkspace newWorkspace = new LocalWorkspace(name, owner, quota, isPrivate, tags, users, files, this);
+
         long workspaceId = AirDeskDbHelper.getInstance(getContext()).insertWorkspace(name, owner.getDatabaseId(), quota, isPrivate, owner.getDatabaseId());
         FileManager.createFolder(getContext(), name);
         for(Tag tag : tags) {
             AirDeskDbHelper.getInstance(getContext()).addTagToWorkspace(workspaceId, tag.getText());
         }
         AirDeskDbHelper.getInstance(getContext()).addUserToWorkspace(workspaceId, owner.getDatabaseId());
+        newWorkspace.setDatabaseId(workspaceId);
 
-        ArrayList<File> files = new ArrayList<>();
-        ArrayList<User> users = new ArrayList<>();
-        users.add(owner);
-
-        LocalWorkspace newWorkspace = new LocalWorkspace(workspaceId, name, owner, quota, isPrivate, tags, users, files, this);
         mLocalWorkspaces.add(newWorkspace);
 
         return newWorkspace;
@@ -130,7 +133,7 @@ public class WorkspaceManager {
             AirDeskDbHelper.getInstance(getContext()).addFileToWorkspace(workspace.getDatabaseId(), file.getPath(), mDateFormat.format(file.lastModified()));
             workspace.addFile(file);
             return file;
-        } catch (SQLiteConstraintException e) {
+        } catch (Exception e) {
             throw new FileAlreadyExistsException(fileName);
         }
     }
@@ -167,16 +170,16 @@ public class WorkspaceManager {
     }
 
     public void updateWorkspace(Workspace workspace, String workspaceName, Long quotaValue, Boolean isPrivate){
-        if(workspaceName != null) {
             String oldName = workspace.getName();
-            workspace.setName(workspaceName);
+            if (workspaceName != null) {
+                workspace.setName(workspaceName);
+            }
+            if (quotaValue != null)
+                workspace.setQuota(quotaValue.longValue());
+            if (isPrivate != null)
+                workspace.setIsPrivate(isPrivate.booleanValue());
             FileManager.renameFolder(getContext(), oldName, workspaceName);
-        }
-        if(quotaValue != null)
-            workspace.setQuota(quotaValue.longValue());
-        if(isPrivate != null)
-            workspace.setIsPrivate(isPrivate.booleanValue());
-        AirDeskDbHelper.getInstance(getContext()).updateWorkspace(workspace.getDatabaseId(), workspaceName, quotaValue, isPrivate);
+            AirDeskDbHelper.getInstance(getContext()).updateWorkspace(workspace.getDatabaseId(), workspaceName, quotaValue, isPrivate);
     }
 
     public Context getContext() {

@@ -20,6 +20,10 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.util.Scanner;
 
+import pt.ulisboa.tecnico.cmov.airdesk.core.file.exception.FileExceedsAvailableSpaceException;
+import pt.ulisboa.tecnico.cmov.airdesk.core.file.exception.FileExceedsMaxQuotaException;
+import pt.ulisboa.tecnico.cmov.airdesk.core.file.exception.FileException;
+import pt.ulisboa.tecnico.cmov.airdesk.core.workspace.Workspace;
 import pt.ulisboa.tecnico.cmov.airdesk.core.workspace.WorkspaceManager;
 
 
@@ -35,6 +39,7 @@ public class FileActivity extends ActionBarActivity {
     private ImageView save;
 
     private File file;
+    private Workspace workspace;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -49,6 +54,7 @@ public class FileActivity extends ActionBarActivity {
 
         Intent intent = getIntent();
         file = (File) intent.getSerializableExtra("textFile");
+        workspace = (Workspace)intent.getParcelableExtra("workspaceIndex");
 
         // Action bar back button e name
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
@@ -76,15 +82,19 @@ public class FileActivity extends ActionBarActivity {
 
     public void onClickSave(View view) {
 
-        write();
-        String fileText = read();
-        textToView.setText(fileText);
+        try {
+            write();
+            String fileText = read();
+            textToView.setText(fileText);
 
-        textToView.setVisibility(View.VISIBLE);
-        edit.setVisibility(View.VISIBLE);
+            textToView.setVisibility(View.VISIBLE);
+            edit.setVisibility(View.VISIBLE);
 
-        textToEdit.setVisibility(View.GONE);
-        save.setVisibility(View.GONE);
+            textToEdit.setVisibility(View.GONE);
+            save.setVisibility(View.GONE);
+        }catch (Exception e) {
+            Toast.makeText(getApplicationContext(), e.getMessage(), Toast.LENGTH_SHORT).show();
+        }
     }
 
     @Override
@@ -113,10 +123,20 @@ public class FileActivity extends ActionBarActivity {
 
     private void write() {
 
+        long bytesToUse = textToEdit.length() - textToView.length() + workspace.getUsedQuota();
+        long usableSpace = WorkspaceManager.getInstance().getSpaceAvailableInternalStorage();
+
+        if(bytesToUse > usableSpace) {
+            throw new FileExceedsAvailableSpaceException(bytesToUse, usableSpace);
+        }
+        if(bytesToUse > workspace.getMaxQuota()) {
+            throw new FileExceedsMaxQuotaException(bytesToUse, workspace.getMaxQuota());
+        }
+
         FileOutputStream fos = null;
         try {
             // note that there are many modes you can use
-            fos = new FileOutputStream(file);   
+            fos = new FileOutputStream(file);
             fos.write(textToEdit.getText().toString().getBytes());
 
         Toast.makeText(getApplicationContext(), "File written", Toast.LENGTH_SHORT).show();

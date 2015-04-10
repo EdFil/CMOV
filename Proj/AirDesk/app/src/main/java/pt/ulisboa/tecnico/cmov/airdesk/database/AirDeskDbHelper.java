@@ -15,6 +15,7 @@ import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 
+import pt.ulisboa.tecnico.cmov.airdesk.core.file.exception.FileAlreadyExistsException;
 import pt.ulisboa.tecnico.cmov.airdesk.core.tag.Tag;
 import pt.ulisboa.tecnico.cmov.airdesk.core.user.User;
 import pt.ulisboa.tecnico.cmov.airdesk.core.user.UserManager;
@@ -22,6 +23,7 @@ import pt.ulisboa.tecnico.cmov.airdesk.core.workspace.ForeignWorkspace;
 import pt.ulisboa.tecnico.cmov.airdesk.core.workspace.LocalWorkspace;
 import pt.ulisboa.tecnico.cmov.airdesk.core.workspace.Workspace;
 import pt.ulisboa.tecnico.cmov.airdesk.core.workspace.WorkspaceManager;
+import pt.ulisboa.tecnico.cmov.airdesk.core.workspace.exception.WorkspaceException;
 import pt.ulisboa.tecnico.cmov.airdesk.database.AirDeskContract.FilesEntry;
 import pt.ulisboa.tecnico.cmov.airdesk.database.AirDeskContract.TagsEntry;
 import pt.ulisboa.tecnico.cmov.airdesk.database.AirDeskContract.UsersEntry;
@@ -34,7 +36,7 @@ public class AirDeskDbHelper extends SQLiteOpenHelper {
     private static AirDeskDbHelper mInstance;
 
     public static final String DATABASE_NAME = "airdesk.db";
-    public static final int DATABASE_VERSION = 25;
+    public static final int DATABASE_VERSION = 27;
 
     public static synchronized AirDeskDbHelper getInstance(Context context) {
         if (mInstance == null) {
@@ -66,17 +68,18 @@ public class AirDeskDbHelper extends SQLiteOpenHelper {
                 TagsEntry._ID + " INTEGER PRIMARY KEY AUTOINCREMENT, " +
                 TagsEntry.COLUMN_TAG_NAME + " TEXT NOT NULL, " +
                 TagsEntry.COLUMN_WORKSPACE_KEY + " INTEGER NOT NULL, " +
-                "FOREIGN KEY (" + TagsEntry.COLUMN_WORKSPACE_KEY  + ") REFERENCES " + AirDeskContract.WorkspaceEntry.TABLE_NAME + "( " + AirDeskContract.WorkspaceEntry._ID + " ) " +
+                "FOREIGN KEY (" + TagsEntry.COLUMN_WORKSPACE_KEY  + ") REFERENCES " + AirDeskContract.WorkspaceEntry.TABLE_NAME + "( " + AirDeskContract.WorkspaceEntry._ID + " ), " +
+                "UNIQUE (" + TagsEntry.COLUMN_TAG_NAME + ", " + TagsEntry.COLUMN_WORKSPACE_KEY + ") " +
                 " );";
 
         final String SQL_CREATE_USER_TABLE = "CREATE TABLE " + UsersEntry.TABLE_NAME + " (" +
                 UsersEntry._ID + " INTEGER PRIMARY KEY AUTOINCREMENT, " +
-                UsersEntry.COLUMN_USER_EMAIL + " TEXT NOT NULL, " +
+                UsersEntry.COLUMN_USER_EMAIL + " TEXT UNIQUE NOT NULL, " +
                 UsersEntry.COLUMN_USER_NICK + " TEXT NOT NULL " +
                 " );";
 
         final String SQL_CREATE_FILE_TABLE = "CREATE TABLE " + AirDeskContract.FilesEntry.TABLE_NAME + " (" +
-                AirDeskContract.FilesEntry.COLUMN_FILE_PATH + " TEXT PRIMARY KEY NOT NULL, " +
+                AirDeskContract.FilesEntry.COLUMN_FILE_PATH + " TEXT UNIQUE PRIMARY KEY NOT NULL, " +
                 AirDeskContract.FilesEntry.COLUMN_WORKSPACE_KEY + " INTEGER NOT NULL, " +
                 AirDeskContract.FilesEntry.COLUMN_FILE_LAST_EDIT + " TEXT NOT NULL, " +
                 "FOREIGN KEY (" + AirDeskContract.FilesEntry.COLUMN_WORKSPACE_KEY  + ") REFERENCES " + AirDeskContract.WorkspaceEntry.TABLE_NAME + "( " + AirDeskContract.WorkspaceEntry._ID + " ) " +
@@ -121,6 +124,9 @@ public class AirDeskDbHelper extends SQLiteOpenHelper {
         long rowId = db.insert(AirDeskContract.WorkspaceEntry.TABLE_NAME, null, values);
         db.close();
 
+        if(rowId == -1)
+            throw new WorkspaceException("Could not add Workspace");
+
         return rowId;
     }
 
@@ -160,8 +166,10 @@ public class AirDeskDbHelper extends SQLiteOpenHelper {
         values.put(FilesEntry.COLUMN_FILE_PATH, filePath);
         values.put(FilesEntry.COLUMN_FILE_LAST_EDIT, lastEdited);
 
-        db.insert(AirDeskContract.FilesEntry.TABLE_NAME, null, values);
+        long id = db.insert(AirDeskContract.FilesEntry.TABLE_NAME, null, values);
         db.close();
+        if(id == -1)
+            throw new FileAlreadyExistsException(filePath);
     }
 
     public void removeFileFromWorkspace(long workspaceId, String filePath) {

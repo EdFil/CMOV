@@ -87,15 +87,6 @@ public class ForeignWorkspacesFragment extends Fragment {
         // Register the list of Files for the ContextMenu
         registerForContextMenu(listView);
 
-//        // Setup create new workspace button
-//        Button newWorkspaceButton = (Button) workspaceFragmentView.findViewById(R.id.newWorkspaceButton);
-//        newWorkspaceButton.setOnClickListener(new View.OnClickListener() {
-//            @Override
-//            public void onClick(View buttonView) {
-//                NewForeignWorkspaceFragment.newInstance().show(getActivity().getFragmentManager(), "New Workspace");
-//            }
-//        });
-
         return workspaceFragmentView;
     }
 

@@ -69,6 +69,7 @@ public class FilesFragment extends Fragment {
 
                 Intent intent = new Intent(getActivity(), FileActivity.class);
                 intent.putExtra("textFile", file);
+                intent.putExtra("workspaceIndex", mWorkspace);
                 startActivity(intent);
             }
         });

@@ -11,7 +11,7 @@ public class WorkspaceException extends RuntimeException {
         super(mMessage);
     }
 
-    WorkspaceException(String message) {
+    public WorkspaceException(String message) {
         super(message);
     }
 
