@@ -13,7 +13,10 @@ import android.widget.AdapterView;
 import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.ListView;
+import android.widget.TextView;
 import android.widget.Toast;
+
+import org.w3c.dom.Text;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -77,6 +80,14 @@ public class SearchWorkspaceFragment extends Fragment {
                 } catch(Exception e) {
                     Toast.makeText(getActivity(), "Workspace already at Foreign Workspaces", Toast.LENGTH_SHORT).show();
                 }
+
+                mWorkspaceListAdapter.clear();
+
+                TextView searchHint = (TextView) getActivity().findViewById(R.id.search_hint);
+                ListView workspacesTagList = (ListView) getActivity().findViewById(R.id.workspacesList);
+
+                searchHint.setVisibility(View.VISIBLE);
+                workspacesTagList.setVisibility(View.GONE);
             }
         });
 
@@ -97,6 +108,12 @@ public class SearchWorkspaceFragment extends Fragment {
                     mWorkspaceListAdapter.add(workspace);
 
                 mWorkspaceListAdapter.notifyDataSetChanged();
+
+                TextView searchHint = (TextView) getActivity().findViewById(R.id.search_hint);
+                ListView workspacesTagList = (ListView) getActivity().findViewById(R.id.workspacesList);
+
+                searchHint.setVisibility(View.GONE);
+                workspacesTagList.setVisibility(View.VISIBLE);
             }
         });
 
