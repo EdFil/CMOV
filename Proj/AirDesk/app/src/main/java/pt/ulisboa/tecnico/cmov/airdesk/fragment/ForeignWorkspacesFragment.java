@@ -16,6 +16,7 @@ import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
+import android.widget.Button;
 import android.widget.ListView;
 import android.widget.Toast;
 
@@ -90,6 +91,10 @@ public class ForeignWorkspacesFragment extends Fragment {
 
         // Register the list of Files for the ContextMenu
         registerForContextMenu(listView);
+
+        // Setup create new workspace button
+        Button newWorkspaceButton = (Button) workspaceFragmentView.findViewById(R.id.newWorkspaceButton);
+        newWorkspaceButton.setVisibility(View.GONE);
 
         return workspaceFragmentView;
     }

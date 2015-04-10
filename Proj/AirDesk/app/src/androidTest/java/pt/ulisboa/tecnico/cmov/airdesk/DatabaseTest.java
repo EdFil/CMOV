@@ -46,7 +46,7 @@ public class DatabaseTest extends AndroidTestCase {
         Tag tag = WorkspaceManager.getInstance().addTagToWorkspace("New Tag", workspace);
         User user = WorkspaceManager.getInstance().addUserToWorkspace(bruno, workspace);
         WorkspaceManager.getInstance().removeFileFromWorkspace(file, workspace);
-        WorkspaceManager.getInstance().removeTagFromWorkspace(tag, workspace);
+        WorkspaceManager.getInstance().removeTagFromWorkspace(tag.getText(), workspace);
         WorkspaceManager.getInstance().removeUserFromWorkspace(user, workspace);
         WorkspaceManager.getInstance().updateWorkspace(workspace, "Updated Name", 120120120l, false);
 

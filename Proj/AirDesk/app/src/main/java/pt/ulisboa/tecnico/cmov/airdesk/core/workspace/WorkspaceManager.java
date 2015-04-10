@@ -91,21 +91,21 @@ public class WorkspaceManager {
         return newWorkspace;
     }
 
-    public Workspace addForeignWorkspace(String name, User owner, long quota, boolean isPrivate, Collection<Tag> tags, Collection<User> users, Collection<File> files) {
+    public Workspace addForeignWorkspace(User userReceiving, String name, User owner, long quota, boolean isPrivate, Collection<Tag> tags, Collection<User> users, Collection<File> files) {
         AirDeskDbHelper dbHelper = AirDeskDbHelper.getInstance(getContext());
 
         // WorkspaceId is created by the respective user's database
-        long workspaceId = dbHelper.insertWorkspace(name, owner.getDatabaseId(), quota, isPrivate, UserManager.getInstance().getOwner().getDatabaseId());
+        long workspaceId = dbHelper.insertWorkspace(name, owner.getDatabaseId(), quota, isPrivate, userReceiving.getDatabaseId());
         FileManager.createFolder(getContext(), name);
         for(Tag tag : tags) {
             dbHelper.addTagToWorkspace(workspaceId, tag.getText());
         }
         dbHelper.addUserToWorkspace(workspaceId, owner.getDatabaseId());
 
-        users.add(owner);
+        //users.add(owner);
 
         // TODO : WIFI - DIRECT THIS HAS TO CHANGE
-        users.add(UserManager.getInstance().getOwner());
+        users.add(userReceiving);
 
         ForeignWorkspace newWorkspace = new ForeignWorkspace(workspaceId, name, owner, quota, isPrivate, tags, users, files, this);
         mForeignWorkspaces.add(newWorkspace);
@@ -252,7 +252,7 @@ public class WorkspaceManager {
         return mForeignWorkspaces;
     }
 
-    public void insertWorkspaceToForeignWorkspaces(Workspace workspace) {
-        addForeignWorkspace(workspace.getName(), workspace.getOwner(), workspace.getMaxQuota(), workspace.isPrivate(), workspace.getTags(), workspace.getUsers(), workspace.getFiles());
+    public void insertWorkspaceToForeignWorkspaces(Workspace workspace, User userReceivingWS) {
+        addForeignWorkspace(userReceivingWS, workspace.getName(), workspace.getOwner(), workspace.getMaxQuota(), workspace.isPrivate(), workspace.getTags(), workspace.getUsers(), workspace.getFiles());
     }
 }
