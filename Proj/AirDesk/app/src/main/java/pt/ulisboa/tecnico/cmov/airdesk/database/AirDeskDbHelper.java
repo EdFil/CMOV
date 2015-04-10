@@ -34,7 +34,7 @@ public class AirDeskDbHelper extends SQLiteOpenHelper {
     private static AirDeskDbHelper mInstance;
 
     public static final String DATABASE_NAME = "airdesk.db";
-    public static final int DATABASE_VERSION = 25;
+    public static final int DATABASE_VERSION = 26;
 
     public static synchronized AirDeskDbHelper getInstance(Context context) {
         if (mInstance == null) {
@@ -66,7 +66,8 @@ public class AirDeskDbHelper extends SQLiteOpenHelper {
                 TagsEntry._ID + " INTEGER PRIMARY KEY AUTOINCREMENT, " +
                 TagsEntry.COLUMN_TAG_NAME + " TEXT NOT NULL, " +
                 TagsEntry.COLUMN_WORKSPACE_KEY + " INTEGER NOT NULL, " +
-                "FOREIGN KEY (" + TagsEntry.COLUMN_WORKSPACE_KEY  + ") REFERENCES " + AirDeskContract.WorkspaceEntry.TABLE_NAME + "( " + AirDeskContract.WorkspaceEntry._ID + " ) " +
+                "FOREIGN KEY (" + TagsEntry.COLUMN_WORKSPACE_KEY  + ") REFERENCES " + AirDeskContract.WorkspaceEntry.TABLE_NAME + "( " + AirDeskContract.WorkspaceEntry._ID + " ), " +
+                "UNIQUE (" + TagsEntry.COLUMN_TAG_NAME + ", " + TagsEntry.COLUMN_WORKSPACE_KEY + ") " +
                 " );";
 
         final String SQL_CREATE_USER_TABLE = "CREATE TABLE " + UsersEntry.TABLE_NAME + " (" +

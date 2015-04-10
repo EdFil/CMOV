@@ -1,7 +1,6 @@
 package pt.ulisboa.tecnico.cmov.airdesk.fragment;
 
 import android.app.Activity;
-import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
@@ -93,7 +92,7 @@ public class ForeignWorkspacesFragment extends Fragment {
         newWorkspaceButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View buttonView) {
-                NewForeignWorkspaceFragment.newInstance().show(getActivity().getFragmentManager(), "New Workspace");
+                NewWorkspaceFragment.newInstance().show(getActivity().getFragmentManager(), "New Workspace");
             }
         });
 

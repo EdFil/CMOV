@@ -14,6 +14,7 @@ import android.widget.Switch;
 import android.widget.TableLayout;
 import android.widget.TableRow;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import pt.ulisboa.tecnico.cmov.airdesk.R;
 import pt.ulisboa.tecnico.cmov.airdesk.core.tag.Tag;
@@ -69,7 +70,7 @@ public class WorkspacesDetailsEditFragment extends Fragment {
 
         // Set initial values
         mNameInformationEdit.setText(mWorkspace.getName());
-        mQuotaInformationEdit.setText(String.valueOf(mWorkspace.getQuota()));
+        mQuotaInformationEdit.setText(String.valueOf(mWorkspace.getMaxQuota()));
         mPrivacyInformationSwitch.setChecked(!mWorkspace.isPrivate());
 
         for(Tag tag : mWorkspace.getTags())
@@ -131,7 +132,11 @@ public class WorkspacesDetailsEditFragment extends Fragment {
         String newWorkspaceName = mNameInformationEdit.getText().toString();
         Long newWorkspaceQuota = Long.parseLong(mQuotaInformationEdit.getText().toString().trim());
         boolean newWorkspacePrivacy = !mPrivacyInformationSwitch.isChecked();
-        WorkspaceManager.getInstance().updateWorkspace(mWorkspace, newWorkspaceName, newWorkspaceQuota, newWorkspacePrivacy);
+        try {
+            WorkspaceManager.getInstance().updateWorkspace(mWorkspace, newWorkspaceName, newWorkspaceQuota, newWorkspacePrivacy);
+        }catch (Exception e) {
+            Toast.makeText(getActivity(), e.getMessage(), Toast.LENGTH_SHORT).show();
+        }
         return mWorkspace;
     }
 
@@ -164,4 +169,6 @@ public class WorkspacesDetailsEditFragment extends Fragment {
         }
         rowToInsertTag.addView(userText, ActionBar.LayoutParams.WRAP_CONTENT);
     }
+
+
 }

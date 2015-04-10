@@ -55,10 +55,7 @@ public class WorkspacesDetailsFragment extends Fragment {
         mNameInformationText.setText(mWorkspace.getName());
         mOwnerInformationText.setText(mWorkspace.getOwner().getNick());
 
-        long bytesUsed = 0;
-        for(File file : mWorkspace.getFiles())
-            bytesUsed += file.length();
-        mQuotaInformationText.setText("Used " + bytesUsed + " out of " + mWorkspace.getQuota());
+        mQuotaInformationText.setText("Used " + mWorkspace.getUsedQuota() + " out of " + mWorkspace.getMaxQuota());
 
         mPrivacyInformationText.setText(mWorkspace.isPrivate()? "Private" : "Public");
 

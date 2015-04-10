@@ -95,7 +95,7 @@ public class LocalWorkspacesFragment extends Fragment {
         newWorkspaceButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View buttonView) {
-                NewLocalWorkspaceFragment.newInstance().show(getActivity().getFragmentManager(), "New Workspace");
+                NewWorkspaceFragment.newInstance().show(getActivity().getFragmentManager(), "New Workspace");
             }
         });
 

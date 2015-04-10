@@ -53,11 +53,11 @@ public class WorkspaceDetailsActivity extends ActionBarActivity {
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         getMenuInflater().inflate(R.menu.menu_workspace_details, menu);
-        MenuItem item = (menu.findItem(R.id.edit));
+        MenuItem edit = (menu.findItem(R.id.edit));
         if(mEditMode){
-            item.setIcon(android.R.drawable.ic_menu_info_details);
+            edit.setIcon(android.R.drawable.ic_menu_info_details);
         } else {
-            item.setIcon(android.R.drawable.ic_menu_edit);
+            edit.setIcon(android.R.drawable.ic_menu_edit);
         }
         return super.onCreateOptionsMenu(menu);
     }

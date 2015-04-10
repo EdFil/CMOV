@@ -2,6 +2,7 @@ package pt.ulisboa.tecnico.cmov.airdesk.core.workspace;
 
 import android.content.Context;
 import android.database.sqlite.SQLiteConstraintException;
+import android.widget.EditText;
 
 import java.io.File;
 import java.text.SimpleDateFormat;
@@ -144,16 +145,16 @@ public class WorkspaceManager {
     }
 
     public void updateWorkspace(Workspace workspace, String workspaceName, Long quotaValue, Boolean isPrivate){
-        if(workspaceName != null) {
             String oldName = workspace.getName();
-            workspace.setName(workspaceName);
+            if (workspaceName != null) {
+                workspace.setName(workspaceName);
+            }
+            if (quotaValue != null)
+                workspace.setQuota(quotaValue.longValue());
+            if (isPrivate != null)
+                workspace.setIsPrivate(isPrivate.booleanValue());
             FileManager.renameFolder(getContext(), oldName, workspaceName);
-        }
-        if(quotaValue != null)
-            workspace.setQuota(quotaValue.longValue());
-        if(isPrivate != null)
-            workspace.setIsPrivate(isPrivate.booleanValue());
-        AirDeskDbHelper.getInstance(getContext()).updateWorkspace(workspace.getDatabaseId(), workspaceName, quotaValue, isPrivate);
+            AirDeskDbHelper.getInstance(getContext()).updateWorkspace(workspace.getDatabaseId(), workspaceName, quotaValue, isPrivate);
     }
 
     public Context getContext() {

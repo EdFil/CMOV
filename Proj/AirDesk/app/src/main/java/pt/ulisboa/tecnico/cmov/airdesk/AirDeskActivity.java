@@ -27,14 +27,14 @@ import pt.ulisboa.tecnico.cmov.airdesk.fragment.ForeignWorkspacesFragment;
 import pt.ulisboa.tecnico.cmov.airdesk.fragment.LocalWorkspacesFragment;
 import pt.ulisboa.tecnico.cmov.airdesk.fragment.NavigationDrawerFragment;
 import pt.ulisboa.tecnico.cmov.airdesk.fragment.NewFileFragment;
-import pt.ulisboa.tecnico.cmov.airdesk.fragment.NewLocalWorkspaceFragment;
+import pt.ulisboa.tecnico.cmov.airdesk.fragment.NewWorkspaceFragment;
 import pt.ulisboa.tecnico.cmov.airdesk.fragment.SearchWorkspaceFragment;
 import pt.ulisboa.tecnico.cmov.airdesk.util.Constants;
 
 public class AirDeskActivity extends ActionBarActivity
         implements NavigationDrawerFragment.NavigationDrawerCallbacks,
                    NewFileFragment.OnNewFileFragmentListener,
-                   NewLocalWorkspaceFragment.OnNewWorkspaceFragmentListener {
+                   NewWorkspaceFragment.OnNewWorkspaceFragmentListener {
 
     public static final String TAG = AirDeskActivity.class.getSimpleName();
 
