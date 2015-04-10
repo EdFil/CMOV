@@ -91,7 +91,7 @@ public class WorkspaceManager {
         return newWorkspace;
     }
 
-    public Workspace addForeignWorkspace(String name, User owner, long quota, boolean isPrivate, Collection<Tag> tags, Collection<User> users, Collection<File> files, WorkspaceManager workspaceManager) {
+    public Workspace addForeignWorkspace(String name, User owner, long quota, boolean isPrivate, Collection<Tag> tags, Collection<User> users, Collection<File> files) {
         AirDeskDbHelper dbHelper = AirDeskDbHelper.getInstance(getContext());
 
         // WorkspaceId is created by the respective user's database
@@ -237,6 +237,6 @@ public class WorkspaceManager {
     }
 
     public void insertWorkspaceToForeignWorkspaces(Workspace workspace) {
-        addForeignWorkspace(workspace.getName(), workspace.getOwner(), workspace.getMaxQuota(), workspace.isPrivate(), workspace.getTags(), workspace.getUsers(), workspace.getFiles(), WorkspaceManager.getInstance());
+        addForeignWorkspace(workspace.getName(), workspace.getOwner(), workspace.getMaxQuota(), workspace.isPrivate(), workspace.getTags(), workspace.getUsers(), workspace.getFiles());
     }
 }

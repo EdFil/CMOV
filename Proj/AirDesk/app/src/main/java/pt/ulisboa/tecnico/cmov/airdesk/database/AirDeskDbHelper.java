@@ -656,6 +656,14 @@ public class AirDeskDbHelper extends SQLiteOpenHelper {
         db.close();
         workspaceCursor.close();
 
+        ForeignWorkspace foreignWorkspace;
+        for(int i = foreignWorkspaceList.size() - 1; i >= 0; i--) {
+            foreignWorkspace = foreignWorkspaceList.get(i);
+            if (foreignWorkspace.countWorkspaceWithName(foreignWorkspaceList, foreignWorkspace.getName()) > 1)
+                foreignWorkspaceList.remove(i);
+        }
+
+
         return foreignWorkspaceList;
 
     }
