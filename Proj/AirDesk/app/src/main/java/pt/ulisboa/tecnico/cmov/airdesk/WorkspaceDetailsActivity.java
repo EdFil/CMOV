@@ -3,12 +3,14 @@ package pt.ulisboa.tecnico.cmov.airdesk;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.v4.app.FragmentManager;
+import android.support.v4.app.FragmentTransaction;
 import android.support.v7.app.ActionBarActivity;
 import android.view.Menu;
 import android.view.MenuItem;
 
 import pt.ulisboa.tecnico.cmov.airdesk.core.workspace.Workspace;
 import pt.ulisboa.tecnico.cmov.airdesk.core.workspace.WorkspaceManager;
+import pt.ulisboa.tecnico.cmov.airdesk.fragment.FilesFragment;
 import pt.ulisboa.tecnico.cmov.airdesk.fragment.WorkspacesDetailsEditFragment;
 import pt.ulisboa.tecnico.cmov.airdesk.fragment.WorkspacesDetailsFragment;
 import pt.ulisboa.tecnico.cmov.airdesk.util.Constants;
@@ -16,6 +18,7 @@ import pt.ulisboa.tecnico.cmov.airdesk.util.Constants;
 public class WorkspaceDetailsActivity extends ActionBarActivity {
 
     public static final String EDIT_MODE = "view_mode";
+    public static final String IS_LOCAL_WS = "ws_type";
 
     boolean mEditMode;
     FragmentManager fragmentManager = getSupportFragmentManager();
@@ -32,20 +35,32 @@ public class WorkspaceDetailsActivity extends ActionBarActivity {
         Intent intent = getIntent();
         mEditMode = intent.getBooleanExtra(EDIT_MODE, false);
 
+        boolean ws_type = intent.getBooleanExtra(IS_LOCAL_WS, true);
+
         int workspaceIndex = intent.getIntExtra(Constants.WORKSPACE_INDEX, -1);
-        workspace = WorkspaceManager.getInstance().getWorkspaceAtIndex(workspaceIndex);
+        workspace = WorkspaceManager.getInstance().getWorkspaceAtIndex(ws_type, workspaceIndex);
     }
 
     @Override
     protected void onStart() {
         super.onStart();
+        FragmentManager fragmentManager = getSupportFragmentManager();
+        FragmentTransaction transaction;
         if(mEditMode){
+            transaction = fragmentManager.beginTransaction();
             editDetailsFragment = WorkspacesDetailsEditFragment.newInstance();
-            fragmentManager.beginTransaction().replace(R.id.details_container, editDetailsFragment).commit();
+            transaction.replace(R.id.details_container, editDetailsFragment);
+            // Commit the transaction
+            transaction.commit();
+
             editDetailsFragment.sendWorkspaceDetails(workspace);
         } else {
+            transaction = fragmentManager.beginTransaction();
             detailsFragment = WorkspacesDetailsFragment.newInstance();
-            fragmentManager.beginTransaction().replace(R.id.details_container, detailsFragment).commit();
+            transaction.replace(R.id.details_container, detailsFragment);
+            // Commit the transaction
+            transaction.commit();
+
             detailsFragment.sendWorkspaceDetails(workspace);
         }
     }

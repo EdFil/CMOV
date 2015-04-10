@@ -212,8 +212,11 @@ public class WorkspaceManager {
     }
 
 
-    public Workspace getWorkspaceAtIndex(int workspaceIndex) {
-        return mLocalWorkspaces.get(workspaceIndex);
+    public Workspace getWorkspaceAtIndex(boolean isLocalWS, int workspaceIndex) {
+        if(isLocalWS)
+            return mLocalWorkspaces.get(workspaceIndex);
+        else
+            return mForeignWorkspaces.get(workspaceIndex);
     }
 
     public List<ForeignWorkspace> getForeignWorkspacesWithTags(String[] tags) {

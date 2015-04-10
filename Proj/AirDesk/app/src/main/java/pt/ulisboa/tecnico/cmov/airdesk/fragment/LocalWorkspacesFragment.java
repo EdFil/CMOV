@@ -123,12 +123,14 @@ public class LocalWorkspacesFragment extends Fragment {
         switch(item.getItemId()){
             case R.id.menu_my_edit:
                 intent = new Intent(getActivity(), WorkspaceDetailsActivity.class);
+                intent.putExtra(WorkspaceDetailsActivity.IS_LOCAL_WS, true);
                 intent.putExtra(WorkspaceDetailsActivity.EDIT_MODE, true);
                 intent.putExtra(Constants.WORKSPACE_INDEX, info.position);
                 getActivity().startActivity(intent);
                 break;
             case R.id.menu_my_details:
                 intent = new Intent(getActivity(), WorkspaceDetailsActivity.class);
+                intent.putExtra(WorkspaceDetailsActivity.IS_LOCAL_WS, true);
                 intent.putExtra(WorkspaceDetailsActivity.EDIT_MODE, false);
                 intent.putExtra(Constants.WORKSPACE_INDEX, info.position);
                 getActivity().startActivity(intent);

@@ -9,7 +9,6 @@ import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ListView;
 
-import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -38,7 +37,7 @@ public class InviteForWorkspaceActivity extends ActionBarActivity {
 
         Intent intent = getIntent();
         int workspaceIndex = intent.getIntExtra(Constants.WORKSPACE_INDEX, -1);
-        workspace = WorkspaceManager.getInstance().getWorkspaceAtIndex(workspaceIndex);
+        workspace = WorkspaceManager.getInstance().getWorkspaceAtIndex(true, workspaceIndex);
 
         userManager = UserManager.getInstance();
 

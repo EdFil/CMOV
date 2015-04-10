@@ -12,7 +12,6 @@ import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
-import android.widget.Button;
 import android.widget.ListView;
 import android.widget.Toast;
 
@@ -50,6 +49,9 @@ public class ForeignWorkspacesFragment extends Fragment {
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+
+
+
         manager = WorkspaceManager.getInstance();
         manager.refreshWorkspaceLists();
         mWorkspaceListAdapter = new WorkspaceListAdapter(getActivity(), WorkspaceManager.getInstance().getForeignWorkspaces());
@@ -113,12 +115,14 @@ public class ForeignWorkspacesFragment extends Fragment {
         switch(item.getItemId()){
             case R.id.menu_foreign_edit:
                 intent = new Intent(getActivity(), WorkspaceDetailsActivity.class);
+                intent.putExtra(WorkspaceDetailsActivity.IS_LOCAL_WS, false);
                 intent.putExtra(WorkspaceDetailsActivity.EDIT_MODE, true);
                 intent.putExtra(Constants.WORKSPACE_INDEX, info.position);
                 getActivity().startActivity(intent);
                 break;
             case R.id.menu_foreign_details:
                 intent = new Intent(getActivity(), WorkspaceDetailsActivity.class);
+                intent.putExtra(WorkspaceDetailsActivity.IS_LOCAL_WS, false);
                 intent.putExtra(WorkspaceDetailsActivity.EDIT_MODE, false);
                 intent.putExtra(Constants.WORKSPACE_INDEX, info.position);
                 getActivity().startActivity(intent);
