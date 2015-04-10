@@ -69,16 +69,20 @@ public class NewFileFragment extends DialogFragment {
             public void onClick(View v) {
                 String fileName = newFileNameText.getText().toString().trim();
 
+                try {
                     // Create workspace with associated user (owner) in database
-                WorkspaceManager.getInstance().addFileToWorkspace(fileName, mWorkspace);
+                    WorkspaceManager.getInstance().addFileToWorkspace(fileName, mWorkspace);
 
-                // request the activity to update the FilesFragment's files
-                mCallback.updateFileList();
+                    // request the activity to update the FilesFragment's files
+                    mCallback.updateFileList();
 
-                Toast.makeText(v.getContext(), "File created", Toast.LENGTH_SHORT).show();
+                    Toast.makeText(v.getContext(), "File created", Toast.LENGTH_SHORT).show();
 
-                // Close dialog fragment
-                dismiss();
+                    // Close dialog fragment
+                    dismiss();
+                }catch (Exception e) {
+                    Toast.makeText(v.getContext(), e.getMessage(), Toast.LENGTH_SHORT).show();
+                }
             }
         });
 

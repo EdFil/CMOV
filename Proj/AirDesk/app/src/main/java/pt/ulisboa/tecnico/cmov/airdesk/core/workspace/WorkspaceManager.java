@@ -108,7 +108,7 @@ public class WorkspaceManager {
             AirDeskDbHelper.getInstance(getContext()).addFileToWorkspace(workspace.getDatabaseId(), file.getPath(), mDateFormat.format(file.lastModified()));
             workspace.addFile(file);
             return file;
-        } catch (SQLiteConstraintException e) {
+        } catch (Exception e) {
             throw new FileAlreadyExistsException(fileName);
         }
     }

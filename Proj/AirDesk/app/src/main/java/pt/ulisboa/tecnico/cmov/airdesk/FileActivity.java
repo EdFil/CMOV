@@ -130,7 +130,7 @@ public class FileActivity extends ActionBarActivity {
             throw new FileExceedsAvailableSpaceException(bytesToUse, usableSpace);
         }
         if(bytesToUse > workspace.getMaxQuota()) {
-            throw new FileExceedsMaxQuotaException(bytesToUse, workspace.getUsedQuota());
+            throw new FileExceedsMaxQuotaException(bytesToUse, workspace.getMaxQuota());
         }
 
         FileOutputStream fos = null;
