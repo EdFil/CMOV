@@ -76,10 +76,10 @@ public class LoginActivity extends ActionBarActivity {
     public void onLoginCLicked(View view) {
         // Verify that input is correct
         if (mNickView.length() < 4) {
-            Toast.makeText(getApplicationContext(), "Nick is too short, 4 chars minimum.", Toast.LENGTH_SHORT);
+            Toast.makeText(getApplicationContext(), "Nick is too short, 4 chars minimum.", Toast.LENGTH_SHORT).show();
             return;
         }else if (!mEmailView.getText().toString().contains("@")) {
-            Toast.makeText(getApplicationContext(), "Invalid Email Address", Toast.LENGTH_SHORT);
+            Toast.makeText(getApplicationContext(), "Invalid Email Address", Toast.LENGTH_SHORT).show();
             return;
         }
 

@@ -1,7 +1,6 @@
 package pt.ulisboa.tecnico.cmov.airdesk.fragment;
 
 import android.app.Activity;
-import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
@@ -61,7 +60,7 @@ public class ForeignWorkspacesFragment extends Fragment {
         View workspaceFragmentView = inflater.inflate(R.layout.fragment_workspaces, container, false);
 
 
-        ListView listView = (ListView) workspaceFragmentView.findViewById(R.id.myWorkspacesList);
+        ListView listView = (ListView) workspaceFragmentView.findViewById(R.id.workspacesList);
         listView.setAdapter(mWorkspaceListAdapter);
 
         // When selecting a workspace replaces this fragment for the FilesFragment
@@ -88,14 +87,14 @@ public class ForeignWorkspacesFragment extends Fragment {
         // Register the list of Files for the ContextMenu
         registerForContextMenu(listView);
 
-        // Setup create new workspace button
-        Button newWorkspaceButton = (Button) workspaceFragmentView.findViewById(R.id.newWorkspaceButton);
-        newWorkspaceButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View buttonView) {
-                NewForeignWorkspaceFragment.newInstance().show(getActivity().getFragmentManager(), "New Workspace");
-            }
-        });
+//        // Setup create new workspace button
+//        Button newWorkspaceButton = (Button) workspaceFragmentView.findViewById(R.id.newWorkspaceButton);
+//        newWorkspaceButton.setOnClickListener(new View.OnClickListener() {
+//            @Override
+//            public void onClick(View buttonView) {
+//                NewForeignWorkspaceFragment.newInstance().show(getActivity().getFragmentManager(), "New Workspace");
+//            }
+//        });
 
         return workspaceFragmentView;
     }
@@ -103,7 +102,6 @@ public class ForeignWorkspacesFragment extends Fragment {
     @Override
     public void onResume() {
         super.onResume();
-//        ((AirDeskActivity) getActivity()).updateActionBarTitle();
         updateWorkspaceList();
     }
 

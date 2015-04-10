@@ -606,4 +606,49 @@ public class AirDeskDbHelper extends SQLiteOpenHelper {
 
         return workspaces;
     }
+
+    public List<ForeignWorkspace> getForeignWorkspacesWithTags(long ownerDbId, String[] tags) {
+
+        SQLiteDatabase db = mInstance.getReadableDatabase();
+        String MY_QUERY =
+                " SELECT DISTINCT *" +
+                " FROM " + WorkspaceEntry.TABLE_NAME + " INNER JOIN " + TagsEntry.TABLE_NAME +
+                " ON " + WorkspaceEntry.TABLE_NAME + "." + WorkspaceEntry._ID + " = " + TagsEntry.TABLE_NAME + "." + TagsEntry.COLUMN_WORKSPACE_KEY +
+                " WHERE " + WorkspaceEntry.TABLE_NAME + "." + WorkspaceEntry.COLUMN_WORKSPACE_USER + " != " + ownerDbId + " AND ( ";
+
+        for(String tag : tags)
+            MY_QUERY += TagsEntry.COLUMN_TAG_NAME + " = '" + tag + "' OR ";
+
+        MY_QUERY = MY_QUERY.substring(0, MY_QUERY.length()-3);
+        MY_QUERY += ");";
+
+        Cursor workspaceCursor = db.rawQuery(MY_QUERY, null);
+
+        List<ForeignWorkspace> foreignWorkspaceList = new ArrayList<>();
+
+
+        int columnIdIndex = workspaceCursor.getColumnIndex(WorkspaceEntry._ID);
+        int columnNameIndex = workspaceCursor.getColumnIndex(WorkspaceEntry.COLUMN_WORKSPACE_NAME);
+        int columnOwnerIndex = workspaceCursor.getColumnIndex(WorkspaceEntry.COLUMN_OWNER_KEY);
+        int columnQuotaIndex = workspaceCursor.getColumnIndex(WorkspaceEntry.COLUMN_WORKSPACE_QUOTA);
+        int columnIsPrivateIndex = workspaceCursor.getColumnIndex(WorkspaceEntry.COLUMN_WORKSPACE_IS_PRIVATE);
+
+        while (workspaceCursor.moveToNext())
+            foreignWorkspaceList.add(new ForeignWorkspace(
+                    workspaceCursor.getLong(columnIdIndex),
+                    workspaceCursor.getString(columnNameIndex),
+                    UserManager.getInstance().getUserById(workspaceCursor.getLong(columnOwnerIndex)),
+                    workspaceCursor.getLong(columnQuotaIndex),
+                    workspaceCursor.getInt(columnIsPrivateIndex) == 1 ? true : false,
+                    new ArrayList<Tag>(),
+                    new ArrayList<User>(),
+                    new ArrayList<File>(),
+                    WorkspaceManager.getInstance()));
+
+        db.close();
+        workspaceCursor.close();
+
+        return foreignWorkspaceList;
+
+    }
 }

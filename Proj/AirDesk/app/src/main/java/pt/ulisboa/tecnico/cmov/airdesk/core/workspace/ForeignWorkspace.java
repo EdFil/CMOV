@@ -12,4 +12,6 @@ public class ForeignWorkspace extends Workspace {
     public ForeignWorkspace(long workspaceId, String name, User owner, long quota, boolean isPrivate, Collection<Tag> tags, Collection<User> users, Collection<File> files, WorkspaceManager workspaceManager) {
         super(workspaceId, name, owner, quota, isPrivate, tags, users, files, workspaceManager);
     }
+
+    // TODO : CONSTTRUCTORS - example: when searching and adding a foreign workspace
 }

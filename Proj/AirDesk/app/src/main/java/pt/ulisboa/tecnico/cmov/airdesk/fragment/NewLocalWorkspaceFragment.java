@@ -153,7 +153,7 @@ public class NewLocalWorkspaceFragment extends DialogFragment {
 
                 try {
                     // Create workspace with associated user (owner) in database
-                    WorkspaceManager.getInstance().addNewWorkspace(workspaceName, UserManager.getInstance().getOwner(), (long)workspaceQuota, !privacySwitch.isChecked(), tags);
+                    WorkspaceManager.getInstance().addLocalWorkspace(workspaceName, UserManager.getInstance().getOwner(), (long) workspaceQuota, !privacySwitch.isChecked(), tags);
                     mCallback.updateWorkspaceList();
                     Toast.makeText(view.getContext(), "Workspace created", Toast.LENGTH_SHORT).show();
 
