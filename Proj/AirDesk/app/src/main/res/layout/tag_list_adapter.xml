@@ -10,16 +10,17 @@
         android:id="@+id/tagName"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:paddingLeft="5dp"
+        android:paddingRight="3dp"
         android:textSize="20dp"
         android:maxLength="10" />
 
     <Button
         android:id="@+id/removeTagButton"
-        android:layout_width="wrap_content"
+        android:layout_width="0dp"
+        android:layout_weight="0.15"
         android:layout_height="wrap_content"
         android:minHeight="0dp"
         android:minWidth="0dp"
         android:background="@android:drawable/ic_menu_close_clear_cancel"/>
-
-
 </LinearLayout>

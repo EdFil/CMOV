@@ -15,8 +15,10 @@ import pt.ulisboa.tecnico.cmov.airdesk.core.workspace.exception.WorkspaceExceeds
 import pt.ulisboa.tecnico.cmov.airdesk.core.workspace.exception.WorkspaceNameIsEmptyException;
 import pt.ulisboa.tecnico.cmov.airdesk.core.workspace.exception.WorkspaceNegativeQuotaException;
 import pt.ulisboa.tecnico.cmov.airdesk.core.workspace.exception.WorkspacePublicNoTagsException;
+import pt.ulisboa.tecnico.cmov.airdesk.core.workspace.exception.WorkspaceQuotaBelowUsedQuotaException;
 import pt.ulisboa.tecnico.cmov.airdesk.core.workspace.exception.WorkspaceQuotaIsZeroException;
 import pt.ulisboa.tecnico.cmov.airdesk.core.workspace.exception.WorkspaceRemoveOwnerException;
+import pt.ulisboa.tecnico.cmov.airdesk.util.FileManager;
 
 public class Workspace implements Parcelable {
 
@@ -46,7 +48,7 @@ public class Workspace implements Parcelable {
     // Getters
     public String getName() { return mName; }
     public User getOwner() { return mOwner; }
-    public long getQuota() { return mQuota; }
+    public long getMaxQuota() { return mQuota; }
     public boolean isPrivate() { return mIsPrivate; }
     public long getDatabaseId() { return mDatabaseId; }
     public List<Tag> getTags() { return mTags; }
@@ -74,9 +76,10 @@ public class Workspace implements Parcelable {
             throw new WorkspaceNegativeQuotaException();
         if(quota == 0)
             throw new WorkspaceQuotaIsZeroException();
-        long maxQuota = mWorkspaceManager.getSpaceAvailableInternalStorage();
-        if(quota > maxQuota)
-            throw new WorkspaceExceedsMaxSpaceException(mWorkspaceManager.getContext(), maxQuota);
+        if(getFiles() != null && quota < getUsedQuota())
+            throw new WorkspaceQuotaBelowUsedQuotaException(getMaxQuota());
+        if(quota > mWorkspaceManager.getSpaceAvailableInternalStorage())
+            throw new WorkspaceExceedsMaxSpaceException(mWorkspaceManager.getContext(), mWorkspaceManager.getSpaceAvailableInternalStorage());
         mQuota = quota;
     }
 
@@ -121,6 +124,13 @@ public class Workspace implements Parcelable {
     // Class functions
     public void addTag(Tag tag) { mTags.add(tag); }
     public void removeTag(Tag tag) { mTags.remove(tag); }
+    public void removeTagFromString(String tagName) {
+        for (Tag tag : mTags)
+            if (tag.getText() == tagName) {
+                mTags.remove(tag);
+                break;
+            }
+    }
 
     public void addUser(User user) { mUsers.add(user); }
     public void removeUser(User user) {
@@ -129,6 +139,12 @@ public class Workspace implements Parcelable {
         mUsers.remove(user);
     }
 
+    public long getUsedQuota(){
+        long bytesUsed = 0;
+        for(File file : mFiles)
+            bytesUsed += file.length();
+        return bytesUsed;
+    }
     public void addFile(File file) { mFiles.add(file); }
     public void removeFile(File file) { mFiles.remove(file); }
 

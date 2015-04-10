@@ -5,6 +5,7 @@ import android.app.DialogFragment;
 import android.os.Bundle;
 import android.text.InputFilter;
 import android.text.Spanned;
+import android.view.KeyEvent;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -12,6 +13,7 @@ import android.view.Window;
 import android.widget.Button;
 import android.widget.CompoundButton;
 import android.widget.EditText;
+import android.widget.ImageButton;
 import android.widget.LinearLayout;
 import android.widget.Switch;
 import android.widget.TextView;
@@ -22,7 +24,6 @@ import java.util.ArrayList;
 import java.util.List;
 
 import pt.ulisboa.tecnico.cmov.airdesk.R;
-import pt.ulisboa.tecnico.cmov.airdesk.adapter.TagListAdapter;
 import pt.ulisboa.tecnico.cmov.airdesk.core.tag.Tag;
 import pt.ulisboa.tecnico.cmov.airdesk.core.user.UserManager;
 import pt.ulisboa.tecnico.cmov.airdesk.core.workspace.WorkspaceManager;
@@ -33,7 +34,8 @@ public class NewWorkspaceFragment extends DialogFragment {
 
     List<String> mTagCache;
 
-    Button cancelButton, createButton, addTagButton;
+    Button cancelButton, createButton;
+    ImageButton addTagButton;
     EditText workspaceNameText, quotaValueText, newTagText;
     Switch privacySwitch;
     ViewSwitcher mTagViewSwitcher;
@@ -60,7 +62,7 @@ public class NewWorkspaceFragment extends DialogFragment {
 
         final View view = inflater.inflate(R.layout.fragment_new_workspace, container, false);
         view.getContext();
-        addTagButton = (Button)view.findViewById(R.id.addTagButton);
+        addTagButton = (ImageButton)view.findViewById(R.id.addTagButton);
         cancelButton = (Button)view.findViewById(R.id.cancelWorkspaceDialog);
         createButton = (Button) view.findViewById(R.id.createWorkspaceDialog);
         newTagText = (EditText)view.findViewById(R.id.newTag);
@@ -90,6 +92,17 @@ public class NewWorkspaceFragment extends DialogFragment {
                 return null;
             }
         }});
+
+        newTagText.setOnKeyListener(new View.OnKeyListener() {
+            @Override
+            public boolean onKey(View v, int keyCode, KeyEvent event) {
+                if(keyCode == KeyEvent.KEYCODE_ENTER){
+                    addTagButton.performClick();
+                    return true;
+                }
+                return false;
+            }
+        });
 
         // OnChangeListener for switch
         privacySwitch.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {

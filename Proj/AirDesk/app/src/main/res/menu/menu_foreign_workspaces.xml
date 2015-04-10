@@ -2,22 +2,22 @@
 <menu xmlns:android="http://schemas.android.com/apk/res/android">
 
     <item
-        android:id="@+id/menu_my_edit"
+        android:id="@+id/menu_foreign_edit"
         android:title="@string/menu_edit"
         />
 
     <item
-        android:id="@+id/menu_my_delete"
+        android:id="@+id/menu_foreign_delete"
         android:title="@string/menu_delete"
     />
 
     <item
-        android:id="@+id/menu_my_details"
+        android:id="@+id/menu_foreign_details"
         android:title="@string/menu_details"
     />
 
     <item
-        android:id="@+id/menu_my_leave"
+        android:id="@+id/menu_foreign_leave"
         android:title="@string/menu_leave"
     />
 

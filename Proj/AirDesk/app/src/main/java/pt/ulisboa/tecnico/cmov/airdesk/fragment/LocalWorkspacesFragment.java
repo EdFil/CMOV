@@ -21,35 +21,46 @@ import pt.ulisboa.tecnico.cmov.airdesk.AirDeskActivity;
 import pt.ulisboa.tecnico.cmov.airdesk.R;
 import pt.ulisboa.tecnico.cmov.airdesk.WorkspaceDetailsActivity;
 import pt.ulisboa.tecnico.cmov.airdesk.adapter.WorkspaceListAdapter;
+import pt.ulisboa.tecnico.cmov.airdesk.core.workspace.LocalWorkspace;
 import pt.ulisboa.tecnico.cmov.airdesk.core.workspace.Workspace;
 import pt.ulisboa.tecnico.cmov.airdesk.core.workspace.WorkspaceManager;
 import pt.ulisboa.tecnico.cmov.airdesk.util.Constants;
 
 public class LocalWorkspacesFragment extends Fragment {
 
-//    Context context = getActivity().getApplicationContext();
+    /**
+     * The fragment argument representing the section number for this
+     * fragment.
+     */
+    private static final String ARG_SECTION_NUMBER = "section_number";
+
     public static final String TAG = LocalWorkspacesFragment.class.getSimpleName();
 
     WorkspaceManager manager;
 
     WorkspaceListAdapter mWorkspaceListAdapter;
-    private boolean isLocalWorkspaceAdapter;
 
     public LocalWorkspacesFragment() {}
 
-    public static LocalWorkspacesFragment newInstance() {
-        return new LocalWorkspacesFragment();
+    public static LocalWorkspacesFragment newInstance(int sectionNumber) {
+        LocalWorkspacesFragment fragment = new LocalWorkspacesFragment();
+        Bundle args = new Bundle();
+        args.putInt(ARG_SECTION_NUMBER, sectionNumber);
+        fragment.setArguments(args);
+        return fragment;
+    }
+
+    @Override
+    public void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        manager = WorkspaceManager.getInstance();
+        manager.refreshWorkspaceLists();
+        mWorkspaceListAdapter = new WorkspaceListAdapter(getActivity(), WorkspaceManager.getInstance().getLocalWorkspaces());
     }
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-        Context context = container.getContext();
         View workspaceFragmentView = inflater.inflate(R.layout.fragment_workspaces, container, false);
-
-        WorkspaceManager.getInstance().refreshWorkspaceList();
-
-        mWorkspaceListAdapter = new WorkspaceListAdapter(context, WorkspaceManager.getInstance().getLocalWorkspaces());
-
 
         ListView listView = (ListView) workspaceFragmentView.findViewById(R.id.myWorkspacesList);
         listView.setAdapter(mWorkspaceListAdapter);
@@ -139,7 +150,7 @@ public class LocalWorkspacesFragment extends Fragment {
     @Override
     public void onAttach(Activity activity) {
         super.onAttach(activity);
-        ((AirDeskActivity) activity).onSectionAttached(1);
+        ((AirDeskActivity) activity).onSectionAttached(getArguments().getInt(ARG_SECTION_NUMBER));
     }
 
     public void addWorkspace() {

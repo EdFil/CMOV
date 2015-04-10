@@ -28,6 +28,7 @@ import pt.ulisboa.tecnico.cmov.airdesk.fragment.LocalWorkspacesFragment;
 import pt.ulisboa.tecnico.cmov.airdesk.fragment.NavigationDrawerFragment;
 import pt.ulisboa.tecnico.cmov.airdesk.fragment.NewFileFragment;
 import pt.ulisboa.tecnico.cmov.airdesk.fragment.NewWorkspaceFragment;
+import pt.ulisboa.tecnico.cmov.airdesk.fragment.SearchWorkspaceFragment;
 import pt.ulisboa.tecnico.cmov.airdesk.util.Constants;
 
 public class AirDeskActivity extends ActionBarActivity
@@ -51,10 +52,6 @@ public class AirDeskActivity extends ActionBarActivity
         // Init the manager of the workspaces so it has the context of the application
         WorkspaceManager.initWorkspaceManager(getApplicationContext());
         setNavigationDrawer();
-    }
-
-    public void updateActionBarTitle() {
-        getSupportActionBar().setTitle(mTitle);
     }
 
     private void setNavigationDrawer() {
@@ -97,7 +94,8 @@ public class AirDeskActivity extends ActionBarActivity
 
     @Override
     public void onNavigationDrawerItemSelected(int position) {
-            // update the main content by replacing fragments
+
+        // update the main content by replacing fragments
         FragmentManager fragmentManager = getSupportFragmentManager();
         switch (position) {
             // Account information : Nickname and Email
@@ -105,11 +103,15 @@ public class AirDeskActivity extends ActionBarActivity
                 break;
             // MyWorkspaces : Owned workspace list fragment
             case 1:
-                fragmentManager.beginTransaction().replace(R.id.container, LocalWorkspacesFragment.newInstance()).commit();
+                fragmentManager.beginTransaction().replace(R.id.container, LocalWorkspacesFragment.newInstance(position)).commit();
                 break;
             // Foreign Workspaces : Workspaces accessible but not owned
             case 2:
-                fragmentManager.beginTransaction().replace(R.id.container, ForeignWorkspacesFragment.newInstance()).commit();
+                fragmentManager.beginTransaction().replace(R.id.container, ForeignWorkspacesFragment.newInstance(position)).commit();
+                break;
+            // Search Workspace
+            case 3:
+                fragmentManager.beginTransaction().replace(R.id.container, SearchWorkspaceFragment.newInstance(position)).commit();
                 break;
             // Search Workspace
             case 4:
@@ -251,6 +253,9 @@ public class AirDeskActivity extends ActionBarActivity
             workspaceFrag.addWorkspace();
     }
 
+        public void updateActionBarTitle() {
+        getSupportActionBar().setTitle(mTitle);
+    }
     /**
      * A placeholder fragment containing a simple view.
      */

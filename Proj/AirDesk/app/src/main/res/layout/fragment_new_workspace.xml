@@ -54,9 +54,7 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content">
 
-        <Space
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content" />
+
 
         <LinearLayout
             android:layout_width="match_parent"
@@ -90,22 +88,17 @@
                     android:hint="New tag"
                     android:maxLength="10"/>
 
-                <Button
+                <ImageButton
                     android:id="@+id/addTagButton"
-                    android:layout_width="0dp"
-                    android:layout_weight="0.25"
+                    android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:background="@android:drawable/ic_menu_add" />
+                    android:background="@android:drawable/ic_input_add" />
 
             </LinearLayout>
 
             </LinearLayout>
 
         </ViewSwitcher>
-
-    <!-- The elements for this list are on "tag list adapter LAYOUT" -->
-
-
 
 
     <LinearLayout
