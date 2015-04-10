@@ -13,7 +13,6 @@ import pt.ulisboa.tecnico.cmov.airdesk.core.user.UserManager;
 import pt.ulisboa.tecnico.cmov.airdesk.core.workspace.Workspace;
 import pt.ulisboa.tecnico.cmov.airdesk.core.workspace.WorkspaceManager;
 import pt.ulisboa.tecnico.cmov.airdesk.database.AirDeskDbHelper;
-import pt.ulisboa.tecnico.cmov.airdesk.util.FileManager;
 
 ;
 
@@ -42,7 +41,7 @@ public class DatabaseTest extends AndroidTestCase {
         User stevens = UserManager.getInstance().createUser("stevens@email.com", "Stevens");
         UserManager.getInstance().setOwner(edgar);
 
-        Workspace workspace = WorkspaceManager.getInstance().addNewWorkspace("Workspace", edgar, 1024, true, new ArrayList<Tag>());
+        Workspace workspace = WorkspaceManager.getInstance().addLocalWorkspace("Workspace", edgar, 1024, true, new ArrayList<Tag>());
         File file = WorkspaceManager.getInstance().addFileToWorkspace("New File", workspace);
         Tag tag = WorkspaceManager.getInstance().addTagToWorkspace("New Tag", workspace);
         User user = WorkspaceManager.getInstance().addUserToWorkspace(bruno, workspace);

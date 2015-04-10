@@ -60,7 +60,7 @@ public class LocalWorkspacesFragment extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View workspaceFragmentView = inflater.inflate(R.layout.fragment_workspaces, container, false);
 
-        ListView listView = (ListView) workspaceFragmentView.findViewById(R.id.myWorkspacesList);
+        ListView listView = (ListView) workspaceFragmentView.findViewById(R.id.workspacesList);
         listView.setAdapter(mWorkspaceListAdapter);
 
         // When selecting a workspace replaces this fragment for the FilesFragment

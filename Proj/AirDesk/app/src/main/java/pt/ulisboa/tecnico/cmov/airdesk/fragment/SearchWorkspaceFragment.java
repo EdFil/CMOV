@@ -16,11 +16,14 @@ import android.widget.ListView;
 import android.widget.Toast;
 
 import java.util.ArrayList;
+import java.util.List;
 
 import pt.ulisboa.tecnico.cmov.airdesk.AirDeskActivity;
 import pt.ulisboa.tecnico.cmov.airdesk.R;
 import pt.ulisboa.tecnico.cmov.airdesk.WorkspaceDetailsActivity;
 import pt.ulisboa.tecnico.cmov.airdesk.adapter.WorkspaceListAdapter;
+import pt.ulisboa.tecnico.cmov.airdesk.core.workspace.ForeignWorkspace;
+import pt.ulisboa.tecnico.cmov.airdesk.core.workspace.LocalWorkspace;
 import pt.ulisboa.tecnico.cmov.airdesk.core.workspace.Workspace;
 import pt.ulisboa.tecnico.cmov.airdesk.core.workspace.WorkspaceManager;
 import pt.ulisboa.tecnico.cmov.airdesk.util.Constants;
@@ -67,7 +70,14 @@ public class SearchWorkspaceFragment extends Fragment {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
 
-                // TODO : O QUE ACONTECE QUANDO SELECIONAMOS UM WORKSPACE
+                // TODO : REMOVE DATABASEID FROM USAGE HEREEEE!
+                Workspace workspace = mWorkspaceListAdapter.getItem(position);
+                try {
+                    WorkspaceManager.getInstance().insertWorkspaceToForeignWorkspaces(workspace);
+                    Toast.makeText(getActivity(), "Workspace added to Foreign Workspaces", Toast.LENGTH_SHORT).show();
+                } catch(Exception e) {
+                    Toast.makeText(getActivity(), "Workspace already at Foreign Workspaces", Toast.LENGTH_SHORT).show();
+                }
             }
         });
 
@@ -82,13 +92,14 @@ public class SearchWorkspaceFragment extends Fragment {
                 mWorkspaceListAdapter.clear();
 
                 EditText editText = (EditText) getActivity().findViewById(R.id.workspacesTags);
-                String tag = editText.getText().toString();
+                String tags = editText.getText().toString();
+                String[] tagsList = tags.split(" ");
 
+                List<ForeignWorkspace> workspacesFound = WorkspaceManager.getInstance().getForeignWorkspacesWithTags(tagsList);
 
-                // TODO : QUERY NO MANAGE PARA DEVOLVER A TAG PROCURADA
+                for(ForeignWorkspace workspace : workspacesFound)
+                    mWorkspaceListAdapter.add(workspace);
 
-                Workspace workspace = WorkspaceManager.getInstance().getLocalWorkspaces().get(0);
-                mWorkspaceListAdapter.add(workspace);
                 mWorkspaceListAdapter.notifyDataSetChanged();
             }
         });

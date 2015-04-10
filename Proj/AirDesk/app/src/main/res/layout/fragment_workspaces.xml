@@ -17,9 +17,9 @@
         />
 
     <ListView
-        android:layout_width="wrap_content"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:id="@+id/myWorkspacesList"
+        android:id="@+id/workspacesList"
         android:layout_below="@+id/typeWS"
 
         />

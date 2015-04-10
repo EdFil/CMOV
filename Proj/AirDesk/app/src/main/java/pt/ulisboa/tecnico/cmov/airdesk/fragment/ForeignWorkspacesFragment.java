@@ -60,7 +60,7 @@ public class ForeignWorkspacesFragment extends Fragment {
         View workspaceFragmentView = inflater.inflate(R.layout.fragment_workspaces, container, false);
 
 
-        ListView listView = (ListView) workspaceFragmentView.findViewById(R.id.myWorkspacesList);
+        ListView listView = (ListView) workspaceFragmentView.findViewById(R.id.workspacesList);
         listView.setAdapter(mWorkspaceListAdapter);
 
         // When selecting a workspace replaces this fragment for the FilesFragment
@@ -87,22 +87,12 @@ public class ForeignWorkspacesFragment extends Fragment {
         // Register the list of Files for the ContextMenu
         registerForContextMenu(listView);
 
-        // Setup create new workspace button
-        Button newWorkspaceButton = (Button) workspaceFragmentView.findViewById(R.id.newWorkspaceButton);
-        newWorkspaceButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View buttonView) {
-                NewWorkspaceFragment.newInstance().show(getActivity().getFragmentManager(), "New Workspace");
-            }
-        });
-
         return workspaceFragmentView;
     }
 
     @Override
     public void onResume() {
         super.onResume();
-//        ((AirDeskActivity) getActivity()).updateActionBarTitle();
         updateWorkspaceList();
     }
 

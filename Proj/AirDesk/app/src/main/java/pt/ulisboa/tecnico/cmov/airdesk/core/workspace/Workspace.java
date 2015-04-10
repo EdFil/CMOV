@@ -33,6 +33,11 @@ public class Workspace implements Parcelable {
     private List<File> mFiles;
     private WorkspaceManager mWorkspaceManager;
 
+
+    public Workspace(String name, User owner, long quota, boolean isPrivate, Collection<Tag> tags, Collection<User> users, Collection<File> files, WorkspaceManager workspaceManager){
+        this(-1, name, owner, quota, isPrivate, tags, users, files, workspaceManager);
+    }
+
     public Workspace(long workspaceId, String name, User owner, long quota, boolean isPrivate, Collection<Tag> tags, Collection<User> users, Collection<File> files, WorkspaceManager workspaceManager){
         setDatabaseId(workspaceId);
         setWorkspaceManager(workspaceManager);
