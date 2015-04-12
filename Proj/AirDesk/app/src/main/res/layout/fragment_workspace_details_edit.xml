@@ -12,7 +12,7 @@
         android:layout_height="0dp"
         android:layout_weight="7"
         android:gravity="center"
-        android:background="@color/abc_search_url_text_normal"
+        android:background="#8F0000"
         android:text="Workspace"
         android:textAppearance="?android:attr/textAppearanceLargeInverse" />
 
@@ -117,7 +117,7 @@
         android:layout_width="match_parent"
         android:layout_height="0dp"
         android:layout_weight="7"
-        android:background="@color/abc_search_url_text_normal"
+        android:background="#8F0000"
         android:clickable="true"
         android:gravity="center"
         android:text="Tags"
@@ -163,7 +163,7 @@
             android:layout_width="0dp"
             android:layout_weight="0.15"
             android:layout_height="wrap_content"
-            android:background="@android:drawable/ic_menu_add" />
+            android:background="@android:drawable/ic_input_add" />
 
     </LinearLayout>
 
@@ -171,7 +171,7 @@
         android:layout_width="match_parent"
         android:layout_height="0dp"
         android:layout_weight="7"
-        android:background="@color/abc_search_url_text_normal"
+        android:background="#8F0000"
         android:clickable="true"
         android:gravity="center"
         android:text="Users"
