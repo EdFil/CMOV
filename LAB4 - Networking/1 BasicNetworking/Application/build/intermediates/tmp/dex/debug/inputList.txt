@@ -1,0 +1,4 @@
+D:\Repositories\Android\LAB4 - Networking in Android\1 BasicNetworking\Application\build\intermediates\classes\debug
+D:\Repositories\Android\LAB4 - Networking in Android\1 BasicNetworking\Application\build\intermediates\pre-dexed\debug\support-annotations-21.0.2-b3785e53011bb5d21531eacf6a12b7c1636866f8.jar
+D:\Repositories\Android\LAB4 - Networking in Android\1 BasicNetworking\Application\build\intermediates\pre-dexed\debug\internal_impl-21.0.2-fd182a509f5e28c1378e14432bd77bbbc7e3f10f.jar
+D:\Repositories\Android\LAB4 - Networking in Android\1 BasicNetworking\Application\build\intermediates\pre-dexed\debug\classes-c49b1556de977726a86c5822a03076c98e6ea5be.jar

@@ -1,0 +1,26 @@
+<?xml version="1.0" encoding="utf-8"?>
+<items version="2" >
+
+    <item
+        jar="C:\Users\Diogo\AppData\Local\Android\sdk\extras\android\m2repository\com\android\support\support-annotations\21.0.2\support-annotations-21.0.2.jar"
+        jumboMode="false"
+        revision="21.1.2"
+        sha1="99373741f99a0556ee293c41e8faa1ca3ae8a4e6">
+        <dex dex="D:\Repositories\Android\LAB4 - Networking in Android\1 BasicNetworking\Application\build\intermediates\pre-dexed\debug\support-annotations-21.0.2-b3785e53011bb5d21531eacf6a12b7c1636866f8.jar" />
+    </item>
+    <item
+        jar="D:\Repositories\Android\LAB4 - Networking in Android\1 BasicNetworking\Application\build\intermediates\exploded-aar\com.android.support\support-v4\21.0.2\classes.jar"
+        jumboMode="false"
+        revision="21.1.2"
+        sha1="d1bf02de1c56d942e7a9d093b8610ba1ef4128e3">
+        <dex dex="D:\Repositories\Android\LAB4 - Networking in Android\1 BasicNetworking\Application\build\intermediates\pre-dexed\debug\classes-c49b1556de977726a86c5822a03076c98e6ea5be.jar" />
+    </item>
+    <item
+        jar="D:\Repositories\Android\LAB4 - Networking in Android\1 BasicNetworking\Application\build\intermediates\exploded-aar\com.android.support\support-v4\21.0.2\libs\internal_impl-21.0.2.jar"
+        jumboMode="false"
+        revision="21.1.2"
+        sha1="962e8b12569c56dbdcf8367eb4eac8bb129cd18f">
+        <dex dex="D:\Repositories\Android\LAB4 - Networking in Android\1 BasicNetworking\Application\build\intermediates\pre-dexed\debug\internal_impl-21.0.2-fd182a509f5e28c1378e14432bd77bbbc7e3f10f.jar" />
+    </item>
+
+</items>
