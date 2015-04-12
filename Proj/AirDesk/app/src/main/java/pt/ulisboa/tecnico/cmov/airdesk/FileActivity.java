@@ -54,7 +54,7 @@ public class FileActivity extends ActionBarActivity {
 
         Intent intent = getIntent();
         file = (File) intent.getSerializableExtra("textFile");
-        workspace = (Workspace)intent.getParcelableExtra("workspaceIndex");
+        workspace = intent.getParcelableExtra("workspaceIndex");
 
         // Action bar back button e name
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);

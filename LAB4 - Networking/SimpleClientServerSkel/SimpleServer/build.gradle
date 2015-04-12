@@ -1,0 +1,9 @@
+apply plugin: 'java'
+apply plugin: 'application'
+
+
+mainClassName = "pt.ulisboa.tecnico.cmov.simpleserver.Main"
+
+dependencies {
+    compile fileTree(dir: 'libs', include: ['*.jar'])
+}

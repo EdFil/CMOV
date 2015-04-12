@@ -94,7 +94,7 @@ public class XMLParser {
 
     // For the tags title and summary, extracts their text values.
     private String readAttributeValue(XmlPullParser parser) throws IOException, XmlPullParserException {
-        String result = result = parser.getAttributeValue(1);
+        String result = parser.getAttributeValue(0);
         parser.nextTag();
         return result;
     }

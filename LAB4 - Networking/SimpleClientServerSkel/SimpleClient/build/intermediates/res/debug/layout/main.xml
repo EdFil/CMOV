@@ -1,0 +1,20 @@
+<LinearLayout android:layout_height="fill_parent"
+    android:layout_width="fill_parent"
+    android:orientation="vertical"
+    xmlns:android="http://schemas.android.com/apk/res/android">
+ 
+    <EditText android:id="@+id/editText1"
+        android:inputType="textMultiLine"
+        android:layout_height="wrap_content"
+        android:layout_width="match_parent">
+    </EditText>
+ 
+    <Button android:id="@+id/button1"
+        android:layout_gravity="center"
+        android:layout_height="wrap_content"
+        android:layout_width="wrap_content"
+        android:text="@string/send_to_server"> 
+	</Button>
+
+</LinearLayout>
+<!-- From: file:/D:/Repositories/CMOV/LAB4%20-%20Networking/SimpleClientServerSkel/SimpleClient/src/main/res/layout/main.xml -->
