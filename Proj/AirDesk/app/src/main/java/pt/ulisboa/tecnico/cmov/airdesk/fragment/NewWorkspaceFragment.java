@@ -28,6 +28,7 @@ import pt.ulisboa.tecnico.cmov.airdesk.core.tag.Tag;
 import pt.ulisboa.tecnico.cmov.airdesk.core.user.UserManager;
 import pt.ulisboa.tecnico.cmov.airdesk.core.workspace.WorkspaceManager;
 import pt.ulisboa.tecnico.cmov.airdesk.core.workspace.exception.WorkspaceException;
+import pt.ulisboa.tecnico.cmov.airdesk.custom.AddTags;
 import pt.ulisboa.tecnico.cmov.airdesk.custom.PredicateLayout;
 
 public class NewWorkspaceFragment extends DialogFragment {
@@ -39,6 +40,7 @@ public class NewWorkspaceFragment extends DialogFragment {
     Switch privacySwitch;
     ViewSwitcher mTagViewSwitcher;
     PredicateLayout mTagListLayout;
+    AddTags mAddTagsView;
     TextView tags;
 
     OnNewWorkspaceFragmentListener mCallback;
@@ -70,6 +72,7 @@ public class NewWorkspaceFragment extends DialogFragment {
         tags = (TextView) view.findViewById(R.id.tags);
         mTagListLayout = (PredicateLayout) view.findViewById(R.id.tagList);
         mTagViewSwitcher = (ViewSwitcher) view.findViewById(R.id.tagViewSwitcher);
+        mAddTagsView = (AddTags) view.findViewById(R.id.addTagsView);
 
         cancelButton.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -108,10 +111,7 @@ public class NewWorkspaceFragment extends DialogFragment {
 
                 int workspaceQuota = Integer.parseInt(quotaValueText.getText().toString());
 
-                ArrayList<Tag> tags = new ArrayList<>();
-
-                for(int i = 0; i < mTagListLayout.getChildCount(); i++)
-                    tags.add(new Tag(((TextView)((LinearLayout)mTagListLayout.getChildAt(i)).getChildAt(0)).getText().toString()));
+                List<Tag> tags = mAddTagsView.getAllTags();
 
                 try {
                     // Create workspace with associated user (owner) in database

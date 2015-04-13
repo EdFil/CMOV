@@ -60,6 +60,7 @@
             android:layout_height="wrap_content" />
 
         <pt.ulisboa.tecnico.cmov.airdesk.custom.AddTags
+            android:id="@+id/addTagsView"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             app:titleVisible="true"
