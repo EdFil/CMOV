@@ -35,7 +35,6 @@ public class NewWorkspaceFragment extends DialogFragment {
     List<String> mTagCache;
 
     Button cancelButton, createButton;
-    ImageButton addTagButton;
     EditText workspaceNameText, quotaValueText, newTagText;
     Switch privacySwitch;
     ViewSwitcher mTagViewSwitcher;
@@ -62,7 +61,6 @@ public class NewWorkspaceFragment extends DialogFragment {
 
         final View view = inflater.inflate(R.layout.fragment_new_workspace, container, false);
         view.getContext();
-        addTagButton = (ImageButton)view.findViewById(R.id.addTagButton);
         cancelButton = (Button)view.findViewById(R.id.cancelWorkspaceDialog);
         createButton = (Button) view.findViewById(R.id.createWorkspaceDialog);
         newTagText = (EditText)view.findViewById(R.id.newTag);
@@ -93,45 +91,12 @@ public class NewWorkspaceFragment extends DialogFragment {
             }
         }});
 
-        newTagText.setOnKeyListener(new View.OnKeyListener() {
-            @Override
-            public boolean onKey(View v, int keyCode, KeyEvent event) {
-                if(keyCode == KeyEvent.KEYCODE_ENTER){
-                    addTagButton.performClick();
-                    return true;
-                }
-                return false;
-            }
-        });
-
         // OnChangeListener for switch
         privacySwitch.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
             // b = isPrivate
             @Override
             public void onCheckedChanged(CompoundButton compoundButton, boolean b) {
                 mTagViewSwitcher.showNext();
-            }
-        });
-
-        addTagButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-
-                EditText tagString = (EditText) v.getRootView().findViewById(R.id.newTag);
-                String tag = tagString.getText().toString().trim();
-
-                if (tag.length() > 0) {
-                    View view = inflater.inflate(R.layout.tag_list_adapter, null);
-                    mTagListLayout.addView(view);
-                    ((TextView)view.findViewById(R.id.tagName)).setText(tag);
-                    view.findViewById(R.id.removeTagButton).setOnClickListener(new View.OnClickListener() {
-                        @Override
-                        public void onClick(View v) {
-                            mTagListLayout.removeView((LinearLayout)v.getParent());
-                        }
-                    });
-                    tagString.getText().clear();
-                }
             }
         });
 
