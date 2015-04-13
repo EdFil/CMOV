@@ -8,6 +8,7 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 
+import pt.ulisboa.tecnico.cmov.airdesk.GlobalState;
 import pt.ulisboa.tecnico.cmov.airdesk.core.file.exception.FileAlreadyExistsException;
 import pt.ulisboa.tecnico.cmov.airdesk.core.tag.Tag;
 import pt.ulisboa.tecnico.cmov.airdesk.core.user.User;
@@ -56,8 +57,9 @@ public class WorkspaceManager {
         mLocalWorkspaces.clear();
         mForeignWorkspaces.clear();
         for(Workspace workspace : workspaces) {
-            if(workspace instanceof LocalWorkspace)
+            if(workspace instanceof LocalWorkspace) {
                 mLocalWorkspaces.add((LocalWorkspace) workspace);
+            }
             else
                 mForeignWorkspaces.add((ForeignWorkspace) workspace);
         }

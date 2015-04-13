@@ -36,7 +36,6 @@ public class LoginActivity extends ActionBarActivity {
         setContentView(R.layout.activity_login);
 
         boolean logout = getIntent().getBooleanExtra(Constants.LOG_OUT_MESSAGE, false);
-        UserManager.getInstance().initUserManager(getApplicationContext());
         mSharedPreferences = getSharedPreferences(Constants.SHARED_PREF_FILE, MODE_PRIVATE);
 
         if (logout) {
