@@ -24,10 +24,12 @@ import pt.ulisboa.tecnico.cmov.airdesk.AirDeskActivity;
 import pt.ulisboa.tecnico.cmov.airdesk.R;
 import pt.ulisboa.tecnico.cmov.airdesk.WorkspaceDetailsActivity;
 import pt.ulisboa.tecnico.cmov.airdesk.adapter.WorkspaceListAdapter;
+import pt.ulisboa.tecnico.cmov.airdesk.core.tag.Tag;
 import pt.ulisboa.tecnico.cmov.airdesk.core.user.UserManager;
 import pt.ulisboa.tecnico.cmov.airdesk.core.workspace.ForeignWorkspace;
 import pt.ulisboa.tecnico.cmov.airdesk.core.workspace.Workspace;
 import pt.ulisboa.tecnico.cmov.airdesk.core.workspace.WorkspaceManager;
+import pt.ulisboa.tecnico.cmov.airdesk.custom.AddTags;
 import pt.ulisboa.tecnico.cmov.airdesk.tasks.RequestWorkspacesFromTagsTask;
 import pt.ulisboa.tecnico.cmov.airdesk.util.Constants;
 
@@ -79,17 +81,28 @@ public class SearchWorkspaceFragment extends Fragment {
         newWorkspaceButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View buttonView) {
-                EditText editText = (EditText) getActivity().findViewById(R.id.workspacesTags);
-                String tags = editText.getText().toString();
-                String[] tagsList = tags.split(" ");
 
-                (new RequestWorkspacesFromTagsTask(mWorkspaceListAdapter)).execute(tagsList);
+                // To force the focus change of the edit text, before processing the button click
+                EditText mTagsEditText = (EditText) getActivity().findViewById(R.id.newTag);
+                mTagsEditText.clearFocus();
 
-                TextView searchHint = (TextView) getActivity().findViewById(R.id.search_hint);
-                ListView workspacesTagList = (ListView) getActivity().findViewById(R.id.workspacesList);
+                try {
+                    AddTags addTags = (AddTags) getActivity().findViewById(R.id.workspacesTags);
+                    List<Tag> tagsList = addTags.getAllTags();
+                    //TODO: Create Exception
+                    if(tagsList.isEmpty())
+                        throw new Exception();
+                    (new RequestWorkspacesFromTagsTask(mWorkspaceListAdapter)).execute(tagsList);
 
-                searchHint.setVisibility(View.GONE);
-                workspacesTagList.setVisibility(View.VISIBLE);
+                    TextView searchHint = (TextView) getActivity().findViewById(R.id.search_hint);
+                    ListView workspacesTagList = (ListView) getActivity().findViewById(R.id.workspacesList);
+
+                    searchHint.setVisibility(View.GONE);
+                    workspacesTagList.setVisibility(View.VISIBLE);
+
+                } catch (Exception e) {
+                    Toast.makeText(getActivity(), "No tag inserted", Toast.LENGTH_SHORT).show();
+                }
 
             }
         });

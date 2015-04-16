@@ -227,7 +227,7 @@ public class WorkspaceManager {
             return mForeignWorkspaces.get(workspaceIndex);
     }
 
-    public List<ForeignWorkspace> getForeignWorkspacesWithTags(String[] tags) {
+    public List<ForeignWorkspace> getForeignWorkspacesWithTags(Collection<Tag> tags) {
         long ownerDbId = UserManager.getInstance().getOwner().getDatabaseId();
         return AirDeskDbHelper.getInstance(getContext()).getForeignWorkspacesWithTags(ownerDbId, tags);
     }

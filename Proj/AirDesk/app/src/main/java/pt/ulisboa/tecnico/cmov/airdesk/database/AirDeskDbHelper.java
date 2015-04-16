@@ -624,7 +624,7 @@ public class AirDeskDbHelper extends SQLiteOpenHelper {
         db.close();
     }
 
-    public List<ForeignWorkspace> getForeignWorkspacesWithTags(long ownerDbId, String[] tags) {
+    public List<ForeignWorkspace> getForeignWorkspacesWithTags(long ownerDbId, Collection<Tag> tags) {
 
         SQLiteDatabase db = mInstance.getReadableDatabase();
         String MY_QUERY =
@@ -633,8 +633,8 @@ public class AirDeskDbHelper extends SQLiteOpenHelper {
                 " ON " + AirDeskContract.WorkspaceEntry.TABLE_NAME + "." + AirDeskContract.WorkspaceEntry._ID + " = " + TagsEntry.TABLE_NAME + "." + TagsEntry.COLUMN_WORKSPACE_KEY +
                 " WHERE " + AirDeskContract.WorkspaceEntry.TABLE_NAME + "." + AirDeskContract.WorkspaceEntry.COLUMN_WORKSPACE_USER + " != " + ownerDbId + " AND ( ";
 
-        for(String tag : tags)
-            MY_QUERY += TagsEntry.COLUMN_TAG_NAME + " = '" + tag + "' OR ";
+        for(Tag tag : tags)
+            MY_QUERY += TagsEntry.COLUMN_TAG_NAME + " = '" + tag.getText() + "' OR ";
 
         MY_QUERY = MY_QUERY.substring(0, MY_QUERY.length()-3);
         MY_QUERY += ");";
