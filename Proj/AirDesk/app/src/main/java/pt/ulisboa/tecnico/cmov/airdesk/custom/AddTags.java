@@ -103,7 +103,7 @@ public class AddTags extends LinearLayout {
                     mTagsEditText.getText().clear();
                     return true;
                 }
-            }   
+            }
             return false;
         }
     }

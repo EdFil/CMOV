@@ -8,13 +8,10 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 
-import pt.ulisboa.tecnico.cmov.airdesk.GlobalState;
 import pt.ulisboa.tecnico.cmov.airdesk.core.file.exception.FileAlreadyExistsException;
 import pt.ulisboa.tecnico.cmov.airdesk.core.tag.Tag;
 import pt.ulisboa.tecnico.cmov.airdesk.core.user.User;
 import pt.ulisboa.tecnico.cmov.airdesk.core.user.UserManager;
-import pt.ulisboa.tecnico.cmov.airdesk.core.workspace.exception.WorkspaceAlreadyExistsException;
-import pt.ulisboa.tecnico.cmov.airdesk.core.workspace.exception.WorkspaceNameIsEmptyException;
 import pt.ulisboa.tecnico.cmov.airdesk.database.AirDeskDbHelper;
 import pt.ulisboa.tecnico.cmov.airdesk.util.FileManager;
 
@@ -66,49 +63,38 @@ public class WorkspaceManager {
     }
 
     public Workspace addLocalWorkspace(String name, User owner, long quota, boolean isPrivate, Collection<Tag> tags) {
-        if(name.isEmpty())
-            throw new WorkspaceNameIsEmptyException();
-        if(AirDeskDbHelper.getInstance(getContext()).isWorkspaceNameAvailable(name, owner.getEmail()))
-            throw new WorkspaceAlreadyExistsException();
-
-        ArrayList<File> files = new ArrayList<>();
-        ArrayList<User> users = new ArrayList<>();
-        users.add(owner);
-
-        LocalWorkspace newWorkspace = new LocalWorkspace(name, owner, quota, isPrivate, tags, users, files, this);
-
-        long workspaceId = AirDeskDbHelper.getInstance(getContext()).insertWorkspace(name, owner.getDatabaseId(), quota, isPrivate, owner.getDatabaseId());
-        FileManager.createFolder(getContext(), name);
+        // Create workspace
+        LocalWorkspace newWorkspace = new LocalWorkspace(name, owner, quota, isPrivate, tags);
+        newWorkspace.addUser(owner);
+        // Insert workspace in DB
+        long workspaceId = AirDeskDbHelper.getInstance(getContext()).insertWorkspace(name, owner.getDatabaseId(), quota, isPrivate, true, owner.getDatabaseId());
+        newWorkspace.setDatabaseId(workspaceId);
         for(Tag tag : tags) {
             AirDeskDbHelper.getInstance(getContext()).addTagToWorkspace(workspaceId, tag.getText());
         }
         AirDeskDbHelper.getInstance(getContext()).addUserToWorkspace(workspaceId, owner.getDatabaseId());
-        newWorkspace.setDatabaseId(workspaceId);
-
+        // Create folder for workspace
+        FileManager.createFolder(getContext(), newWorkspace.getWorkspaceFolderName());
+        // Add workspace to Workspace Manager
         mLocalWorkspaces.add(newWorkspace);
 
         return newWorkspace;
     }
 
-    public Workspace addForeignWorkspace(User userReceiving, String name, User owner, long quota, boolean isPrivate, Collection<Tag> tags, Collection<User> users, Collection<File> files) {
-        AirDeskDbHelper dbHelper = AirDeskDbHelper.getInstance(getContext());
-
-        // WorkspaceId is created by the respective user's database
-        long workspaceId = dbHelper.insertWorkspace(name, owner.getDatabaseId(), quota, isPrivate, userReceiving.getDatabaseId());
-        FileManager.createFolder(getContext(), name);
-        for(Tag tag : tags) {
-            dbHelper.addTagToWorkspace(workspaceId, tag.getText());
-        }
-        dbHelper.addUserToWorkspace(workspaceId, owner.getDatabaseId());
-
-        //users.add(owner);
-
-        // TODO : WIFI - DIRECT THIS HAS TO CHANGE
-        users.add(userReceiving);
-
-        ForeignWorkspace newWorkspace = new ForeignWorkspace(workspaceId, name, owner, quota, isPrivate, tags, users, files, this);
+    public Workspace addForeignWorkspace(User userReceiving, String name, User owner, long quota, boolean isPrivate) {
+        User savedOwner = UserManager.getInstance().getOwner();
+        UserManager.getInstance().setOwner(userReceiving);
+        // Create workspace
+        ForeignWorkspace newWorkspace = new ForeignWorkspace(name, owner, quota, isPrivate, this);
+        // Insert workspace in DB
+        long workspaceId = AirDeskDbHelper.getInstance(getContext()).insertWorkspace(name, owner.getDatabaseId(), quota, isPrivate, false, userReceiving.getDatabaseId());
+        newWorkspace.setDatabaseId(workspaceId);
+        // Create workspace Folder
+        FileManager.createFolder(getContext(), newWorkspace.getWorkspaceFolderName());
+        // Add Workspace to Workspace Manager
         mForeignWorkspaces.add(newWorkspace);
 
+        UserManager.getInstance().setOwner(savedOwner);
         return newWorkspace;
     }
 
@@ -204,12 +190,12 @@ public class WorkspaceManager {
             String oldName = workspace.getName();
             if (workspaceName != null) {
                 workspace.setName(workspaceName);
+                FileManager.renameFolder(getContext(), oldName, workspaceName);
             }
             if (quotaValue != null)
                 workspace.setQuota(quotaValue.longValue());
             if (isPrivate != null)
                 workspace.setIsPrivate(isPrivate.booleanValue());
-            FileManager.renameFolder(getContext(), oldName, workspaceName);
             AirDeskDbHelper.getInstance(getContext()).updateWorkspace(workspace.getDatabaseId(), workspaceName, quotaValue, isPrivate);
     }
 
@@ -259,6 +245,6 @@ public class WorkspaceManager {
     }
 
     public void insertWorkspaceToForeignWorkspaces(Workspace workspace, User userReceivingWS) {
-        addForeignWorkspace(userReceivingWS, workspace.getName(), workspace.getOwner(), workspace.getMaxQuota(), workspace.isPrivate(), workspace.getTags(), workspace.getUsers(), workspace.getFiles());
+        addForeignWorkspace(userReceivingWS, workspace.getName(), workspace.getOwner(), workspace.getMaxQuota(), workspace.isPrivate());
     }
 }

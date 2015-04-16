@@ -59,6 +59,7 @@ public class Workspace implements Parcelable {
     public List<Tag> getTags() { return mTags; }
     public List<User> getUsers() { return mUsers; }
     public List<File> getFiles() { return mFiles; }
+    public String getWorkspaceFolderName() { return getOwner().getDatabaseId() + "_" + getName(); }
 
     // Setters
     public void setName(String name) throws WorkspaceNameIsEmptyException, NullPointerException {

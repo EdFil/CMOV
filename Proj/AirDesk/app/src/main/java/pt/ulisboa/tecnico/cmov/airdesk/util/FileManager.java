@@ -30,10 +30,9 @@ public class FileManager {
     public static boolean createFolder(Context context, String folderName){
         File rootFolder = context.getDir(WORKSPACES_FOLDER_NAME, Context.MODE_PRIVATE);
         File newFolder = new File(rootFolder, folderName); //Getting a folder within the dir.
-        if(!newFolder.exists()) {
-            return newFolder.mkdir();
-        }
-        return false;
+        if(newFolder.exists())
+            deleteDir(newFolder);
+        return newFolder.mkdir();
     }
 
     public static void deleteFolder(Context context, String folderName) {

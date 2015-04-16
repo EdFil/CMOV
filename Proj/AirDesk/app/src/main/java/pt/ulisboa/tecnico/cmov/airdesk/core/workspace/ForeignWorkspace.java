@@ -3,13 +3,20 @@ package pt.ulisboa.tecnico.cmov.airdesk.core.workspace;
 import java.io.File;
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Collections;
 import java.util.HashSet;
 import java.util.List;
 
 import pt.ulisboa.tecnico.cmov.airdesk.core.tag.Tag;
 import pt.ulisboa.tecnico.cmov.airdesk.core.user.User;
+import pt.ulisboa.tecnico.cmov.airdesk.core.user.UserManager;
 
 public class ForeignWorkspace extends Workspace {
+
+    public ForeignWorkspace(String name, User owner, long quota, boolean isPrivate, WorkspaceManager workspaceManager){
+        super(name, owner, quota, isPrivate, Collections.EMPTY_LIST, Collections.EMPTY_LIST, Collections.EMPTY_LIST, workspaceManager);
+    }
+
     public ForeignWorkspace(long workspaceId, String name, User owner, long quota, boolean isPrivate, Collection<Tag> tags, Collection<User> users, Collection<File> files, WorkspaceManager workspaceManager) {
         super(workspaceId, name, owner, quota, isPrivate, tags, users, files, workspaceManager);
     }

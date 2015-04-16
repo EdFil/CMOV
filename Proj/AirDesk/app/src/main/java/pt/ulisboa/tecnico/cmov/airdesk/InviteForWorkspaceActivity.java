@@ -8,6 +8,7 @@ import android.view.MenuItem;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ListView;
+import android.widget.Toast;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -54,8 +55,8 @@ public class InviteForWorkspaceActivity extends ActionBarActivity {
                 String userEmail = ((User) parent.getItemAtPosition(position)).getEmail();
                 User user = userManager.getUserByEmail(userEmail);
                 WorkspaceManager.getInstance().insertWorkspaceToForeignWorkspaces(workspace, user);
-                usersToInvite.remove(user);
-                mUserListAdapter.notifyDataSetChanged();
+                mUserListAdapter.remove(user);
+                Toast.makeText(getApplicationContext(), "User '" + userEmail + "' was added", Toast.LENGTH_SHORT).show();
             }
         });
     }

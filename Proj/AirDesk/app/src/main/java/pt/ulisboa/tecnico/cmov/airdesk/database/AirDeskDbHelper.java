@@ -28,7 +28,6 @@ import pt.ulisboa.tecnico.cmov.airdesk.database.AirDeskContract.FilesEntry;
 import pt.ulisboa.tecnico.cmov.airdesk.database.AirDeskContract.TagsEntry;
 import pt.ulisboa.tecnico.cmov.airdesk.database.AirDeskContract.UsersEntry;
 import pt.ulisboa.tecnico.cmov.airdesk.database.AirDeskContract.UsersWorkspacesEntry;
-import pt.ulisboa.tecnico.cmov.airdesk.database.AirDeskContract.WorkspaceEntry;
 
 public class AirDeskDbHelper extends SQLiteOpenHelper {
 
@@ -36,7 +35,7 @@ public class AirDeskDbHelper extends SQLiteOpenHelper {
     private static AirDeskDbHelper mInstance;
 
     public static final String DATABASE_NAME = "airdesk.db";
-    public static final int DATABASE_VERSION = 27;
+    public static final int DATABASE_VERSION = 29;
 
     public static synchronized AirDeskDbHelper getInstance(Context context) {
         if (mInstance == null) {
@@ -53,15 +52,15 @@ public class AirDeskDbHelper extends SQLiteOpenHelper {
     public void onCreate(SQLiteDatabase db) {
         // Query to create the Workspace table
         final String SQL_CREATE_WORKSPACE_TABLE = "CREATE TABLE " + AirDeskContract.WorkspaceEntry.TABLE_NAME + " (" +
-                WorkspaceEntry._ID + " INTEGER PRIMARY KEY AUTOINCREMENT, " +
-                WorkspaceEntry.COLUMN_WORKSPACE_NAME + " TEXT NOT NULL, " +
-                WorkspaceEntry.COLUMN_OWNER_KEY + " INTEGER NOT NULL, " +
-                WorkspaceEntry.COLUMN_WORKSPACE_QUOTA + " INTEGER NOT NULL, " +
-                WorkspaceEntry.COLUMN_WORKSPACE_IS_PRIVATE + " INTEGER NOT NULL, " +
-                WorkspaceEntry.COLUMN_WORKSPACE_USER + " INTEGER NOT NULL, " +
-                "FOREIGN KEY (" + WorkspaceEntry.COLUMN_OWNER_KEY  + ") REFERENCES " + UsersEntry.TABLE_NAME + "( " + UsersEntry._ID + " ), " +
-                "FOREIGN KEY (" + WorkspaceEntry.COLUMN_WORKSPACE_USER + ") REFERENCES " + UsersEntry.TABLE_NAME + "( " + UsersEntry._ID + " ), " +
-                "UNIQUE (" + WorkspaceEntry.COLUMN_WORKSPACE_NAME + ", " + WorkspaceEntry.COLUMN_WORKSPACE_USER + ") " +
+                AirDeskContract.WorkspaceEntry._ID + " INTEGER PRIMARY KEY AUTOINCREMENT, " +
+                AirDeskContract.WorkspaceEntry.COLUMN_WORKSPACE_NAME + " TEXT NOT NULL, " +
+                AirDeskContract.WorkspaceEntry.COLUMN_OWNER_KEY + " INTEGER NOT NULL, " +
+                AirDeskContract.WorkspaceEntry.COLUMN_WORKSPACE_QUOTA + " INTEGER NOT NULL, " +
+                AirDeskContract.WorkspaceEntry.COLUMN_WORKSPACE_IS_PRIVATE + " INTEGER NOT NULL, " +
+                AirDeskContract.WorkspaceEntry.COLUMN_WORKSPACE_IS_LOCAL + " INTEGER NOT NULL, " +
+                AirDeskContract.WorkspaceEntry.COLUMN_WORKSPACE_USER + " INTEGER NOT NULL, " +
+                "FOREIGN KEY (" + AirDeskContract.WorkspaceEntry.COLUMN_OWNER_KEY  + ") REFERENCES " + UsersEntry.TABLE_NAME + "( " + UsersEntry._ID + " ), " +
+                "FOREIGN KEY (" + AirDeskContract.WorkspaceEntry.COLUMN_WORKSPACE_USER + ") REFERENCES " + UsersEntry.TABLE_NAME + "( " + UsersEntry._ID + " ) " +
                 " );";
 
         final String SQL_CREATE_TAG_TABLE = "CREATE TABLE " + TagsEntry.TABLE_NAME + " (" +
@@ -111,7 +110,7 @@ public class AirDeskDbHelper extends SQLiteOpenHelper {
         onCreate(db);
     }
 
-    public long insertWorkspace(String workspaceName, long ownerId, long quotaValue, boolean isPrivate, long userId){
+    public long insertWorkspace(String workspaceName, long ownerId, long quotaValue, boolean isPrivate, boolean isLocal, long userId){
         SQLiteDatabase db = mInstance.getWritableDatabase();
 
         ContentValues values = new ContentValues();
@@ -119,7 +118,8 @@ public class AirDeskDbHelper extends SQLiteOpenHelper {
         values.put(AirDeskContract.WorkspaceEntry.COLUMN_OWNER_KEY, ownerId);
         values.put(AirDeskContract.WorkspaceEntry.COLUMN_WORKSPACE_QUOTA, quotaValue);
         values.put(AirDeskContract.WorkspaceEntry.COLUMN_WORKSPACE_IS_PRIVATE, isPrivate ? 1 : 0);
-        values.put(WorkspaceEntry.COLUMN_WORKSPACE_USER, userId);
+        values.put(AirDeskContract.WorkspaceEntry.COLUMN_WORKSPACE_IS_LOCAL, isLocal ? 1 : 0);
+        values.put(AirDeskContract.WorkspaceEntry.COLUMN_WORKSPACE_USER, userId);
 
         long rowId = db.insert(AirDeskContract.WorkspaceEntry.TABLE_NAME, null, values);
         db.close();
@@ -135,7 +135,7 @@ public class AirDeskDbHelper extends SQLiteOpenHelper {
         db.delete(TagsEntry.TABLE_NAME, TagsEntry.COLUMN_WORKSPACE_KEY + "='" + workspaceId + "'", null);
         db.delete(UsersWorkspacesEntry.TABLE_NAME, UsersWorkspacesEntry.COLUMN_WORKSPACE_KEY + "='" + workspaceId + "'", null);
         db.delete(FilesEntry.TABLE_NAME, FilesEntry.COLUMN_WORKSPACE_KEY + "='" + workspaceId + "'", null);
-        db.delete(WorkspaceEntry.TABLE_NAME, WorkspaceEntry._ID + "=" + workspaceId, null);
+        db.delete(AirDeskContract.WorkspaceEntry.TABLE_NAME, AirDeskContract.WorkspaceEntry._ID + "=" + workspaceId, null);
         db.close();
     }
 
@@ -315,14 +315,14 @@ public class AirDeskDbHelper extends SQLiteOpenHelper {
 
         SQLiteDatabase db = mInstance.getReadableDatabase();
 
-        Cursor workspaceCursor = db.rawQuery("SELECT * FROM " + WorkspaceEntry.TABLE_NAME + " WHERE " + WorkspaceEntry.COLUMN_WORKSPACE_USER + " = " + userId, null);
+        Cursor workspaceCursor = db.rawQuery("SELECT * FROM " + AirDeskContract.WorkspaceEntry.TABLE_NAME + " WHERE " + AirDeskContract.WorkspaceEntry.COLUMN_WORKSPACE_USER + " = " + userId, null);
 
-        int columnIdIndex = workspaceCursor.getColumnIndex(WorkspaceEntry._ID);
-        int columnNameIndex = workspaceCursor.getColumnIndex(WorkspaceEntry.COLUMN_WORKSPACE_NAME);
-        int columnOwnerIndex = workspaceCursor.getColumnIndex(WorkspaceEntry.COLUMN_OWNER_KEY);
-        int columnQuotaIndex = workspaceCursor.getColumnIndex(WorkspaceEntry.COLUMN_WORKSPACE_QUOTA);
-        int columnIsPrivateIndex = workspaceCursor.getColumnIndex(WorkspaceEntry.COLUMN_WORKSPACE_IS_PRIVATE);
-        int columnUserIndex = workspaceCursor.getColumnIndex(WorkspaceEntry.COLUMN_WORKSPACE_USER);
+        int columnIdIndex = workspaceCursor.getColumnIndex(AirDeskContract.WorkspaceEntry._ID);
+        int columnNameIndex = workspaceCursor.getColumnIndex(AirDeskContract.WorkspaceEntry.COLUMN_WORKSPACE_NAME);
+        int columnOwnerIndex = workspaceCursor.getColumnIndex(AirDeskContract.WorkspaceEntry.COLUMN_OWNER_KEY);
+        int columnQuotaIndex = workspaceCursor.getColumnIndex(AirDeskContract.WorkspaceEntry.COLUMN_WORKSPACE_QUOTA);
+        int columnIsPrivateIndex = workspaceCursor.getColumnIndex(AirDeskContract.WorkspaceEntry.COLUMN_WORKSPACE_IS_PRIVATE);
+        int columnUserIndex = workspaceCursor.getColumnIndex(AirDeskContract.WorkspaceEntry.COLUMN_WORKSPACE_USER);
 
         List<Workspace> workspaces = new ArrayList<>();
 
@@ -368,14 +368,14 @@ public class AirDeskDbHelper extends SQLiteOpenHelper {
 
         SQLiteDatabase db = mInstance.getReadableDatabase();
 
-        Cursor workspaceCursor = db.rawQuery("SELECT * FROM " + WorkspaceEntry.TABLE_NAME + " WHERE " + WorkspaceEntry.COLUMN_WORKSPACE_USER + " = " + userId, null);
+        Cursor workspaceCursor = db.rawQuery("SELECT * FROM " + AirDeskContract.WorkspaceEntry.TABLE_NAME + " WHERE " + AirDeskContract.WorkspaceEntry.COLUMN_WORKSPACE_USER + " = " + userId, null);
 
-        int columnIdIndex = workspaceCursor.getColumnIndex(WorkspaceEntry._ID);
-        int columnNameIndex = workspaceCursor.getColumnIndex(WorkspaceEntry.COLUMN_WORKSPACE_NAME);
-        int columnOwnerIndex = workspaceCursor.getColumnIndex(WorkspaceEntry.COLUMN_OWNER_KEY);
-        int columnQuotaIndex = workspaceCursor.getColumnIndex(WorkspaceEntry.COLUMN_WORKSPACE_QUOTA);
-        int columnIsPrivateIndex = workspaceCursor.getColumnIndex(WorkspaceEntry.COLUMN_WORKSPACE_IS_PRIVATE);
-        int columnUserIndex = workspaceCursor.getColumnIndex(WorkspaceEntry.COLUMN_WORKSPACE_USER);
+        int columnIdIndex = workspaceCursor.getColumnIndex(AirDeskContract.WorkspaceEntry._ID);
+        int columnNameIndex = workspaceCursor.getColumnIndex(AirDeskContract.WorkspaceEntry.COLUMN_WORKSPACE_NAME);
+        int columnOwnerIndex = workspaceCursor.getColumnIndex(AirDeskContract.WorkspaceEntry.COLUMN_OWNER_KEY);
+        int columnQuotaIndex = workspaceCursor.getColumnIndex(AirDeskContract.WorkspaceEntry.COLUMN_WORKSPACE_QUOTA);
+        int columnIsPrivateIndex = workspaceCursor.getColumnIndex(AirDeskContract.WorkspaceEntry.COLUMN_WORKSPACE_IS_PRIVATE);
+        int columnUserIndex = workspaceCursor.getColumnIndex(AirDeskContract.WorkspaceEntry.COLUMN_WORKSPACE_USER);
 
         List<ForeignWorkspace> workspaces = new ArrayList<>();
 
@@ -613,13 +613,13 @@ public class AirDeskDbHelper extends SQLiteOpenHelper {
 
         ContentValues values = new ContentValues();
         if(workspaceName != null)
-            values.put(WorkspaceEntry.COLUMN_WORKSPACE_NAME, workspaceName);
+            values.put(AirDeskContract.WorkspaceEntry.COLUMN_WORKSPACE_NAME, workspaceName);
         if(quotaValue != null)
-            values.put(WorkspaceEntry.COLUMN_WORKSPACE_QUOTA, quotaValue.longValue());
+            values.put(AirDeskContract.WorkspaceEntry.COLUMN_WORKSPACE_QUOTA, quotaValue.longValue());
         if(isPrivate != null)
-            values.put(WorkspaceEntry.COLUMN_WORKSPACE_IS_PRIVATE, isPrivate.booleanValue());
+            values.put(AirDeskContract.WorkspaceEntry.COLUMN_WORKSPACE_IS_PRIVATE, isPrivate.booleanValue());
 
-        db.update(WorkspaceEntry.TABLE_NAME, values, WorkspaceEntry._ID + "=" + workspaceId, null);
+        db.update(AirDeskContract.WorkspaceEntry.TABLE_NAME, values, AirDeskContract.WorkspaceEntry._ID + "=" + workspaceId, null);
 
         db.close();
     }
@@ -629,9 +629,9 @@ public class AirDeskDbHelper extends SQLiteOpenHelper {
         SQLiteDatabase db = mInstance.getReadableDatabase();
         String MY_QUERY =
                 " SELECT DISTINCT *" +
-                " FROM " + WorkspaceEntry.TABLE_NAME + " INNER JOIN " + TagsEntry.TABLE_NAME +
-                " ON " + WorkspaceEntry.TABLE_NAME + "." + WorkspaceEntry._ID + " = " + TagsEntry.TABLE_NAME + "." + TagsEntry.COLUMN_WORKSPACE_KEY +
-                " WHERE " + WorkspaceEntry.TABLE_NAME + "." + WorkspaceEntry.COLUMN_WORKSPACE_USER + " != " + ownerDbId + " AND ( ";
+                " FROM " + AirDeskContract.WorkspaceEntry.TABLE_NAME + " INNER JOIN " + TagsEntry.TABLE_NAME +
+                " ON " + AirDeskContract.WorkspaceEntry.TABLE_NAME + "." + AirDeskContract.WorkspaceEntry._ID + " = " + TagsEntry.TABLE_NAME + "." + TagsEntry.COLUMN_WORKSPACE_KEY +
+                " WHERE " + AirDeskContract.WorkspaceEntry.TABLE_NAME + "." + AirDeskContract.WorkspaceEntry.COLUMN_WORKSPACE_USER + " != " + ownerDbId + " AND ( ";
 
         for(String tag : tags)
             MY_QUERY += TagsEntry.COLUMN_TAG_NAME + " = '" + tag + "' OR ";
@@ -644,11 +644,11 @@ public class AirDeskDbHelper extends SQLiteOpenHelper {
         List<ForeignWorkspace> foreignWorkspaceList = new ArrayList<>();
 
 
-        int columnIdIndex = workspaceCursor.getColumnIndex(WorkspaceEntry._ID);
-        int columnNameIndex = workspaceCursor.getColumnIndex(WorkspaceEntry.COLUMN_WORKSPACE_NAME);
-        int columnOwnerIndex = workspaceCursor.getColumnIndex(WorkspaceEntry.COLUMN_OWNER_KEY);
-        int columnQuotaIndex = workspaceCursor.getColumnIndex(WorkspaceEntry.COLUMN_WORKSPACE_QUOTA);
-        int columnIsPrivateIndex = workspaceCursor.getColumnIndex(WorkspaceEntry.COLUMN_WORKSPACE_IS_PRIVATE);
+        int columnIdIndex = workspaceCursor.getColumnIndex(AirDeskContract.WorkspaceEntry._ID);
+        int columnNameIndex = workspaceCursor.getColumnIndex(AirDeskContract.WorkspaceEntry.COLUMN_WORKSPACE_NAME);
+        int columnOwnerIndex = workspaceCursor.getColumnIndex(AirDeskContract.WorkspaceEntry.COLUMN_OWNER_KEY);
+        int columnQuotaIndex = workspaceCursor.getColumnIndex(AirDeskContract.WorkspaceEntry.COLUMN_WORKSPACE_QUOTA);
+        int columnIsPrivateIndex = workspaceCursor.getColumnIndex(AirDeskContract.WorkspaceEntry.COLUMN_WORKSPACE_IS_PRIVATE);
 
         while (workspaceCursor.moveToNext())
             foreignWorkspaceList.add(new ForeignWorkspace(
