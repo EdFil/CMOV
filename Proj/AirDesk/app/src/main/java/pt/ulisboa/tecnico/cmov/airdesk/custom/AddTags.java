@@ -9,12 +9,14 @@ import android.view.View;
 import android.widget.EditText;
 import android.widget.LinearLayout;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import java.util.ArrayList;
 import java.util.List;
 
 import pt.ulisboa.tecnico.cmov.airdesk.R;
 import pt.ulisboa.tecnico.cmov.airdesk.core.tag.Tag;
+import pt.ulisboa.tecnico.cmov.airdesk.util.Constants;
 
 public class AddTags extends LinearLayout {
 
@@ -51,6 +53,11 @@ public class AddTags extends LinearLayout {
     // -----------------
 
     public void addTag(String tag) {
+        if(mTagsLayout.getChildCount() == Constants.MAX_TAGS_PER_WORKSPACE) {
+            Toast.makeText(getContext(), "Max number of tags reached", Toast.LENGTH_SHORT).show();
+            return;
+        }
+
         // If tag already exists we do not add it
         for(int i = 0; i < mTagsLayout.getChildCount(); i++)
             if((((TextView)((LinearLayout)mTagsLayout.getChildAt(i)).getChildAt(0)).getText().toString()).equals(tag)) {

@@ -11,5 +11,7 @@ public final class Constants {
     public static final String WORKSPACE_INDEX = "WORKSPACE_INDEX";
     // Manage Account
     public static final String USER_INDEX_MESSAGE = "USER_INDEX";
+    //
+    public static final int MAX_TAGS_PER_WORKSPACE = 6;
 
 }
