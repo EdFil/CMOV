@@ -93,16 +93,17 @@ public class AddTags extends LinearLayout {
     private final class TagsEditTextKeyListener implements OnKeyListener {
         @Override
         public boolean onKey(View v, int keyCode, KeyEvent event) {
-            if(keyCode == KeyEvent.KEYCODE_SPACE) {
-                addTag(mTagsEditText.getText().toString());
-                mTagsEditText.getText().clear();
-                return true;
-            }
-            if(keyCode == KeyEvent.KEYCODE_ENTER){
-                addTag(mTagsEditText.getText().toString());
-                mTagsEditText.getText().clear();
-                return true;
-            }
+            if(event.getAction() == KeyEvent.ACTION_DOWN) {
+                if (keyCode == KeyEvent.KEYCODE_SPACE) {
+                    addTag(mTagsEditText.getText().toString());
+                    mTagsEditText.getText().clear();
+                    return true;
+                } else if (keyCode == KeyEvent.KEYCODE_ENTER) {
+                    addTag(mTagsEditText.getText().toString());
+                    mTagsEditText.getText().clear();
+                    return true;
+                }
+            }   
             return false;
         }
     }

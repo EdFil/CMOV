@@ -16,6 +16,7 @@
         android:layout_height="wrap_content"
         android:ems="10"
         android:hint="Insert your Email"
+        android:imeOptions="actionNext"
         android:inputType="textEmailAddress" />
 
     <EditText
