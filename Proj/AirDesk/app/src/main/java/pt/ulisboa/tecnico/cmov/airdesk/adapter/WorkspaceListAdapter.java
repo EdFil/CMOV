@@ -33,6 +33,16 @@ public class WorkspaceListAdapter extends ArrayAdapter<Workspace> {
         TextView workspaceTitle = (TextView) convertView.findViewById(R.id.itemName);
         // Populate the data into the template view using the data object
         workspaceTitle.setText(workspace.getName());
+
+        // Lookup view for data population
+        TextView workspacePrivacy = (TextView) convertView.findViewById(R.id.itemPrivacy);
+        // Populate the data into the template view using the data object
+        if(workspace.isPrivate())
+            workspacePrivacy.setText("Private");
+        else
+            workspacePrivacy.setText("Public");
+
+
         // Return the completed view to render on screen
         return convertView;
     }

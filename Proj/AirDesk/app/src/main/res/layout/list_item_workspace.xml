@@ -9,21 +9,30 @@
         android:layout_width="wrap_content"
         android:layout_height="match_parent"
         android:gravity="center_vertical"
-        android:paddingLeft="@dimen/activity_horizontal_margin"
-        android:paddingRight="@dimen/activity_horizontal_margin"
-        android:paddingBottom="@dimen/activity_horizontal_margin"
-        android:paddingTop="@dimen/activity_horizontal_margin"
+        android:paddingLeft="8dp"
+        android:paddingRight="8dp"
+        android:paddingBottom="8dp"
+        android:paddingTop="8dp"
         android:src="@drawable/ic_folder"
         />
 
     <TextView
         android:id="@+id/itemName"
-        android:layout_width="wrap_content"
+        android:layout_width="0dp"
+        android:layout_weight="5"
         android:layout_height="match_parent"
         android:text="Item Name Placeholder"
         android:autoText="false"
         style="@style/TextAppearance.AppCompat.Title"
         android:gravity="center_vertical"
         android:textColor="@android:color/black" />
+    <TextView
+        android:id="@+id/itemPrivacy"
+        android:paddingLeft="@dimen/activity_horizontal_margin"
+        android:layout_width="0dp"
+        android:layout_weight="2"
+        android:layout_height="match_parent"
+        android:gravity="center_vertical"
+        android:text="IsPublic"/>
 
 </LinearLayout>
