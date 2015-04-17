@@ -34,6 +34,7 @@ public class AddTags extends LinearLayout {
 
         mTagsEditText = (EditText) findViewById(R.id.newTag);
         mTagsEditText.addTextChangedListener(new TagsEditTextWatcher());
+        mTagsEditText.setOnKeyListener(new TagsEditTextKeyListener());
         mTagsEditText.setOnFocusChangeListener(new TagsEditTextFocusChange());
         mTagsEditText.setInputType(InputType.TYPE_TEXT_FLAG_NO_SUGGESTIONS);
 
@@ -109,23 +110,19 @@ public class AddTags extends LinearLayout {
         }
     }
 
-//    private final class TagsEditTextKeyListener implements OnKeyListener {
-//        @Override
-//        public boolean onKey(View v, int keyCode, KeyEvent event) {
-//            if(event.getAction() == KeyEvent.ACTION_DOWN) {
-//                if (keyCode == KeyEvent.KEYCODE_SPACE) {
-//                    addTag(mTagsEditText.getText().toString());
-//                    mTagsEditText.getText().clear();
-//                    return true;
-//                } else if (keyCode == KeyEvent.KEYCODE_ENTER) {
-//                    addTag(mTagsEditText.getText().toString());
-//                    mTagsEditText.getText().clear();
-//                    return true;
-//                }
-//            }
-//            return false;
-//        }
-//    }
+    private final class TagsEditTextKeyListener implements OnKeyListener {
+        @Override
+        public boolean onKey(View v, int keyCode, KeyEvent event) {
+            if(event.getAction() == KeyEvent.ACTION_DOWN) {
+                if (keyCode == KeyEvent.KEYCODE_ENTER) {
+                    addTag(mTagsEditText.getText().toString());
+                    mTagsEditText.getText().clear();
+                    return true;
+                }
+            }
+            return false;
+        }
+    }
 
     private final class TagsEditTextFocusChange implements OnFocusChangeListener {
         @Override
