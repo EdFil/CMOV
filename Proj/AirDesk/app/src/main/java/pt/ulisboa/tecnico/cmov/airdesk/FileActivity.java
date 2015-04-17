@@ -11,6 +11,8 @@ import android.widget.Toast;
 
 import java.io.File;
 
+import pt.ulisboa.tecnico.cmov.airdesk.core.file.exception.FileExceedsAvailableSpaceException;
+import pt.ulisboa.tecnico.cmov.airdesk.core.file.exception.FileExceedsMaxQuotaException;
 import pt.ulisboa.tecnico.cmov.airdesk.core.workspace.Workspace;
 import pt.ulisboa.tecnico.cmov.airdesk.core.workspace.WorkspaceManager;
 import pt.ulisboa.tecnico.cmov.airdesk.tasks.ReadFileTask;
@@ -74,6 +76,17 @@ public class FileActivity extends ActionBarActivity {
     public void onClickSave(View view) {
 
         try {
+
+            long bytesToUse = textToEdit.length() - textToView.length() + workspace.getUsedQuota();
+            long usableSpace = WorkspaceManager.getInstance().getSpaceAvailableInternalStorage();
+
+            if(bytesToUse > usableSpace) {
+                throw new FileExceedsAvailableSpaceException(bytesToUse, usableSpace);
+            }
+            if(bytesToUse > workspace.getMaxQuota()) {
+                throw new FileExceedsMaxQuotaException(bytesToUse, workspace.getMaxQuota());
+            }
+
             new WriteFileTask(textToEdit, workspace).execute(file);
             new ReadFileTask(textToView).execute(file);
 

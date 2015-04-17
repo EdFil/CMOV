@@ -33,15 +33,7 @@ public class WriteFileTask extends AsyncTask<File, Void, Void> {
 
     @Override
     protected Void doInBackground(File... file) {
-        long bytesToUse = mTextToEdit.length() - mTextToEdit.length() + mWorkspace.getUsedQuota();
-        long usableSpace = WorkspaceManager.getInstance().getSpaceAvailableInternalStorage();
 
-        if(bytesToUse > usableSpace) {
-            throw new FileExceedsAvailableSpaceException(bytesToUse, usableSpace);
-        }
-        if(bytesToUse > mWorkspace.getMaxQuota()) {
-            throw new FileExceedsMaxQuotaException(bytesToUse, mWorkspace.getMaxQuota());
-        }
 
         FileOutputStream fos = null;
         try {
