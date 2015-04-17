@@ -102,13 +102,13 @@ public class WorkspaceManager {
         if(isLocalWS) {
             Workspace workspace = mLocalWorkspaces.get(workspaceIndex);
             AirDeskDbHelper.getInstance(getContext()).deleteWorkspace(workspace.getDatabaseId());
-            FileManager.deleteFolder(getContext(), workspace.getName());
+            FileManager.deleteFolder(getContext(), workspace.getWorkspaceFolderName());
             mLocalWorkspaces.remove(workspaceIndex);
         }
         else{
             Workspace workspace = mForeignWorkspaces.get(workspaceIndex);
             AirDeskDbHelper.getInstance(getContext()).deleteWorkspace(workspace.getDatabaseId());
-            FileManager.deleteFolder(getContext(), workspace.getName());
+            FileManager.deleteFolder(getContext(), workspace.getWorkspaceFolderName());
             mForeignWorkspaces.remove(workspaceIndex);
         }
     }
@@ -138,7 +138,7 @@ public class WorkspaceManager {
 
     public File addFileToWorkspace(String fileName, Workspace workspace) {
         try {
-            File file = FileManager.createFile(getContext(), workspace.getName(), fileName);
+            File file = FileManager.createFile(getContext(), workspace.getWorkspaceFolderName(), fileName);
             AirDeskDbHelper.getInstance(getContext()).addFileToWorkspace(workspace.getDatabaseId(), file.getPath(), mDateFormat.format(file.lastModified()));
             workspace.addFile(file);
             return file;
@@ -219,6 +219,15 @@ public class WorkspaceManager {
     }
 
 
+    public Workspace getWorkspaceWithId(long databaseId) {
+        for(Workspace workspace : mLocalWorkspaces)
+            if(workspace.getDatabaseId() == databaseId)
+                return workspace;
+        for(Workspace workspace : mForeignWorkspaces)
+            if(workspace.getDatabaseId() == databaseId)
+                return workspace;
+        return null;
+    }
 
     public Workspace getWorkspaceAtIndex(boolean isLocalWS, int workspaceIndex) {
         if(isLocalWS)
@@ -247,4 +256,5 @@ public class WorkspaceManager {
     public void insertWorkspaceToForeignWorkspaces(Workspace workspace, User userReceivingWS) {
         addForeignWorkspace(userReceivingWS, workspace.getName(), workspace.getOwner(), workspace.getMaxQuota(), workspace.isPrivate());
     }
+
 }

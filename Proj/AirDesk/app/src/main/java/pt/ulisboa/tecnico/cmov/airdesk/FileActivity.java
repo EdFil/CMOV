@@ -25,6 +25,7 @@ import pt.ulisboa.tecnico.cmov.airdesk.core.file.exception.FileExceedsMaxQuotaEx
 import pt.ulisboa.tecnico.cmov.airdesk.core.file.exception.FileException;
 import pt.ulisboa.tecnico.cmov.airdesk.core.workspace.Workspace;
 import pt.ulisboa.tecnico.cmov.airdesk.core.workspace.WorkspaceManager;
+import pt.ulisboa.tecnico.cmov.airdesk.util.Constants;
 
 
 public class FileActivity extends ActionBarActivity {
@@ -53,8 +54,8 @@ public class FileActivity extends ActionBarActivity {
         save = (ImageView) findViewById(R.id.saveTextFile);
 
         Intent intent = getIntent();
-        file = (File) intent.getSerializableExtra("textFile");
-        workspace = intent.getParcelableExtra("workspaceIndex");
+        file = (File) intent.getSerializableExtra(Constants.FILE_EXTRA);
+        workspace = WorkspaceManager.getInstance().getWorkspaceWithId(intent.getLongExtra(Constants.WORKSPACE_ID, -1));
 
         // Action bar back button e name
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);

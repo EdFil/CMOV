@@ -28,6 +28,7 @@ import pt.ulisboa.tecnico.cmov.airdesk.R;
 import pt.ulisboa.tecnico.cmov.airdesk.adapter.FileListAdapter;
 import pt.ulisboa.tecnico.cmov.airdesk.core.workspace.Workspace;
 import pt.ulisboa.tecnico.cmov.airdesk.core.workspace.WorkspaceManager;
+import pt.ulisboa.tecnico.cmov.airdesk.util.Constants;
 import pt.ulisboa.tecnico.cmov.airdesk.util.FileManager;
 
 public class FilesFragment extends Fragment {
@@ -58,7 +59,7 @@ public class FilesFragment extends Fragment {
 
         // Get the WORKSPACE of the files
         Bundle bundle = getArguments();
-        mWorkspace = bundle.getParcelable("Workspace");
+        mWorkspace = manager.getWorkspaceWithId(bundle.getLong(Constants.WORKSPACE_ID));
 
         // Request the MANAGER for the FILES (and its ADAPTER) of the WORKSPACE
         mFiles = manager.getFilesFromWorkspace(mWorkspace);
@@ -72,11 +73,11 @@ public class FilesFragment extends Fragment {
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
                 // Send file to the File activity
                 String fileName = ((File) parent.getItemAtPosition(position)).getName();
-                File file = FileManager.fileNameToFile(getActivity(), mWorkspace.getName(), fileName);
+                File file = FileManager.fileNameToFile(getActivity(), mWorkspace.getWorkspaceFolderName(), fileName);
 
                 Intent intent = new Intent(getActivity(), FileActivity.class);
-                intent.putExtra("textFile", file);
-                intent.putExtra("workspaceIndex", mWorkspace);
+                intent.putExtra(Constants.FILE_EXTRA, file);
+                intent.putExtra(Constants.WORKSPACE_ID, mWorkspace.getDatabaseId());
                 startActivity(intent);
             }
 
