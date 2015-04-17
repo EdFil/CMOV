@@ -124,24 +124,36 @@
         android:text="Tags"
         android:textAppearance="?android:attr/textAppearanceLargeInverse" />
 
-    <ScrollView
+    <ViewSwitcher
+        android:id="@+id/viewSwitcher"
         android:layout_width="match_parent"
         android:layout_height="0dp"
-        android:layout_weight="20"
-        android:paddingTop="@dimen/activity_horizontal_margin"
-        android:paddingLeft="@dimen/activity_horizontal_margin"
-        android:paddingRight="@dimen/activity_horizontal_margin">
+        android:layout_weight="20">
 
-        <pt.ulisboa.tecnico.cmov.airdesk.custom.AddTags
-            android:id="@+id/workspacesTagsEdit"
+        <TextView
+            android:id="@+id/tagsHintText"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_weight="3"
-            app:titleVisible="false" />
+            android:layout_height="match_parent"
+            android:gravity="center"
+            android:hint="Switch to public to add tags."/>
 
+        <ScrollView
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:paddingTop="@dimen/activity_horizontal_margin"
+            android:paddingLeft="@dimen/activity_horizontal_margin"
+            android:paddingRight="@dimen/activity_horizontal_margin">
 
+            <pt.ulisboa.tecnico.cmov.airdesk.custom.AddTags
+                android:id="@+id/workspacesTagsEdit"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_weight="3"
+                app:titleVisible="false" />
+        </ScrollView>
 
-    </ScrollView>
+    </ViewSwitcher>
+
 
     <TextView
         android:layout_width="match_parent"
