@@ -18,6 +18,7 @@ import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
+import java.util.Collection;
 import java.util.Scanner;
 
 import pt.ulisboa.tecnico.cmov.airdesk.core.file.exception.FileExceedsAvailableSpaceException;
@@ -25,12 +26,13 @@ import pt.ulisboa.tecnico.cmov.airdesk.core.file.exception.FileExceedsMaxQuotaEx
 import pt.ulisboa.tecnico.cmov.airdesk.core.file.exception.FileException;
 import pt.ulisboa.tecnico.cmov.airdesk.core.workspace.Workspace;
 import pt.ulisboa.tecnico.cmov.airdesk.core.workspace.WorkspaceManager;
+import pt.ulisboa.tecnico.cmov.airdesk.tasks.ReadFileTask;
 
 
 public class FileActivity extends ActionBarActivity {
 
     public static final String LOG_TAG = FileActivity.class.getSimpleName();
-    private static final String LINE_SEP = System.getProperty("line.separator");
+
 
     private TextView textToView;
     private ImageView edit;
@@ -54,6 +56,7 @@ public class FileActivity extends ActionBarActivity {
 
         Intent intent = getIntent();
         file = (File) intent.getSerializableExtra("textFile");
+
         workspace = intent.getParcelableExtra("workspaceIndex");
 
         // Action bar back button e name
@@ -62,16 +65,14 @@ public class FileActivity extends ActionBarActivity {
 
         Toast.makeText(getApplicationContext(), "Filename : " + file.getName(), Toast.LENGTH_SHORT).show();
 
-        String fileText = read();
-        textToView.setText(fileText);
+        new ReadFileTask(textToView).execute(file);
 
     }
 
 
     public void onClickEdit(View view) {
 
-        String fileText = read();
-        textToEdit.setText(fileText);
+        new ReadFileTask(textToView).execute(file);
 
         textToView.setVisibility(View.GONE);
         edit.setVisibility(View.GONE);
@@ -84,8 +85,7 @@ public class FileActivity extends ActionBarActivity {
 
         try {
             write();
-            String fileText = read();
-            textToView.setText(fileText);
+            new ReadFileTask(textToView).execute(file);
 
             textToView.setVisibility(View.VISIBLE);
             edit.setVisibility(View.VISIBLE);
@@ -154,33 +154,33 @@ public class FileActivity extends ActionBarActivity {
         }
     }
 
-    private String read() {
-        FileInputStream fis = null;
-        Scanner scanner = null;
-        StringBuilder sb = new StringBuilder();
-        try {
-            fis = new FileInputStream(file);
-            // scanner does mean one more object, but it's easier to work with
-            scanner = new Scanner(fis);
-            while (scanner.hasNextLine()) {
-                sb.append(scanner.nextLine() + LINE_SEP);
-            }
-            Toast.makeText(getApplicationContext(), "File read", Toast.LENGTH_SHORT).show();
-        } catch (FileNotFoundException e) {
-            Log.e(LOG_TAG, "File not found", e);
-        } finally {
-            if (fis != null) {
-                try {
-                    fis.close();
-                } catch (IOException e) {
-                    Log.d("LOG_TAG", "Close error.");
-                }
-            }
-            if (scanner != null) {
-                scanner.close();
-            }
-        }
-
-        return sb.toString();
-    }
+//    private String read() {
+//        FileInputStream fis = null;
+//        Scanner scanner = null;
+//        StringBuilder sb = new StringBuilder();
+//        try {
+//            fis = new FileInputStream(file);
+//            // scanner does mean one more object, but it's easier to work with
+//            scanner = new Scanner(fis);
+//            while (scanner.hasNextLine()) {
+//                sb.append(scanner.nextLine() + LINE_SEP);
+//            }
+//            Toast.makeText(getApplicationContext(), "File read", Toast.LENGTH_SHORT).show();
+//        } catch (FileNotFoundException e) {
+//            Log.e(LOG_TAG, "File not found", e);
+//        } finally {
+//            if (fis != null) {
+//                try {
+//                    fis.close();
+//                } catch (IOException e) {
+//                    Log.d("LOG_TAG", "Close error.");
+//                }
+//            }
+//            if (scanner != null) {
+//                scanner.close();
+//            }
+//        }
+//
+//        return sb.toString();
+//    }
 }
