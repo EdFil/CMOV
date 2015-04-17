@@ -83,7 +83,7 @@ public class LocalWorkspacesFragment extends Fragment {
                 filesFragment.setArguments(bundle);
 
                 transaction.replace(R.id.container, filesFragment);
-                transaction.addToBackStack(null);
+                transaction.addToBackStack("files");
 
                 // Commit the transaction
                 transaction.commit();
