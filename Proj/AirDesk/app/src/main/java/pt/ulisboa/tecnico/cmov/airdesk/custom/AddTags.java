@@ -2,9 +2,13 @@ package pt.ulisboa.tecnico.cmov.airdesk.custom;
 
 import android.content.Context;
 import android.content.res.TypedArray;
-import android.text.Layout;
+import android.text.Editable;
+import android.text.InputType;
+import android.text.TextWatcher;
 import android.util.AttributeSet;
+import android.util.Log;
 import android.view.KeyEvent;
+import android.view.MotionEvent;
 import android.view.View;
 import android.widget.EditText;
 import android.widget.LinearLayout;
@@ -29,8 +33,9 @@ public class AddTags extends LinearLayout {
         inflate(getContext(), R.layout.view_add_tags, this);
 
         mTagsEditText = (EditText) findViewById(R.id.newTag);
-        mTagsEditText.setOnKeyListener(new TagsEditTextKeyListener());
+        mTagsEditText.addTextChangedListener(new TagsEditTextWatcher());
         mTagsEditText.setOnFocusChangeListener(new TagsEditTextFocusChange());
+        mTagsEditText.setInputType(InputType.TYPE_TEXT_FLAG_NO_SUGGESTIONS);
 
         mTagsLayout = (PredicateLayout) findViewById(R.id.tagList);
 
@@ -90,23 +95,37 @@ public class AddTags extends LinearLayout {
     // --- Listeners ---
     // -----------------
 
-    private final class TagsEditTextKeyListener implements OnKeyListener {
+    private final class TagsEditTextWatcher implements TextWatcher {
+        public void beforeTextChanged(CharSequence s, int start, int count, int after) {}
+        public void onTextChanged(CharSequence s, int start, int before, int count) {}
         @Override
-        public boolean onKey(View v, int keyCode, KeyEvent event) {
-            if(event.getAction() == KeyEvent.ACTION_DOWN) {
-                if (keyCode == KeyEvent.KEYCODE_SPACE) {
-                    addTag(mTagsEditText.getText().toString());
-                    mTagsEditText.getText().clear();
-                    return true;
-                } else if (keyCode == KeyEvent.KEYCODE_ENTER) {
-                    addTag(mTagsEditText.getText().toString());
-                    mTagsEditText.getText().clear();
-                    return true;
+        public void afterTextChanged(Editable s) {
+            if(s.length() > 0) {
+                if(s.charAt(s.length() - 1) == ' ') {
+                    addTag(s.toString().trim());
+                    s.clear();
                 }
             }
-            return false;
         }
     }
+
+//    private final class TagsEditTextKeyListener implements OnKeyListener {
+//        @Override
+//        public boolean onKey(View v, int keyCode, KeyEvent event) {
+//            if(event.getAction() == KeyEvent.ACTION_DOWN) {
+//                if (keyCode == KeyEvent.KEYCODE_SPACE) {
+//                    addTag(mTagsEditText.getText().toString());
+//                    mTagsEditText.getText().clear();
+//                    return true;
+//                } else if (keyCode == KeyEvent.KEYCODE_ENTER) {
+//                    addTag(mTagsEditText.getText().toString());
+//                    mTagsEditText.getText().clear();
+//                    return true;
+//                }
+//            }
+//            return false;
+//        }
+//    }
 
     private final class TagsEditTextFocusChange implements OnFocusChangeListener {
         @Override
