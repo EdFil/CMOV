@@ -26,11 +26,19 @@ public class AddTags extends LinearLayout {
 
     private PredicateLayout mTagsLayout;
     private EditText mTagsEditText;
-
+    private AddTagsCallback mCallback;
 
     public AddTags(Context context, AttributeSet attrs) {
         super(context, attrs);
         inflate(getContext(), R.layout.view_add_tags, this);
+
+        mCallback = new AddTagsCallback() {
+            @Override
+            public void addTag(String tag) {}
+
+            @Override
+            public void removeTag(String tag) {}
+        };
 
         mTagsEditText = (EditText) findViewById(R.id.newTag);
         mTagsEditText.addTextChangedListener(new TagsEditTextWatcher());
@@ -58,6 +66,10 @@ public class AddTags extends LinearLayout {
     // --- Functions ---
     // -----------------
 
+    public void setCallback(AddTagsCallback callback){
+        mCallback = callback;
+    }
+
     public void addTag(String tag) {
         if(mTagsLayout.getChildCount() == Constants.MAX_TAGS_PER_WORKSPACE) {
             Toast.makeText(getContext(), "Max number of tags reached", Toast.LENGTH_SHORT).show();
@@ -74,17 +86,20 @@ public class AddTags extends LinearLayout {
             View view = inflate(getContext(), R.layout.tag_list_adapter, null);
             mTagsLayout.addView(view);
             ((TextView)view.findViewById(R.id.tagName)).setText(tag);
+            mCallback.addTag(tag);
+            final String tagName = tag;
             // Set the on click listener to remove itself from the PredicateLayout
             view.findViewById(R.id.removeTagButton).setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
                     mTagsLayout.removeView((LinearLayout)v.getParent());
+                    mCallback.removeTag(tagName);
                 }
             });
         }
     }
 
-    // Gets all tags fro th PredicateLayout
+    // Gets all tags from the PredicateLayout
     public List<Tag> getAllTags() {
         List<Tag> tags = new ArrayList<>();
         for(int i = 0; i < mTagsLayout.getChildCount(); i++)
@@ -133,5 +148,11 @@ public class AddTags extends LinearLayout {
                 mTagsEditText.getText().clear();
             }
         }
+    }
+
+
+    public interface AddTagsCallback{
+        public void addTag(String tag);
+        public void removeTag(String tag);
     }
 }

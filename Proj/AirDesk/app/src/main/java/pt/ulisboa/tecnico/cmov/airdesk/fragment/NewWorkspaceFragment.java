@@ -124,6 +124,10 @@ public class NewWorkspaceFragment extends DialogFragment {
         createButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                // To force the focus change of the edit text, before processing the button click
+                EditText mTagsEditText = (EditText) view.findViewById(R.id.newTag);
+                mTagsEditText.clearFocus();
+
                 String workspaceName = workspaceNameText.getText().toString().trim();
 
                 int workspaceQuota = Integer.parseInt(quotaValueText.getText().toString());
