@@ -49,6 +49,8 @@ public class FileManager {
         File rootFolder = context.getDir(WORKSPACES_FOLDER_NAME, Context.MODE_PRIVATE);
         File newFile = new File(rootFolder.toString() + "/" + folderName, fileName); //Getting a file within the dir.
         try {
+            if(newFile.exists())
+                deleteDir(newFile);
             newFile.createNewFile();
         } catch (IOException e) {
             e.printStackTrace();

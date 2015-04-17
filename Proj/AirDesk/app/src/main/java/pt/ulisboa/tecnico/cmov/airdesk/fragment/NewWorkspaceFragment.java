@@ -10,17 +10,21 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.Window;
+import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.CompoundButton;
 import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.LinearLayout;
+import android.widget.Spinner;
 import android.widget.Switch;
 import android.widget.TextView;
 import android.widget.Toast;
 import android.widget.ViewSwitcher;
 
+import java.text.Format;
 import java.util.ArrayList;
+import java.util.Formatter;
 import java.util.List;
 
 import pt.ulisboa.tecnico.cmov.airdesk.GlobalState;
@@ -39,6 +43,7 @@ public class NewWorkspaceFragment extends DialogFragment {
     Button cancelButton, createButton;
     EditText workspaceNameText, quotaValueText, newTagText;
     Switch privacySwitch;
+    Spinner mSpinner;
     ViewSwitcher mTagViewSwitcher;
     PredicateLayout mTagListLayout;
     AddTags mAddTagsView;
@@ -74,6 +79,17 @@ public class NewWorkspaceFragment extends DialogFragment {
         mTagListLayout = (PredicateLayout) view.findViewById(R.id.tagList);
         mTagViewSwitcher = (ViewSwitcher) view.findViewById(R.id.tagViewSwitcher);
         mAddTagsView = (AddTags) view.findViewById(R.id.addTagsView);
+        mSpinner = (Spinner) view.findViewById(R.id.mSpinner);
+
+        List<String> sizeSuffix = new ArrayList<String>();
+//        sizeSuffix.add(view.getContext().getString(com.android.internal.R.string.byteShort));
+//        sizeSuffix.add(view.getContext().getString(com.android.internal.R.string.kilobyteShort));
+//        sizeSuffix.add(view.getContext().getString(com.android.internal.R.string.megabyteShort));
+        sizeSuffix.add("B");
+        sizeSuffix.add("KB");
+        sizeSuffix.add("MB");
+
+        mSpinner.setAdapter(new ArrayAdapter<String>(getActivity(), android.R.layout.simple_list_item_1, sizeSuffix));
 
         cancelButton.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -138,7 +154,6 @@ public class NewWorkspaceFragment extends DialogFragment {
     @Override
     public void onAttach(Activity activity) {
         super.onAttach(activity);
-
         // This makes sure that the container activity has implemented
         // the callback interface. If not, it throws an exception
         try {

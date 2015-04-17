@@ -148,7 +148,7 @@ public class WorkspaceManager {
     }
 
     public void removeFileFromWorkspace(File file, Workspace workspace) {
-        FileManager.deleteFile(getContext(), workspace.getName(), file.getName());
+        FileManager.deleteFile(getContext(), workspace.getWorkspaceFolderName(), file.getName());
         AirDeskDbHelper.getInstance(getContext()).removeFileFromWorkspace(workspace.getDatabaseId(), file.getPath());
         workspace.removeFile(file);
     }

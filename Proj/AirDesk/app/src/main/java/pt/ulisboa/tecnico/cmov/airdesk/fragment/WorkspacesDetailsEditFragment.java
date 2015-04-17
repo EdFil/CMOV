@@ -15,6 +15,7 @@ import android.widget.TableLayout;
 import android.widget.TableRow;
 import android.widget.TextView;
 import android.widget.Toast;
+import android.widget.ViewSwitcher;
 
 import pt.ulisboa.tecnico.cmov.airdesk.R;
 import pt.ulisboa.tecnico.cmov.airdesk.core.tag.Tag;
@@ -33,13 +34,9 @@ public class WorkspacesDetailsEditFragment extends Fragment {
     Switch mPrivacyInformationSwitch;
     TextView mPrivateInformationText;
     TextView mPublicInformationText;
+    ViewSwitcher mViewSwitcher;
+    TextView mTagsHintText;
     AddTags mAddTags;
-    //EditText mNewTagInformationEdit;
-
-    //Button mAddTagButtonEdit;
-
-    //PredicateLayout mTagListLayout;
-    //TableLayout mTagsTableLayout;
     TableLayout mUsersTableLayout;
 
     LinearLayout quotaLayout;
@@ -62,6 +59,8 @@ public class WorkspacesDetailsEditFragment extends Fragment {
         mPrivacyInformationSwitch = (Switch) workspaceFragmentView.findViewById(R.id.privateInformationSwitch);
         mPrivateInformationText = (TextView) workspaceFragmentView.findViewById(R.id.privateInformationText);
         mPublicInformationText = (TextView) workspaceFragmentView.findViewById(R.id.publicInformationText);
+        mViewSwitcher = (ViewSwitcher) workspaceFragmentView.findViewById(R.id.viewSwitcher);
+        mTagsHintText = (TextView) workspaceFragmentView.findViewById(R.id.tagsHintText);
 
         quotaLayout = (LinearLayout) workspaceFragmentView.findViewById(R.id.quotaLayout);
 
@@ -71,7 +70,16 @@ public class WorkspacesDetailsEditFragment extends Fragment {
             quotaLayout.setVisibility(View.GONE);
 
         mAddTags = (AddTags) workspaceFragmentView.findViewById(R.id.workspacesTagsEdit);
-        mAddTags.setVisibility(mWorkspace.isPrivate() ? View.INVISIBLE : View.VISIBLE);
+
+        if(mWorkspace.isPrivate()){
+            //DO NOTHING
+        } else {
+            // Switch to AddTags view
+            mViewSwitcher.showNext();
+        }
+
+        //mAddTags.setVisibility(mWorkspace.isPrivate() ? View.GONE : View.VISIBLE);
+       // mTagsHintText.setVisibility(mWorkspace.isPrivate() ? View.VISIBLE : View.GONE);
 
         mUsersTableLayout = (TableLayout) workspaceFragmentView.findViewById(R.id.usersTableEdit);
         mUsersTableLayout.setStretchAllColumns(true);
@@ -91,7 +99,9 @@ public class WorkspacesDetailsEditFragment extends Fragment {
         mPrivacyInformationSwitch.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
             @Override
             public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
-            mAddTags.setVisibility(isChecked ? View.VISIBLE : View.INVISIBLE);
+                mViewSwitcher.showNext();
+          //  mAddTags.setVisibility(isChecked ? View.VISIBLE : View.GONE);
+           // mTagsHintText.setVisibility(isChecked ? View.GONE: View.VISIBLE);
             }
         });
 
