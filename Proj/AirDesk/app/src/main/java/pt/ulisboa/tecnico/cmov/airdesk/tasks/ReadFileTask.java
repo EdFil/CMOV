@@ -36,7 +36,7 @@ public class ReadFileTask extends AsyncTask<File, Integer, String> {
             while (scanner.hasNextLine()) {
                 sb.append(scanner.nextLine() + LINE_SEP);
             }
-//            Toast.makeText(getApplicationContext(), "File read", Toast.LENGTH_SHORT).show();
+
         } catch (FileNotFoundException e) {
             Log.e(LOG_TAG, "File not found", e);
         } finally {
@@ -60,6 +60,7 @@ public class ReadFileTask extends AsyncTask<File, Integer, String> {
     protected void onPostExecute(String s) {
         super.onPostExecute(s);
 
+        Toast.makeText(mTextToView.getContext(), "File read", Toast.LENGTH_SHORT).show();
         mTextToView.setText(s);
     }
 }

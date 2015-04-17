@@ -9,9 +9,11 @@ public final class Constants {
     public static final String LOG_OUT_MESSAGE = "LOG_OUT";
     // Workspaces Fragment
     public static final String WORKSPACE_INDEX = "WORKSPACE_INDEX";
+    public static final String WORKSPACE_ID = "WORKSPACE_ID";
+    // File Fragment
+    public static final String FILE_EXTRA = "FILE_EXTRA";
     // Manage Account
     public static final String USER_INDEX_MESSAGE = "USER_INDEX";
     //
     public static final int MAX_TAGS_PER_WORKSPACE = 6;
-
 }

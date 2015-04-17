@@ -79,7 +79,7 @@ public class LocalWorkspacesFragment extends Fragment {
 
                 FilesFragment filesFragment = new FilesFragment();
                 Bundle bundle = new Bundle();
-                bundle.putParcelable("Workspace", (Workspace) parent.getItemAtPosition(position));
+                bundle.putLong(Constants.WORKSPACE_ID, ((Workspace)parent.getItemAtPosition(position)).getDatabaseId());
                 filesFragment.setArguments(bundle);
 
                 transaction.replace(R.id.container, filesFragment);
