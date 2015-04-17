@@ -1,14 +1,12 @@
 package pt.ulisboa.tecnico.cmov.airdesk.fragment;
 
 import android.app.Activity;
-import android.content.Context;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v7.app.ActionBar;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.Button;
 import android.widget.CompoundButton;
 import android.widget.EditText;
 import android.widget.LinearLayout;
@@ -23,7 +21,7 @@ import pt.ulisboa.tecnico.cmov.airdesk.core.tag.Tag;
 import pt.ulisboa.tecnico.cmov.airdesk.core.user.User;
 import pt.ulisboa.tecnico.cmov.airdesk.core.workspace.Workspace;
 import pt.ulisboa.tecnico.cmov.airdesk.core.workspace.WorkspaceManager;
-import pt.ulisboa.tecnico.cmov.airdesk.custom.PredicateLayout;
+import pt.ulisboa.tecnico.cmov.airdesk.custom.AddTags;
 
 public class WorkspacesDetailsEditFragment extends Fragment {
 
@@ -35,12 +33,13 @@ public class WorkspacesDetailsEditFragment extends Fragment {
     Switch mPrivacyInformationSwitch;
     TextView mPrivateInformationText;
     TextView mPublicInformationText;
-    EditText mNewTagInformationEdit;
+    AddTags mAddTags;
+    //EditText mNewTagInformationEdit;
 
-    Button mAddTagButtonEdit;
+    //Button mAddTagButtonEdit;
 
-    PredicateLayout mTagListLayout;
-    TableLayout mTagsTableLayout;
+    //PredicateLayout mTagListLayout;
+    //TableLayout mTagsTableLayout;
     TableLayout mUsersTableLayout;
 
     LinearLayout quotaLayout;
@@ -71,16 +70,8 @@ public class WorkspacesDetailsEditFragment extends Fragment {
         else
             quotaLayout.setVisibility(View.GONE);
 
-        mNewTagInformationEdit = (EditText) workspaceFragmentView.findViewById(R.id.newTagInformationEdit);
-        mAddTagButtonEdit = (Button) workspaceFragmentView.findViewById(R.id.addTagButtonEdit);
-        mAddTagButtonEdit.setVisibility(mWorkspace.isPrivate() ? View.INVISIBLE : View.VISIBLE);
-        mNewTagInformationEdit.setVisibility(mWorkspace.isPrivate() ? View.INVISIBLE : View.VISIBLE);
-
-        mTagListLayout = (PredicateLayout) workspaceFragmentView.findViewById(R.id.tagListEdit);
-
-//        mTagsTableLayout = (TableLayout) workspaceFragmentView.findViewById(R.id.tagsTableEdit);
-//        mTagsTableLayout.setStretchAllColumns(true);
-
+        mAddTags = (AddTags) workspaceFragmentView.findViewById(R.id.workspacesTagsEdit);
+        mAddTags.setVisibility(mWorkspace.isPrivate() ? View.INVISIBLE : View.VISIBLE);
 
         mUsersTableLayout = (TableLayout) workspaceFragmentView.findViewById(R.id.usersTableEdit);
         mUsersTableLayout.setStretchAllColumns(true);
@@ -100,8 +91,7 @@ public class WorkspacesDetailsEditFragment extends Fragment {
         mPrivacyInformationSwitch.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
             @Override
             public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
-                mAddTagButtonEdit.setVisibility(isChecked ? View.VISIBLE : View.INVISIBLE);
-                mNewTagInformationEdit.setVisibility(isChecked ? View.VISIBLE : View.INVISIBLE);
+            mAddTags.setVisibility(isChecked ? View.VISIBLE : View.INVISIBLE);
             }
         });
 
@@ -119,18 +109,17 @@ public class WorkspacesDetailsEditFragment extends Fragment {
             }
         });
 
-        mAddTagButtonEdit.setOnClickListener(new View.OnClickListener() {
+        mAddTags.setCallback(new AddTags.AddTagsCallback() {
             @Override
-            public void onClick(View v) {
-
-                String tag = mNewTagInformationEdit.getText().toString().trim();
-
-                if (tag.length() > 0) {
-                    addTagToTable(tag);
-                    WorkspaceManager.getInstance().addTagToWorkspace(tag, mWorkspace);
-                    mNewTagInformationEdit.getText().clear();
-                }
+            public void addTag(String tag){
+                WorkspaceManager.getInstance().addTagToWorkspace(tag, mWorkspace);
             }
+
+            @Override
+            public void removeTag(String tag) {
+                WorkspaceManager.getInstance().removeTagFromWorkspace(tag, mWorkspace);
+            }
+
         });
 
         return workspaceFragmentView;
@@ -159,34 +148,7 @@ public class WorkspacesDetailsEditFragment extends Fragment {
     }
 
     private void addTagToTable(final String tag) {
-        if (tag.length() > 0) {
-            LayoutInflater inflater = (LayoutInflater)getActivity().getSystemService(Context.LAYOUT_INFLATER_SERVICE);
-            View view = inflater.inflate(R.layout.tag_list_adapter, null);
-            mTagListLayout.addView(view);
-            ((TextView)view.findViewById(R.id.tagName)).setText(tag);
-            view.findViewById(R.id.removeTagButton).setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-                    mTagListLayout.removeView((LinearLayout) v.getParent());
-                    WorkspaceManager.getInstance().removeTagFromWorkspace(tag, mWorkspace);
-
-                }
-            });
-        }
-
-
-//        TextView tagText = new TextView(getActivity());
-//        tagText.setText(tag);
-//        tagText.setTextAppearance(getActivity(), android.R.style.TextAppearance_DeviceDefault_Medium);
-//        TableRow rowToInsertTag;
-//        int numRows = mTagsTableLayout.getChildCount();
-//        if(numRows == 0 || ((TableRow)mTagsTableLayout.getChildAt(numRows - 1)).getChildCount() >= NUM_COLUMNS_PER_ROW) {
-//            rowToInsertTag = new TableRow(getActivity());
-//            mTagsTableLayout.addView(rowToInsertTag);
-//        } else {
-//            rowToInsertTag = (TableRow)mTagsTableLayout.getChildAt(numRows - 1);
-//        }
-//        rowToInsertTag.addView(tagText, ActionBar.LayoutParams.WRAP_CONTENT);
+        mAddTags.addTag(tag);
     }
 
     private void addUserToTable(String tag) {
@@ -203,6 +165,7 @@ public class WorkspacesDetailsEditFragment extends Fragment {
         }
         rowToInsertTag.addView(userText, ActionBar.LayoutParams.WRAP_CONTENT);
     }
+
 
 
 }
