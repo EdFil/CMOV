@@ -102,8 +102,9 @@ public class AddTags extends LinearLayout {
         @Override
         public void afterTextChanged(Editable s) {
             if(s.length() > 0) {
-                if(s.charAt(s.length() - 1) == ' ') {
-                    addTag(s.toString().trim());
+                if(s.toString().contains(" ")){
+                    for (String tag : s.toString().split(" "))
+                        addTag(tag);
                     s.clear();
                 }
             }
