@@ -44,7 +44,6 @@
     </LinearLayout>
 
     <LinearLayout
-        android:id="@+id/quotaLayout"
         android:layout_width="match_parent"
         android:layout_height="0dp"
         android:layout_weight="5.5"
@@ -55,20 +54,15 @@
             android:layout_width="0dp"
             android:layout_height="match_parent"
             android:layout_weight="0.15"
-            android:gravity="center_vertical"
+            android:layout_gravity="center_vertical"
             android:text="Quota: "
             android:textAppearance="?android:attr/textAppearanceMedium"
             android:textStyle="bold" />
 
-            <EditText
-                android:id="@+id/quotaInformationEdit"
-                android:layout_width="0dp"
-                android:layout_height="match_parent"
-                android:layout_weight="0.7"
-                android:layout_gravity="bottom"
-                android:inputType="text"
-                android:text="Workspace Quota"
-                android:textAppearance="?android:attr/textAppearanceSmall" />
+            <pt.ulisboa.tecnico.cmov.airdesk.custom.QuotaValueLayout
+                android:id="@+id/quotaLayout"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent" />
 
     </LinearLayout>
 

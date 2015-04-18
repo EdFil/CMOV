@@ -23,6 +23,7 @@ import pt.ulisboa.tecnico.cmov.airdesk.core.user.User;
 import pt.ulisboa.tecnico.cmov.airdesk.core.workspace.Workspace;
 import pt.ulisboa.tecnico.cmov.airdesk.core.workspace.WorkspaceManager;
 import pt.ulisboa.tecnico.cmov.airdesk.custom.AddTagsLayout;
+import pt.ulisboa.tecnico.cmov.airdesk.custom.QuotaValueLayout;
 
 public class WorkspacesDetailsEditFragment extends Fragment {
 
@@ -30,7 +31,7 @@ public class WorkspacesDetailsEditFragment extends Fragment {
     boolean isLocal;
 
     EditText mNameInformationEdit;
-    EditText mQuotaInformationEdit;
+    QuotaValueLayout mQuotaValueLayout;
     Switch mPrivacyInformationSwitch;
     TextView mPrivateInformationText;
     TextView mPublicInformationText;
@@ -55,7 +56,7 @@ public class WorkspacesDetailsEditFragment extends Fragment {
 
         // Find Views
         mNameInformationEdit = (EditText) workspaceFragmentView.findViewById(R.id.nameInformationEdit);
-        mQuotaInformationEdit = (EditText) workspaceFragmentView.findViewById(R.id.quotaInformationEdit);
+        mQuotaValueLayout = (QuotaValueLayout) workspaceFragmentView.findViewById(R.id.quotaLayout);
         mPrivacyInformationSwitch = (Switch) workspaceFragmentView.findViewById(R.id.privateInformationSwitch);
         mPrivateInformationText = (TextView) workspaceFragmentView.findViewById(R.id.privateInformationText);
         mPublicInformationText = (TextView) workspaceFragmentView.findViewById(R.id.publicInformationText);
@@ -86,7 +87,7 @@ public class WorkspacesDetailsEditFragment extends Fragment {
 
         // Set initial values
         mNameInformationEdit.setText(mWorkspace.getName());
-        mQuotaInformationEdit.setText(String.valueOf(mWorkspace.getMaxQuota()));
+        mQuotaValueLayout.setQuota(mWorkspace.getMaxQuota());
         mPrivacyInformationSwitch.setChecked(!mWorkspace.isPrivate());
 
         for(Tag tag : mWorkspace.getTags())
@@ -147,7 +148,7 @@ public class WorkspacesDetailsEditFragment extends Fragment {
 
     public Workspace getEditedWorkspace() {
         String newWorkspaceName = mNameInformationEdit.getText().toString();
-        Long newWorkspaceQuota = Long.parseLong(mQuotaInformationEdit.getText().toString().trim());
+        Long newWorkspaceQuota = mQuotaValueLayout.getQuota();
         boolean newWorkspacePrivacy = !mPrivacyInformationSwitch.isChecked();
         try {
             WorkspaceManager.getInstance().updateWorkspace(mWorkspace, newWorkspaceName, newWorkspaceQuota, newWorkspacePrivacy);
