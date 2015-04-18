@@ -6,9 +6,7 @@ import android.text.Editable;
 import android.text.InputType;
 import android.text.TextWatcher;
 import android.util.AttributeSet;
-import android.util.Log;
 import android.view.KeyEvent;
-import android.view.MotionEvent;
 import android.view.View;
 import android.widget.EditText;
 import android.widget.LinearLayout;
@@ -22,13 +20,13 @@ import pt.ulisboa.tecnico.cmov.airdesk.R;
 import pt.ulisboa.tecnico.cmov.airdesk.core.tag.Tag;
 import pt.ulisboa.tecnico.cmov.airdesk.util.Constants;
 
-public class AddTags extends LinearLayout {
+public class AddTagsLayout extends LinearLayout {
 
     private PredicateLayout mTagsLayout;
     private EditText mTagsEditText;
     private AddTagsCallback mCallback;
 
-    public AddTags(Context context, AttributeSet attrs) {
+    public AddTagsLayout(Context context, AttributeSet attrs) {
         super(context, attrs);
         inflate(getContext(), R.layout.view_add_tags, this);
 
@@ -50,12 +48,12 @@ public class AddTags extends LinearLayout {
 
         TypedArray a = getContext().getTheme().obtainStyledAttributes(
                 attrs,
-                R.styleable.AddTags,
+                R.styleable.AddTagsLayout,
                 0, 0
         );
         TextView title = (TextView) findViewById(R.id.tags);
-        if(a.getBoolean(R.styleable.AddTags_titleVisible, false)) {
-            title.setText(a.getString(R.styleable.AddTags_titleText));
+        if(a.getBoolean(R.styleable.AddTagsLayout_titleVisible, false)) {
+            title.setText(a.getString(R.styleable.AddTagsLayout_titleText));
         } else {
             ((LinearLayout)getChildAt(0)).removeView(title);
         }
@@ -150,6 +148,9 @@ public class AddTags extends LinearLayout {
         }
     }
 
+    // --------------------------
+    // --- CallBack Interface ---
+    // --------------------------
 
     public interface AddTagsCallback{
         public void addTag(String tag);

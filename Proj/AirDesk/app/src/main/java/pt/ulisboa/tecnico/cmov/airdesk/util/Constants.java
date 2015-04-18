@@ -10,6 +10,9 @@ public final class Constants {
     // Workspaces Fragment
     public static final String WORKSPACE_INDEX = "WORKSPACE_INDEX";
     public static final String WORKSPACE_ID = "WORKSPACE_ID";
+    public static final String BYTE = "B";
+    public static final String KILOBYTE = "KB";
+    public static final String MEGABYTE = "MB";
     // File Fragment
     public static final String FILE_EXTRA = "FILE_EXTRA";
     // Manage Account

@@ -144,7 +144,7 @@
             android:paddingLeft="@dimen/activity_horizontal_margin"
             android:paddingRight="@dimen/activity_horizontal_margin">
 
-            <pt.ulisboa.tecnico.cmov.airdesk.custom.AddTags
+            <pt.ulisboa.tecnico.cmov.airdesk.custom.AddTagsLayout
                 android:id="@+id/workspacesTagsEdit"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"

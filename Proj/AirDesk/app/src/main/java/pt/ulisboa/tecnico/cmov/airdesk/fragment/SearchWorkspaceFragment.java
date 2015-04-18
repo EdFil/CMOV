@@ -1,13 +1,9 @@
 package pt.ulisboa.tecnico.cmov.airdesk.fragment;
 
 import android.app.Activity;
-import android.content.Intent;
-import android.database.DataSetObserver;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
-import android.view.ContextMenu;
 import android.view.LayoutInflater;
-import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
@@ -22,16 +18,13 @@ import java.util.List;
 
 import pt.ulisboa.tecnico.cmov.airdesk.AirDeskActivity;
 import pt.ulisboa.tecnico.cmov.airdesk.R;
-import pt.ulisboa.tecnico.cmov.airdesk.WorkspaceDetailsActivity;
 import pt.ulisboa.tecnico.cmov.airdesk.adapter.WorkspaceListAdapter;
 import pt.ulisboa.tecnico.cmov.airdesk.core.tag.Tag;
 import pt.ulisboa.tecnico.cmov.airdesk.core.user.UserManager;
-import pt.ulisboa.tecnico.cmov.airdesk.core.workspace.ForeignWorkspace;
 import pt.ulisboa.tecnico.cmov.airdesk.core.workspace.Workspace;
 import pt.ulisboa.tecnico.cmov.airdesk.core.workspace.WorkspaceManager;
-import pt.ulisboa.tecnico.cmov.airdesk.custom.AddTags;
+import pt.ulisboa.tecnico.cmov.airdesk.custom.AddTagsLayout;
 import pt.ulisboa.tecnico.cmov.airdesk.tasks.RequestWorkspacesFromTagsTask;
-import pt.ulisboa.tecnico.cmov.airdesk.util.Constants;
 
 public class SearchWorkspaceFragment extends Fragment {
 
@@ -87,8 +80,8 @@ public class SearchWorkspaceFragment extends Fragment {
                 mTagsEditText.clearFocus();
 
                 try {
-                    AddTags addTags = (AddTags) getActivity().findViewById(R.id.workspacesTags);
-                    List<Tag> tagsList = addTags.getAllTags();
+                    AddTagsLayout addTagsLayout = (AddTagsLayout) getActivity().findViewById(R.id.workspacesTags);
+                    List<Tag> tagsList = addTagsLayout.getAllTags();
                     //TODO: Create Exception
                     if(tagsList.isEmpty())
                         throw new Exception();
