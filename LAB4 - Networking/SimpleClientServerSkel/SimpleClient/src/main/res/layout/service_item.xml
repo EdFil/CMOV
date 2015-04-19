@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:orientation="horizontal"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+    <ImageView
+        android:layout_height="match_parent"
+        android:layout_width="0dp"
+        android:layout_weight="1"
+        android:src="@android:drawable/button_onoff_indicator_on"
+        android:paddingLeft="8dp"
+        android:paddingRight="8dp"
+        />
+
+    <TextView
+        android:layout_height="match_parent"
+        android:layout_width="0dp"
+        android:layout_weight="3"
+        android:text="Text"
+        android:gravity="center"
+        android:textColor="@android:color/black"
+        />
+</LinearLayout>

@@ -16,5 +16,10 @@
         android:text="@string/send_to_server"> 
 	</Button>
 
+    <ListView
+        android:id="@+id/contact_services"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content" />
+
 </LinearLayout>
 <!-- From: file:/D:/Repositories/CMOV/LAB4%20-%20Networking/SimpleClientServerSkel/SimpleClient/src/main/res/layout/main.xml -->
