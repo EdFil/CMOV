@@ -14,7 +14,7 @@
         android:layout_marginLeft="@dimen/activity_horizontal_margin"
         android:layout_marginRight="@dimen/activity_horizontal_margin"
         android:orientation="horizontal">
-        <pt.ulisboa.tecnico.cmov.airdesk.custom.AddTags
+        <pt.ulisboa.tecnico.cmov.airdesk.custom.AddTagsLayout
             android:id="@+id/workspacesTags"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"

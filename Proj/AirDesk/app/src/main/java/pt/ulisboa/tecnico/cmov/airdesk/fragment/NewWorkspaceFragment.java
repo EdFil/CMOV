@@ -5,48 +5,42 @@ import android.app.DialogFragment;
 import android.os.Bundle;
 import android.text.InputFilter;
 import android.text.Spanned;
-import android.view.KeyEvent;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.Window;
-import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.CompoundButton;
 import android.widget.EditText;
-import android.widget.ImageButton;
-import android.widget.LinearLayout;
-import android.widget.Spinner;
 import android.widget.Switch;
 import android.widget.TextView;
 import android.widget.Toast;
 import android.widget.ViewSwitcher;
 
-import java.text.Format;
 import java.util.ArrayList;
-import java.util.Formatter;
 import java.util.List;
 
-import pt.ulisboa.tecnico.cmov.airdesk.GlobalState;
 import pt.ulisboa.tecnico.cmov.airdesk.R;
 import pt.ulisboa.tecnico.cmov.airdesk.core.tag.Tag;
 import pt.ulisboa.tecnico.cmov.airdesk.core.user.UserManager;
 import pt.ulisboa.tecnico.cmov.airdesk.core.workspace.WorkspaceManager;
 import pt.ulisboa.tecnico.cmov.airdesk.core.workspace.exception.WorkspaceException;
-import pt.ulisboa.tecnico.cmov.airdesk.custom.AddTags;
+import pt.ulisboa.tecnico.cmov.airdesk.custom.AddTagsLayout;
 import pt.ulisboa.tecnico.cmov.airdesk.custom.PredicateLayout;
+import pt.ulisboa.tecnico.cmov.airdesk.custom.QuotaValueLayout;
+import pt.ulisboa.tecnico.cmov.airdesk.util.Constants;
 
 public class NewWorkspaceFragment extends DialogFragment {
 
     List<String> mTagCache;
 
     Button cancelButton, createButton;
-    EditText workspaceNameText, quotaValueText, newTagText;
+    EditText workspaceNameText, newTagText;
     Switch privacySwitch;
-    Spinner mSpinner;
     ViewSwitcher mTagViewSwitcher;
     PredicateLayout mTagListLayout;
-    AddTags mAddTagsView;
+    AddTagsLayout mAddTagsLayout;
+    QuotaValueLayout mQuotaValueLayout;
     TextView tags;
 
     OnNewWorkspaceFragmentListener mCallback;
@@ -73,23 +67,14 @@ public class NewWorkspaceFragment extends DialogFragment {
         createButton = (Button) view.findViewById(R.id.createWorkspaceDialog);
         newTagText = (EditText)view.findViewById(R.id.newTag);
         workspaceNameText = (EditText) view.findViewById(R.id.newWorkspaceName);
-        quotaValueText = (EditText) view.findViewById(R.id.editQuota);
         privacySwitch = (Switch) view.findViewById(R.id.privateSwitch);
         tags = (TextView) view.findViewById(R.id.tags);
         mTagListLayout = (PredicateLayout) view.findViewById(R.id.tagList);
         mTagViewSwitcher = (ViewSwitcher) view.findViewById(R.id.tagViewSwitcher);
-        mAddTagsView = (AddTags) view.findViewById(R.id.addTagsView);
-        mSpinner = (Spinner) view.findViewById(R.id.mSpinner);
+        mAddTagsLayout = (AddTagsLayout) view.findViewById(R.id.addTagsView);
+        mQuotaValueLayout = (QuotaValueLayout) view.findViewById(R.id.quotaLayout);
 
-        List<String> sizeSuffix = new ArrayList<String>();
-//        sizeSuffix.add(view.getContext().getString(com.android.internal.R.string.byteShort));
-//        sizeSuffix.add(view.getContext().getString(com.android.internal.R.string.kilobyteShort));
-//        sizeSuffix.add(view.getContext().getString(com.android.internal.R.string.megabyteShort));
-        sizeSuffix.add("B");
-        sizeSuffix.add("KB");
-        sizeSuffix.add("MB");
 
-        mSpinner.setAdapter(new ArrayAdapter<String>(getActivity(), android.R.layout.simple_list_item_1, sizeSuffix));
 
         cancelButton.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -130,13 +115,13 @@ public class NewWorkspaceFragment extends DialogFragment {
 
                 String workspaceName = workspaceNameText.getText().toString().trim();
 
-                int workspaceQuota = Integer.parseInt(quotaValueText.getText().toString());
+                long workspaceQuota = mQuotaValueLayout.getQuota();
 
-                List<Tag> tags = mAddTagsView.getAllTags();
+                List<Tag> tags = mAddTagsLayout.getAllTags();
 
                 try {
                     // Create workspace with associated user (owner) in database
-                    WorkspaceManager.getInstance().addLocalWorkspace(workspaceName, UserManager.getInstance().getOwner(), (long) workspaceQuota, !privacySwitch.isChecked(), tags);
+                    WorkspaceManager.getInstance().addLocalWorkspace(workspaceName, UserManager.getInstance().getOwner(), workspaceQuota, !privacySwitch.isChecked(), tags);
                     mCallback.updateWorkspaceList();
                     Toast.makeText(view.getContext(), "Workspace created", Toast.LENGTH_SHORT).show();
 
@@ -150,6 +135,7 @@ public class NewWorkspaceFragment extends DialogFragment {
 
         return view;
     }
+
 
     @Override
     public void onAttach(Activity activity) {

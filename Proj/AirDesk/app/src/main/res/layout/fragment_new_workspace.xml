@@ -1,14 +1,14 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:tools="http://schemas.android.com/tools"
     xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:orientation="vertical"
+    android:paddingBottom="@dimen/activity_vertical_margin"
     android:paddingLeft="@dimen/activity_horizontal_margin"
     android:paddingRight="@dimen/activity_horizontal_margin"
     android:paddingTop="@dimen/activity_vertical_margin"
-    android:paddingBottom="@dimen/activity_vertical_margin"
-    android:orientation="vertical"
     tools:context=".AirDeskActivity$NewWorkspacesFragment">
 
 
@@ -17,46 +17,29 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:text="Workspace name"
-        android:textStyle="bold"
-        android:textAppearance="?android:attr/textAppearanceLarge"/>
+        android:textAppearance="?android:attr/textAppearanceLarge"
+        android:textStyle="bold" />
 
     <EditText
         android:id="@+id/newWorkspaceName"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:hint="New workspace"
-        android:inputType="textPhonetic"/>
+        android:inputType="textPhonetic" />
 
     <TextView
         android:id="@+id/textQuota"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:paddingTop="@dimen/activity_vertical_margin"
         android:text="Quota"
-        android:textStyle="bold"
         android:textAppearance="?android:attr/textAppearanceLarge"
-        android:paddingTop="@dimen/activity_vertical_margin"/>
+        android:textStyle="bold" />
 
-    <LinearLayout
+    <pt.ulisboa.tecnico.cmov.airdesk.custom.QuotaValueLayout
+        android:id="@+id/quotaLayout"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content">
-
-        <EditText
-            android:id="@+id/editQuota"
-            android:layout_width="0dp"
-            android:layout_weight="4"
-            android:layout_height="match_parent"
-            android:ems="10"
-            android:inputType="number"
-            android:text="20" />
-
-        <Spinner
-            android:id="@+id/mSpinner"
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:layout_weight="2">
-            </Spinner>
-
-        </LinearLayout>
+        android:layout_height="wrap_content" />
 
 
     <LinearLayout
@@ -72,16 +55,16 @@
             android:orientation="vertical">
 
             <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:textStyle="bold"
-            android:textColor="@android:color/black"
-            android:text="Public Workspace"/>
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Public Workspace"
+                android:textColor="@android:color/black"
+                android:textStyle="bold" />
 
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="Add tags to this workspace for other users to find this it"/>
+                android:text="Add tags to this workspace for other users to find this it" />
 
         </LinearLayout>
 
@@ -90,7 +73,7 @@
             android:id="@+id/privateSwitch"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_gravity="center"/>
+            android:layout_gravity="center" />
 
     </LinearLayout>
 
@@ -103,14 +86,14 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content" />
 
-        <pt.ulisboa.tecnico.cmov.airdesk.custom.AddTags
+        <pt.ulisboa.tecnico.cmov.airdesk.custom.AddTagsLayout
             android:id="@+id/addTagsView"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            app:titleVisible="true"
-            app:titleText="Workspace tags"/>
+            app:titleText="Workspace tags"
+            app:titleVisible="true" />
 
-        </ViewSwitcher>
+    </ViewSwitcher>
 
 
     <LinearLayout
@@ -122,15 +105,15 @@
         <Button
             android:id="@+id/cancelWorkspaceDialog"
             android:layout_width="0dp"
-            android:layout_weight="1"
             android:layout_height="wrap_content"
+            android:layout_weight="1"
             android:text="Cancel" />
 
         <Button
             android:id="@+id/createWorkspaceDialog"
             android:layout_width="0dp"
-            android:layout_weight="1"
             android:layout_height="wrap_content"
+            android:layout_weight="1"
             android:paddingLeft="@dimen/activity_horizontal_margin"
             android:text="Create" />
 

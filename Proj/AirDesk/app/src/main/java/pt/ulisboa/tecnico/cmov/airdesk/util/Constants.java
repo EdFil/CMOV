@@ -6,10 +6,14 @@ public final class Constants {
     public static final int LOGIN_REQUEST = 1;
     public static final String SHARED_PREF_FILE = "Airdesk";
     public static final String EMAIL_KEY = "last_user";
+    public static final String SUFFIX_KEY = "suffix";
     public static final String LOG_OUT_MESSAGE = "LOG_OUT";
     // Workspaces Fragment
     public static final String WORKSPACE_INDEX = "WORKSPACE_INDEX";
     public static final String WORKSPACE_ID = "WORKSPACE_ID";
+    public static final String BYTE = "B";
+    public static final String KILOBYTE = "KB";
+    public static final String MEGABYTE = "MB";
     // File Fragment
     public static final String FILE_EXTRA = "FILE_EXTRA";
     // Manage Account
