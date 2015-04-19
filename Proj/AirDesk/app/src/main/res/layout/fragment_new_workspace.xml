@@ -64,7 +64,7 @@
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="Add tags to this workspace for other users to find this it" />
+                android:text="Add tags to this workspace for other users to find it and use it" />
 
         </LinearLayout>
 
