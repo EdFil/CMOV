@@ -1,0 +1,6 @@
+D:\Repositories\CMOV\LAB5\TermiteCMov\Termite-WifiP2P-SimpleChat\build\intermediates\classes\debug
+D:\Repositories\CMOV\LAB5\TermiteCMov\Termite-WifiP2P-SimpleChat\build\intermediates\pre-dexed\debug\support-annotations-21.0.3-d7b3e80ef28d886567c5a6cab1b0bc81d6e5a459.jar
+D:\Repositories\CMOV\LAB5\TermiteCMov\Termite-WifiP2P-SimpleChat\build\intermediates\pre-dexed\debug\classes-8c525aaa83152eb479632ac58f62cd1302d78f9d.jar
+D:\Repositories\CMOV\LAB5\TermiteCMov\Termite-WifiP2P-SimpleChat\build\intermediates\pre-dexed\debug\internal_impl-21.0.3-1841bb514eefe9fd7180a10eeaec9fd710458603.jar
+D:\Repositories\CMOV\LAB5\TermiteCMov\Termite-WifiP2P-SimpleChat\build\intermediates\pre-dexed\debug\classes-15842e9ab299d705deb47439c9a8bc888e410b4c.jar
+D:\Repositories\CMOV\LAB5\TermiteCMov\Termite-WifiP2P-SimpleChat\build\intermediates\pre-dexed\debug\classes-b352849a6e56c8b3cf5a4635d3a9785aac41d4fb.jar

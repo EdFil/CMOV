@@ -1,0 +1,5 @@
+# Termite init script
+
+cls
+beginemulation simplechat
+
