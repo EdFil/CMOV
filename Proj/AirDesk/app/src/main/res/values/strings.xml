@@ -5,7 +5,8 @@
     <string name="title_section2">Foreign Workspaces</string>
     <string name="title_section3">Search Workspaces</string>
     <string name="title_section4">Manage Account</string>
-    <string name="title_section5">Logout</string>
+    <string name="title_section5">Wifi-Direct Settings</string>
+    <string name="title_section6">Logout</string>
     
     <string name="menu_edit">Edit</string>
     <string name="menu_delete">Delete</string>
@@ -26,5 +27,16 @@
     <string name="hello_world">Hello world!</string>
     <string name="title_activity_Workspace_Details">Workspace Details</string>
     <string name="title_activity_invite_for_workspace">InviteForWorkspaceActivity</string>
+
+    <string name="port">10001</string>
+
+    <string name="hello">Hello World, SimpleChatActivity!</string>
+    <string name="sendButton">Send</string>
+    <string name="connectButton">Connect</string>
+    <string name="disconnectButton">Disconnect</string>
+    <string name="serviceButton">WiFi On</string>
+    <string name="cancelButton">WiFi Off</string>
+    <string name="inRangeButton">In Range</string>
+    <string name="inGroupButton">In Network</string>
 
 </resources>

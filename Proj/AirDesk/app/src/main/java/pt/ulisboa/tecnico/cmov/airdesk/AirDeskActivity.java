@@ -11,6 +11,7 @@ import android.support.v4.app.FragmentManager;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.ActionBarActivity;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.View;
@@ -125,7 +126,12 @@ public class AirDeskActivity extends ActionBarActivity
             case 4:
                 startActivity(new Intent(getApplicationContext(), ManageAccountActivity.class));
                 break;
+            // Search Workspace
             case 5:
+                Log.d(TAG, "CASE 5");
+                startActivity(new Intent(getApplicationContext(), WifiSettingsActivity.class));
+                break;
+            case 6:
                 // Returns the result to the AirDeskActivity
                 Intent intent = new Intent(getApplicationContext(), LoginActivity.class);
                 intent.putExtra(Constants.LOG_OUT_MESSAGE, true);

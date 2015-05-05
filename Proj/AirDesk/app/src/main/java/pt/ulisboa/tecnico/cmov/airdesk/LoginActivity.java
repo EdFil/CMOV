@@ -5,12 +5,10 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
-import android.provider.SyncStateContract;
 import android.support.v7.app.ActionBarActivity;
 import android.util.Log;
 import android.view.View;
 import android.widget.AdapterView;
-import android.widget.ArrayAdapter;
 import android.widget.AutoCompleteTextView;
 import android.widget.CheckBox;
 import android.widget.EditText;
@@ -49,8 +47,8 @@ public class LoginActivity extends ActionBarActivity {
                     mSharedPreferences.edit().remove(Constants.EMAIL_KEY).commit();
                 } else {
                     UserManager.getInstance().setOwner(user);
-                    Intent intent = new Intent(getApplicationContext(), AirDeskActivity.class);
-                    startActivity(intent);
+                    Intent intent2 = new Intent(getApplicationContext(), AirDeskActivity.class);
+                    startActivity(intent2);
                 }
             }
         }
@@ -77,7 +75,7 @@ public class LoginActivity extends ActionBarActivity {
         if (mNickView.length() < 4) {
             Toast.makeText(getApplicationContext(), "Nick is too short, 4 chars minimum.", Toast.LENGTH_SHORT).show();
             return;
-        }else if (!mEmailView.getText().toString().contains("@")) {
+        } else if (!mEmailView.getText().toString().contains("@")) {
             Toast.makeText(getApplicationContext(), "Invalid Email Address", Toast.LENGTH_SHORT).show();
             return;
         }
@@ -121,4 +119,5 @@ public class LoginActivity extends ActionBarActivity {
     public void onUserEmailClick(View view) {
         ((AutoCompleteTextView) view).showDropDown();
     }
+
 }
