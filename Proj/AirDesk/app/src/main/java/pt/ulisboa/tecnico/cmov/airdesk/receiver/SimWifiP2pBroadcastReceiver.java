@@ -39,14 +39,8 @@ public class SimWifiP2pBroadcastReceiver extends BroadcastReceiver {
             }
 
         } else if (SimWifiP2pBroadcast.WIFI_P2P_PEERS_CHANGED_ACTION.equals(action)) {
-
-            // Request available peers from the wifi p2p manager. This is an
-            // asynchronous call and the calling activity is notified with a
-            // callback on PeerListListener.onPeersAvailable()
-
-            Toast.makeText(mContext, "Peer list changed",
-                    Toast.LENGTH_SHORT).show();
-
+            Toast.makeText(mContext, "Peer list changed",Toast.LENGTH_SHORT).show();
+            WifiDirectManager.getInstance().refreshPeerList();
         } else if (SimWifiP2pBroadcast.WIFI_P2P_NETWORK_MEMBERSHIP_CHANGED_ACTION.equals(action)) {
 
 //            SimWifiP2pInfo ginfo = (SimWifiP2pInfo) intent.getSerializableExtra(

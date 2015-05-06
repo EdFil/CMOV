@@ -5,19 +5,28 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.content.ServiceConnection;
+import android.os.AsyncTask;
 import android.os.IBinder;
 import android.os.Looper;
 import android.os.Messenger;
+import android.util.Log;
 
 import pt.inesc.termite.wifidirect.SimWifiP2pBroadcast;
+import pt.inesc.termite.wifidirect.SimWifiP2pDevice;
+import pt.inesc.termite.wifidirect.SimWifiP2pDeviceList;
+import pt.inesc.termite.wifidirect.SimWifiP2pInfo;
 import pt.inesc.termite.wifidirect.SimWifiP2pManager;
+import pt.inesc.termite.wifidirect.SimWifiP2pManager.GroupInfoListener;
+import pt.inesc.termite.wifidirect.SimWifiP2pManager.PeerListListener;
 import pt.inesc.termite.wifidirect.service.SimWifiP2pService;
 import pt.inesc.termite.wifidirect.sockets.SimWifiP2pSocketManager;
+import pt.ulisboa.tecnico.cmov.airdesk.R;
+import pt.ulisboa.tecnico.cmov.airdesk.tasks.ServerTask;
 
 /**
  * Created by edgar on 05-05-2015.
  */
-public class WifiDirectManager {
+public class WifiDirectManager implements PeerListListener, GroupInfoListener{
 
     // ------------------------
     //     Singleton Stuff
@@ -44,9 +53,13 @@ public class WifiDirectManager {
     private boolean mBound = false;
     private Context mContext = null;
     private ServiceConnection mConnection;
+    private ServerTask mServer;
+
+    private SimWifiP2pDeviceList mPeerList;
 
     protected WifiDirectManager(Context context){
         mContext = context;
+        mPeerList = new SimWifiP2pDeviceList();
         mConnection = new ServiceConnection() {
             // callbacks for service binding, passed to bindService()
 
@@ -78,6 +91,9 @@ public class WifiDirectManager {
         filter.addAction(SimWifiP2pBroadcast.WIFI_P2P_GROUP_OWNERSHIP_CHANGED_ACTION);
         SimWifiP2pBroadcastReceiver receiver = new SimWifiP2pBroadcastReceiver(mContext);
         mContext.registerReceiver(receiver, filter);
+
+        int port = Integer.parseInt(mContext.getString(R.string.port));
+        mServer = new ServerTask(port);
     }
 
     public Context getContext() { return mContext; }
@@ -88,14 +104,54 @@ public class WifiDirectManager {
             Intent intent = new Intent(mContext, SimWifiP2pService.class);
             mContext.bindService(intent, mConnection, Context.BIND_AUTO_CREATE);
             mBound = true;
+
+            mServer.executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR);
         }
     }
 
     public void turnOffWifiDirect() {
         if (mBound) {
             mContext.unbindService(mConnection);
+            mServer.cancel(true);
             mBound = false;
         }
     }
 
+    public void refreshPeerList() {
+        if(mBound)
+            mManager.requestPeers(mChannel, (PeerListListener) this);
+    }
+
+    public void refreshGroupInfo() {
+        if(mBound)
+            mManager.requestGroupInfo(mChannel, (GroupInfoListener) this);
+    }
+
+        /*
+	 * Listeners associated to WDSim
+	 */
+
+    @Override
+    public void onPeersAvailable(SimWifiP2pDeviceList peers) {
+        mPeerList.mergeUpdate(peers);
+        for(SimWifiP2pDevice device : peers.getDeviceList())
+        Log.i(TAG, mPeerList.toString());
+    }
+
+    @Override
+    public void onGroupInfoAvailable(SimWifiP2pDeviceList devices, SimWifiP2pInfo groupInfo) {
+        // compile list of network members
+        StringBuilder peersStr = new StringBuilder();
+        for (String deviceName : groupInfo.getDevicesInNetwork()) {
+            SimWifiP2pDevice device = devices.getByName(deviceName);
+            String devstr = "" + deviceName + " (" +
+                    ((device == null) ? "??" : device.getVirtIp()) + ")\n";
+            peersStr.append(devstr);
+        }
+
+        if(peersStr.length() == 0)
+            Log.i(TAG, "No peers");
+        else
+            Log.i(TAG, peersStr.toString());
+    }
 }

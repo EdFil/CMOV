@@ -1,13 +1,16 @@
 package pt.ulisboa.tecnico.cmov.airdesk;
 
 import android.app.Activity;
+import android.os.AsyncTask;
 import android.os.Bundle;
 import android.view.View;
 import android.view.View.OnClickListener;
+import android.widget.EditText;
 
 import pt.ulisboa.tecnico.cmov.airdesk.receiver.WifiDirectManager;
+import pt.ulisboa.tecnico.cmov.airdesk.tasks.OutgoingCommTask;
 
-public class WifiSettingsActivity extends Activity {
+public class WifiSettingsActivity extends Activity  {
 
     public static final String TAG = WifiSettingsActivity.class.getSimpleName();
 
@@ -41,33 +44,23 @@ public class WifiSettingsActivity extends Activity {
 
     private OnClickListener listenerInRangeButton = new OnClickListener() {
         public void onClick(View v) {
-//            if (mBound) {
-//                mManager.requestPeers(mChannel, (PeerListListener) SimpleChatActivity.this);
-//            } else {
-//                Toast.makeText(v.getContext(), "Service not bound",
-//                        Toast.LENGTH_SHORT).show();
-//            }
+            WifiDirectManager.getInstance().refreshPeerList();
         }
     };
 
     private OnClickListener listenerInGroupButton = new OnClickListener() {
         public void onClick(View v) {
-//            if (mBound) {
-//                mManager.requestGroupInfo(mChannel, (GroupInfoListener) SimpleChatActivity.this);
-//            } else {
-//                Toast.makeText(v.getContext(), "Service not bound",
-//                        Toast.LENGTH_SHORT).show();
-//            }
+            WifiDirectManager.getInstance().refreshGroupInfo();
         }
     };
 
     private OnClickListener listenerConnectButton = new OnClickListener() {
         @Override
         public void onClick(View v) {
-//            findViewById(R.id.idConnectButton).setEnabled(false);
-//            new OutgoingCommTask().executeOnExecutor(
-//                    AsyncTask.THREAD_POOL_EXECUTOR,
-//                    mTextInput.getText().toString());
+            //findViewById(R.id.idConnectButton).setEnabled(false);
+            new OutgoingCommTask(Integer.parseInt(getString(R.string.port))).executeOnExecutor(
+                    AsyncTask.THREAD_POOL_EXECUTOR,
+                    ((EditText)findViewById(R.id.editText1)).getText().toString());
         }
     };
 
