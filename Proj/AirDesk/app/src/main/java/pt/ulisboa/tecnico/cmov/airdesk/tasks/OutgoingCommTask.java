@@ -5,12 +5,15 @@ import android.util.Log;
 import android.widget.Toast;
 
 import java.io.BufferedReader;
+import java.io.BufferedWriter;
 import java.io.IOException;
 import java.io.InputStreamReader;
+import java.io.OutputStreamWriter;
 import java.net.UnknownHostException;
 
 import pt.inesc.termite.wifidirect.sockets.SimWifiP2pSocket;
 import pt.ulisboa.tecnico.cmov.airdesk.core.workspace.WorkspaceManager;
+import pt.ulisboa.tecnico.cmov.airdesk.service.GetUserService;
 
 /**
  * Created by edgar on 06-05-2015.
@@ -33,12 +36,19 @@ public class OutgoingCommTask extends AsyncTask<String, String, String> {
     protected String doInBackground(String... params) {
         try {
             mCommunicationSocket = new SimWifiP2pSocket("192.168.0.2", mPort);
-            mCommunicationSocket.getOutputStream().write("Hello World\n".getBytes());
+            BufferedReader reader = new BufferedReader(new InputStreamReader(mCommunicationSocket.getInputStream()));
+            BufferedWriter writer = new BufferedWriter(new OutputStreamWriter(mCommunicationSocket.getOutputStream()));
 
-            BufferedReader in = new BufferedReader(new InputStreamReader(mCommunicationSocket.getInputStream()));
-            Log.d(TAG, "B4");
-            publishProgress(in.readLine());
-            Log.d(TAG, "B5");
+            writer.write(GetUserService.class.getName());
+            writer.newLine();
+            writer.flush();
+
+            String response = reader.readLine();
+
+            publishProgress(response);
+
+            writer.close();
+            reader.close();
 
             mCommunicationSocket.close();
         } catch (UnknownHostException e) {

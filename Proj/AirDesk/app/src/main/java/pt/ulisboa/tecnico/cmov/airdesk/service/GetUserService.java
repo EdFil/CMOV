@@ -12,7 +12,7 @@ public class GetUserService implements AirDeskService {
     public String execute() {
         User user = UserManager.getInstance().getOwner();
      //   return user.toJson().toString();
-        return "";
+        return user.getEmail();
     }
 
 }
