@@ -3,9 +3,7 @@ package pt.ulisboa.tecnico.cmov.airdesk.tasks;
 import android.os.AsyncTask;
 import android.util.Log;
 
-import java.io.BufferedReader;
 import java.io.IOException;
-import java.io.InputStreamReader;
 
 import pt.inesc.termite.wifidirect.sockets.SimWifiP2pSocket;
 import pt.inesc.termite.wifidirect.sockets.SimWifiP2pSocketServer;
@@ -39,25 +37,13 @@ public class ServerTask extends AsyncTask<Void, SimWifiP2pSocket, Void> {
     protected Void doInBackground(Void... params) {
         Log.d(TAG, "Running server \"" + this.hashCode() + "\", at port " + mPort);
         while (!Thread.currentThread().isInterrupted()) {
+            final SimWifiP2pSocket sock;
             try {
-                final SimWifiP2pSocket sock = mServerSocket.accept();
-                publishProgress(sock);
-                new Thread(new Runnable() {
-                    @Override
-                    public void run() {
-                        String string;
-                        try {
-                            BufferedReader sockIn = new BufferedReader(new InputStreamReader(sock.getInputStream()));
-                            while((string = sockIn.readLine()) != null)
-                                Log.d(TAG, string);
-                        } catch (IOException e) {
-                            e.printStackTrace();
-                        }
-                    }
-                }).run();
-            } catch (IOException e) {
-                Log.d("Error accepting socket:", e.getMessage());
-                break;
+                SimWifiP2pSocket incommingSocket = mServerSocket.accept();
+                if(incommingSocket != null)
+                    new DealWithRequestTask().doInBackground(incommingSocket);
+            } catch (Exception e) {
+                e.printStackTrace();
             }
         }
         return null;

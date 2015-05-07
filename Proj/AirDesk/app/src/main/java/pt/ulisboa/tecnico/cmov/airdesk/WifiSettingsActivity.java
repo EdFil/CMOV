@@ -5,7 +5,6 @@ import android.os.AsyncTask;
 import android.os.Bundle;
 import android.view.View;
 import android.view.View.OnClickListener;
-import android.widget.EditText;
 
 import pt.ulisboa.tecnico.cmov.airdesk.receiver.WifiDirectManager;
 import pt.ulisboa.tecnico.cmov.airdesk.tasks.OutgoingCommTask;
@@ -58,9 +57,10 @@ public class WifiSettingsActivity extends Activity  {
         @Override
         public void onClick(View v) {
             //findViewById(R.id.idConnectButton).setEnabled(false);
-            new OutgoingCommTask(Integer.parseInt(getString(R.string.port))).executeOnExecutor(
-                    AsyncTask.THREAD_POOL_EXECUTOR,
-                    ((EditText)findViewById(R.id.editText1)).getText().toString());
+            String ip = "192.168.0.2";
+            int port = Integer.parseInt(getString(R.string.port));
+            new OutgoingCommTask(ip, port).executeOnExecutor(
+                    AsyncTask.THREAD_POOL_EXECUTOR);
         }
     };
 
