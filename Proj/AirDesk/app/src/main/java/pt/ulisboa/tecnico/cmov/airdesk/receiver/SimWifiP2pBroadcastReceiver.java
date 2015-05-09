@@ -7,6 +7,7 @@ import android.util.Log;
 import android.widget.Toast;
 
 import pt.inesc.termite.wifidirect.SimWifiP2pBroadcast;
+import pt.ulisboa.tecnico.cmov.airdesk.manager.WifiDirectManager;
 
 public class SimWifiP2pBroadcastReceiver extends BroadcastReceiver {
 

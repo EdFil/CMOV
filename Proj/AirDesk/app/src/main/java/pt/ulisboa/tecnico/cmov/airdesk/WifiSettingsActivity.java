@@ -7,7 +7,7 @@ import android.view.View.OnClickListener;
 import android.widget.ListView;
 
 import pt.ulisboa.tecnico.cmov.airdesk.adapter.PeerListAdapter;
-import pt.ulisboa.tecnico.cmov.airdesk.receiver.WifiDirectManager;
+import pt.ulisboa.tecnico.cmov.airdesk.manager.WifiDirectManager;
 
 public class WifiSettingsActivity extends Activity  {
 

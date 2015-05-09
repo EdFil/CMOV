@@ -20,7 +20,7 @@ import android.widget.ViewSwitcher;
 import pt.ulisboa.tecnico.cmov.airdesk.R;
 import pt.ulisboa.tecnico.cmov.airdesk.core.user.User;
 import pt.ulisboa.tecnico.cmov.airdesk.core.workspace.Workspace;
-import pt.ulisboa.tecnico.cmov.airdesk.core.workspace.WorkspaceManager;
+import pt.ulisboa.tecnico.cmov.airdesk.manager.WorkspaceManager;
 import pt.ulisboa.tecnico.cmov.airdesk.custom.AddTagsLayout;
 import pt.ulisboa.tecnico.cmov.airdesk.custom.QuotaValueLayout;
 

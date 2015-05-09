@@ -7,9 +7,9 @@ import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 
 import pt.ulisboa.tecnico.cmov.airdesk.core.user.User;
-import pt.ulisboa.tecnico.cmov.airdesk.core.user.UserManager;
+import pt.ulisboa.tecnico.cmov.airdesk.manager.UserManager;
 import pt.ulisboa.tecnico.cmov.airdesk.core.workspace.Workspace;
-import pt.ulisboa.tecnico.cmov.airdesk.core.workspace.WorkspaceManager;
+import pt.ulisboa.tecnico.cmov.airdesk.manager.WorkspaceManager;
 import pt.ulisboa.tecnico.cmov.airdesk.database.AirDeskDbHelper;
 
 ;

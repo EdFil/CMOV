@@ -11,12 +11,9 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.Toast;
 
-import java.io.File;
-import java.util.List;
-
 import pt.ulisboa.tecnico.cmov.airdesk.R;
 import pt.ulisboa.tecnico.cmov.airdesk.core.workspace.Workspace;
-import pt.ulisboa.tecnico.cmov.airdesk.core.workspace.WorkspaceManager;
+import pt.ulisboa.tecnico.cmov.airdesk.manager.WorkspaceManager;
 
 public class NewFileFragment extends DialogFragment {
 

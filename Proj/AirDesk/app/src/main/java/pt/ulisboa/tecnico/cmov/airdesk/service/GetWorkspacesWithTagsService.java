@@ -9,7 +9,7 @@ import org.json.JSONObject;
 import java.util.List;
 
 import pt.ulisboa.tecnico.cmov.airdesk.core.workspace.Workspace;
-import pt.ulisboa.tecnico.cmov.airdesk.core.workspace.WorkspaceManager;
+import pt.ulisboa.tecnico.cmov.airdesk.manager.WorkspaceManager;
 import pt.ulisboa.tecnico.cmov.airdesk.util.Constants;
 import pt.ulisboa.tecnico.cmov.airdesk.util.Util;
 

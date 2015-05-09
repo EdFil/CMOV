@@ -1,4 +1,4 @@
-package pt.ulisboa.tecnico.cmov.airdesk.receiver;
+package pt.ulisboa.tecnico.cmov.airdesk.manager;
 
 import android.content.ComponentName;
 import android.content.Context;
@@ -24,6 +24,7 @@ import pt.inesc.termite.wifidirect.SimWifiP2pManager.PeerListListener;
 import pt.inesc.termite.wifidirect.service.SimWifiP2pService;
 import pt.inesc.termite.wifidirect.sockets.SimWifiP2pSocketManager;
 import pt.ulisboa.tecnico.cmov.airdesk.R;
+import pt.ulisboa.tecnico.cmov.airdesk.receiver.SimWifiP2pBroadcastReceiver;
 import pt.ulisboa.tecnico.cmov.airdesk.tasks.ServerTask;
 
 /**

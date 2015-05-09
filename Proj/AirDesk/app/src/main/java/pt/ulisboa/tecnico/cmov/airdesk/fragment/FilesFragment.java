@@ -27,7 +27,7 @@ import pt.ulisboa.tecnico.cmov.airdesk.FileActivity;
 import pt.ulisboa.tecnico.cmov.airdesk.R;
 import pt.ulisboa.tecnico.cmov.airdesk.adapter.FileListAdapter;
 import pt.ulisboa.tecnico.cmov.airdesk.core.workspace.Workspace;
-import pt.ulisboa.tecnico.cmov.airdesk.core.workspace.WorkspaceManager;
+import pt.ulisboa.tecnico.cmov.airdesk.manager.WorkspaceManager;
 import pt.ulisboa.tecnico.cmov.airdesk.util.Constants;
 import pt.ulisboa.tecnico.cmov.airdesk.util.FileManager;
 
@@ -91,16 +91,16 @@ public class FilesFragment extends Fragment {
         newFileButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View buttonView) {
-                // Create fragment
-                NewFileFragment newFileFragment = new NewFileFragment();
-
-                // set the Workspace to send to fragment
-                Bundle bundle = new Bundle();
-                bundle.putParcelable("Workspace", mWorkspace);
-                newFileFragment.setArguments(bundle);
-
-                // Show dialog fragment
-                newFileFragment.show(getActivity().getFragmentManager(), "New File");
+//                // Create fragment
+//                NewFileFragment newFileFragment = new NewFileFragment();
+//
+//                // set the Workspace to send to fragment
+//                Bundle bundle = new Bundle();
+//                bundle.putParcelable("Workspace", mWorkspace);
+//                newFileFragment.setArguments(bundle);
+//
+//                // Show dialog fragment
+//                newFileFragment.show(getActivity().getFragmentManager(), "New File");
             }
         });
         return fileFragmentView;

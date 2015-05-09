@@ -14,9 +14,10 @@ import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.OutputStreamWriter;
 import java.net.UnknownHostException;
+import java.util.Random;
 
 import pt.inesc.termite.wifidirect.sockets.SimWifiP2pSocket;
-import pt.ulisboa.tecnico.cmov.airdesk.core.workspace.WorkspaceManager;
+import pt.ulisboa.tecnico.cmov.airdesk.manager.WorkspaceManager;
 import pt.ulisboa.tecnico.cmov.airdesk.util.Constants;
 
 /**
@@ -71,6 +72,9 @@ public class RequestTask extends AsyncTask<Void, String, JSONObject> {
             reader.close();
             socket.close();
 
+            // To simulate delays in the network
+            Thread.sleep(new Random().nextInt(1000));
+
             // Return the request response
             return serverResponse;
         } catch (UnknownHostException e) {
@@ -78,9 +82,10 @@ public class RequestTask extends AsyncTask<Void, String, JSONObject> {
         } catch (IOException e) {
             return makeJsonErrorMessage("IO error:" + e.getMessage());
         } catch (JSONException e) {
-            e.printStackTrace();
+            return makeJsonErrorMessage("JSON error:" + e.getMessage());
+        } catch (InterruptedException e) {
+            return makeJsonErrorMessage("Interrupeted:" + e.getMessage());
         }
-        return null;
     }
 
     @Override

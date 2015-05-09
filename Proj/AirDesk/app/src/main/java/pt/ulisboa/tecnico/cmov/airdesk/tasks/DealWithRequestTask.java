@@ -15,7 +15,7 @@ import java.io.InputStreamReader;
 import java.io.OutputStreamWriter;
 
 import pt.inesc.termite.wifidirect.sockets.SimWifiP2pSocket;
-import pt.ulisboa.tecnico.cmov.airdesk.core.workspace.WorkspaceManager;
+import pt.ulisboa.tecnico.cmov.airdesk.manager.WorkspaceManager;
 import pt.ulisboa.tecnico.cmov.airdesk.service.AirDeskService;
 import pt.ulisboa.tecnico.cmov.airdesk.util.Constants;
 

@@ -26,7 +26,7 @@ import pt.ulisboa.tecnico.cmov.airdesk.R;
 import pt.ulisboa.tecnico.cmov.airdesk.WorkspaceDetailsActivity;
 import pt.ulisboa.tecnico.cmov.airdesk.adapter.WorkspaceListAdapter;
 import pt.ulisboa.tecnico.cmov.airdesk.core.workspace.Workspace;
-import pt.ulisboa.tecnico.cmov.airdesk.core.workspace.WorkspaceManager;
+import pt.ulisboa.tecnico.cmov.airdesk.manager.WorkspaceManager;
 import pt.ulisboa.tecnico.cmov.airdesk.util.Constants;
 
 public class LocalWorkspacesFragment extends Fragment {
@@ -83,7 +83,7 @@ public class LocalWorkspacesFragment extends Fragment {
                 filesFragment.setArguments(bundle);
 
                 transaction.replace(R.id.container, filesFragment);
-                transaction.addToBackStack("files");
+                transaction.addToBackStack(FilesFragment.class.getSimpleName());
 
                 // Commit the transaction
                 transaction.commit();
@@ -98,7 +98,7 @@ public class LocalWorkspacesFragment extends Fragment {
         newWorkspaceButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View buttonView) {
-                NewWorkspaceFragment.newInstance().show(getActivity().getFragmentManager(), "New Workspace");
+                NewWorkspaceFragment.newInstance().show(getActivity().getFragmentManager(), NewWorkspaceFragment.class.getSimpleName());
             }
         });
 

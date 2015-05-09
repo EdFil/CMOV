@@ -1,4 +1,4 @@
-package pt.ulisboa.tecnico.cmov.airdesk.core.workspace;
+package pt.ulisboa.tecnico.cmov.airdesk.manager;
 
 import android.content.Context;
 
@@ -12,7 +12,9 @@ import java.util.List;
 import pt.ulisboa.tecnico.cmov.airdesk.core.file.exception.FileAlreadyExistsException;
 import pt.ulisboa.tecnico.cmov.airdesk.core.tag.Tag;
 import pt.ulisboa.tecnico.cmov.airdesk.core.user.User;
-import pt.ulisboa.tecnico.cmov.airdesk.core.user.UserManager;
+import pt.ulisboa.tecnico.cmov.airdesk.core.workspace.ForeignWorkspace;
+import pt.ulisboa.tecnico.cmov.airdesk.core.workspace.LocalWorkspace;
+import pt.ulisboa.tecnico.cmov.airdesk.core.workspace.Workspace;
 import pt.ulisboa.tecnico.cmov.airdesk.database.AirDeskDbHelper;
 import pt.ulisboa.tecnico.cmov.airdesk.util.FileManager;
 
@@ -86,7 +88,7 @@ public class WorkspaceManager {
         User savedOwner = UserManager.getInstance().getOwner();
         UserManager.getInstance().setOwner(userReceiving);
         // Create workspace
-        ForeignWorkspace newWorkspace = new ForeignWorkspace(name, owner, quota, isPrivate, this);
+        ForeignWorkspace newWorkspace = new ForeignWorkspace(name, owner, quota, isPrivate);
         // Insert workspace in DB
         long workspaceId = AirDeskDbHelper.getInstance(getContext()).insertWorkspace(name, owner.getDatabaseId(), quota, isPrivate, false, userReceiving.getDatabaseId());
         newWorkspace.setDatabaseId(workspaceId);

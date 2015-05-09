@@ -1,4 +1,4 @@
-package pt.ulisboa.tecnico.cmov.airdesk.core.user;
+package pt.ulisboa.tecnico.cmov.airdesk.manager;
 
 import android.content.Context;
 
@@ -8,7 +8,7 @@ import org.json.JSONObject;
 import java.util.ArrayList;
 import java.util.List;
 
-import pt.ulisboa.tecnico.cmov.airdesk.core.workspace.WorkspaceManager;
+import pt.ulisboa.tecnico.cmov.airdesk.core.user.User;
 import pt.ulisboa.tecnico.cmov.airdesk.database.AirDeskDbHelper;
 import pt.ulisboa.tecnico.cmov.airdesk.util.FileManager;
 

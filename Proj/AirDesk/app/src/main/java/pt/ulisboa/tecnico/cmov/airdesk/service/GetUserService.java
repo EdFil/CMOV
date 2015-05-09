@@ -3,7 +3,7 @@ package pt.ulisboa.tecnico.cmov.airdesk.service;
 import org.json.JSONArray;
 import org.json.JSONObject;
 
-import pt.ulisboa.tecnico.cmov.airdesk.core.user.UserManager;
+import pt.ulisboa.tecnico.cmov.airdesk.manager.UserManager;
 
 /**
  * Created by edgar on 06-05-2015.

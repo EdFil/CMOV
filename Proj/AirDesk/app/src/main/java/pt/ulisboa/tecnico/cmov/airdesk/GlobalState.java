@@ -10,9 +10,9 @@ import pt.inesc.termite.wifidirect.SimWifiP2pDevice;
 import pt.inesc.termite.wifidirect.SimWifiP2pDeviceList;
 import pt.inesc.termite.wifidirect.SimWifiP2pInfo;
 import pt.inesc.termite.wifidirect.SimWifiP2pManager;
-import pt.ulisboa.tecnico.cmov.airdesk.core.user.UserManager;
-import pt.ulisboa.tecnico.cmov.airdesk.core.workspace.WorkspaceManager;
-import pt.ulisboa.tecnico.cmov.airdesk.receiver.WifiDirectManager;
+import pt.ulisboa.tecnico.cmov.airdesk.manager.UserManager;
+import pt.ulisboa.tecnico.cmov.airdesk.manager.WorkspaceManager;
+import pt.ulisboa.tecnico.cmov.airdesk.manager.WifiDirectManager;
 
 /**
  * Created by edgar on 13-04-2015.

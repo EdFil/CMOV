@@ -5,7 +5,7 @@ import android.os.AsyncTask;
 import java.util.List;
 
 import pt.inesc.termite.wifidirect.SimWifiP2pDevice;
-import pt.ulisboa.tecnico.cmov.airdesk.receiver.WifiDirectManager;
+import pt.ulisboa.tecnico.cmov.airdesk.manager.WifiDirectManager;
 import pt.ulisboa.tecnico.cmov.airdesk.service.AirDeskService;
 
 /**

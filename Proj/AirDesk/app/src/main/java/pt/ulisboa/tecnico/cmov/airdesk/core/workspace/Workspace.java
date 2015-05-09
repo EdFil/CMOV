@@ -1,7 +1,5 @@
 package pt.ulisboa.tecnico.cmov.airdesk.core.workspace;
 
-import android.os.Parcel;
-import android.os.Parcelable;
 import android.util.Log;
 
 import org.json.JSONArray;
@@ -15,17 +13,19 @@ import java.util.List;
 
 import pt.ulisboa.tecnico.cmov.airdesk.core.tag.Tag;
 import pt.ulisboa.tecnico.cmov.airdesk.core.user.User;
-import pt.ulisboa.tecnico.cmov.airdesk.core.user.UserManager;
+import pt.ulisboa.tecnico.cmov.airdesk.manager.UserManager;
 import pt.ulisboa.tecnico.cmov.airdesk.core.workspace.exception.WorkspaceExceedsMaxSpaceException;
 import pt.ulisboa.tecnico.cmov.airdesk.core.workspace.exception.WorkspaceNameIsEmptyException;
 import pt.ulisboa.tecnico.cmov.airdesk.core.workspace.exception.WorkspaceNegativeQuotaException;
 import pt.ulisboa.tecnico.cmov.airdesk.core.workspace.exception.WorkspaceQuotaBelowUsedQuotaException;
 import pt.ulisboa.tecnico.cmov.airdesk.core.workspace.exception.WorkspaceQuotaIsZeroException;
 import pt.ulisboa.tecnico.cmov.airdesk.core.workspace.exception.WorkspaceRemoveOwnerException;
+import pt.ulisboa.tecnico.cmov.airdesk.manager.WorkspaceManager;
 import pt.ulisboa.tecnico.cmov.airdesk.util.FileManager;
 
-public class Workspace implements Parcelable {
+public abstract class Workspace {
 
+    public static final String TAG = Workspace.class.getSimpleName();
     public static final String NAME_KEY = "name";
     public static final String OWNER_KEY = "owner";
     public static final String USED_QUOTA_KEY = "used_quota";
@@ -35,7 +35,6 @@ public class Workspace implements Parcelable {
     public static final String USERS_KEY = "users";
     public static final String FILES_KEY = "files";
 
-    public static final String TAG = Workspace.class.getSimpleName();
     private String mName;
     private User mOwner;
     private long mQuota;
@@ -45,11 +44,6 @@ public class Workspace implements Parcelable {
     private List<User> mUsers;
     private List<File> mFiles;
     private WorkspaceManager mWorkspaceManager;
-
-
-    public Workspace(String name, User owner, long quota, boolean isPrivate, Collection<String> tags, Collection<User> users, Collection<File> files, WorkspaceManager workspaceManager){
-        this(-1, name, owner, quota, isPrivate, tags, users, files, workspaceManager);
-    }
 
     public Workspace(JSONObject jsonObject) throws JSONException {
         String workspaceName = jsonObject.getString(Workspace.NAME_KEY);
@@ -69,27 +63,23 @@ public class Workspace implements Parcelable {
         for(int i = 0; i < fileArray.length(); i++)
             files.add(FileManager.fileNameToFile(WorkspaceManager.getInstance().getContext(), workspaceName, fileArray.getString(i)));
 
-        setDatabaseId(-1);
-        setWorkspaceManager(WorkspaceManager.getInstance());
-        setName(workspaceName);
-        setOwner(workspaceOwner);
-        setQuota(maxQuota);
-        setIsPrivate(isPrivate);
-        setTags(tags);
-        setUsers(users);
-        setFiles(files);
+        init(-1, workspaceName, workspaceOwner, maxQuota, isPrivate, tags, users, files);
     }
 
-    public Workspace(long workspaceId, String name, User owner, long quota, boolean isPrivate, Collection<String> tags, Collection<User> users, Collection<File> files, WorkspaceManager workspaceManager){
+    public Workspace(long workspaceId, String name, User owner, long quota, boolean isPrivate, Collection<String> tags, Collection<User> users, Collection<File> files){
+        init(workspaceId, name, owner, quota, isPrivate, tags, users, files);
+    }
+
+    private void init(long workspaceId, String name, User owner, long quota, boolean isPrivate, Collection<String> tags, Collection<User> users, Collection<File> files) {
         setDatabaseId(workspaceId);
-        setWorkspaceManager(workspaceManager);
+        setWorkspaceManager(WorkspaceManager.getInstance());
         setName(name);
         setOwner(owner);
         setQuota(quota);
         setIsPrivate(isPrivate);
-        setTags(new ArrayList<String>(tags));
-        setUsers(new ArrayList<User>(users));
-        setFiles(new ArrayList<File>(files));
+        setTags(new ArrayList<>(tags));
+        setUsers(new ArrayList<>(users));
+        setFiles(new ArrayList<>(files));
     }
 
     // Getters
@@ -227,52 +217,4 @@ public class Workspace implements Parcelable {
             return jsonObject;
         }
     }
-
-
-
-
-    // ---------------------
-    // Stuff for Parcelable
-    // ---------------------
-
-
-    private Workspace(Parcel in){
-        mName = in.readString();
-        mOwner = in.readParcelable(User.class.getClassLoader());
-        mQuota = in.readLong();
-        mIsPrivate = in.readInt() == 1;
-        mDatabaseId = in.readLong();
-        in.readList((mTags = new ArrayList<String>()), String.class.getClassLoader());
-        in.readList((mUsers = new ArrayList<User>()), User.class.getClassLoader());
-        in.readList((mFiles = new ArrayList<File>()), File.class.getClassLoader());
-        mWorkspaceManager = WorkspaceManager.getInstance();
-    }
-
-    @Override
-    public int describeContents() {
-        return 0;
-    }
-
-    @Override
-    public void writeToParcel(Parcel dest, int flags) {
-        dest.writeString(mName);
-        dest.writeParcelable(mOwner, PARCELABLE_WRITE_RETURN_VALUE);
-        dest.writeLong(mQuota);
-        dest.writeInt(mIsPrivate ? 1 : 0);
-        dest.writeLong(mDatabaseId);
-        dest.writeList(mTags);
-        dest.writeList(mUsers);
-        dest.writeList(mFiles);
-    }
-
-    // this is used to regenerate your object. All Parcelables must have a CREATOR that implements these two methods
-    public static final Parcelable.Creator<Workspace> CREATOR = new Parcelable.Creator<Workspace>() {
-        public Workspace createFromParcel(Parcel in) {
-            return new Workspace(in);
-        }
-
-        public Workspace[] newArray(int size) {
-            return new Workspace[size];
-        }
-    };
 }

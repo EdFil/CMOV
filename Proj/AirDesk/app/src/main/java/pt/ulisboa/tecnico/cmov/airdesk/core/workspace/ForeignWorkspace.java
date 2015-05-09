@@ -16,12 +16,12 @@ public class ForeignWorkspace extends Workspace {
         super(jsonObject);
     }
 
-    public ForeignWorkspace(String name, User owner, long quota, boolean isPrivate, WorkspaceManager workspaceManager){
-        super(name, owner, quota, isPrivate, Collections.EMPTY_LIST, Collections.EMPTY_LIST, Collections.EMPTY_LIST, workspaceManager);
+    public ForeignWorkspace(String name, User owner, long quota, boolean isPrivate){
+        super(-1, name, owner, quota, isPrivate, Collections.EMPTY_LIST, Collections.EMPTY_LIST, Collections.EMPTY_LIST);
     }
 
-    public ForeignWorkspace(long workspaceId, String name, User owner, long quota, boolean isPrivate, Collection<String> tags, Collection<User> users, Collection<File> files, WorkspaceManager workspaceManager) {
-        super(workspaceId, name, owner, quota, isPrivate, tags, users, files, workspaceManager);
+    public ForeignWorkspace(long workspaceId, String name, User owner, long quota, boolean isPrivate, Collection<String> tags, Collection<User> users, Collection<File> files) {
+        super(workspaceId, name, owner, quota, isPrivate, tags, users, files);
     }
 
     public int countWorkspaceWithName(List<ForeignWorkspace> foreignWorkspaces, String workspaceName) {
