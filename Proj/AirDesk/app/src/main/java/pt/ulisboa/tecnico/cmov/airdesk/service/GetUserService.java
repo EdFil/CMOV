@@ -1,6 +1,8 @@
 package pt.ulisboa.tecnico.cmov.airdesk.service;
 
-import pt.ulisboa.tecnico.cmov.airdesk.core.user.User;
+import org.json.JSONArray;
+import org.json.JSONObject;
+
 import pt.ulisboa.tecnico.cmov.airdesk.core.user.UserManager;
 
 /**
@@ -9,10 +11,8 @@ import pt.ulisboa.tecnico.cmov.airdesk.core.user.UserManager;
 public class GetUserService implements AirDeskService {
 
     @Override
-    public String execute() {
-        User user = UserManager.getInstance().getOwner();
-     //   return user.toJson().toString();
-        return user.getEmail();
+    public JSONObject execute(JSONArray arguments) {
+        return UserManager.getInstance().getOwner().toJson();
     }
 
 }

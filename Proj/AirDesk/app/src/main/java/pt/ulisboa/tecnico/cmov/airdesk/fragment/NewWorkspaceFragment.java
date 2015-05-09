@@ -117,7 +117,7 @@ public class NewWorkspaceFragment extends DialogFragment {
 
                 long workspaceQuota = mQuotaValueLayout.getQuota();
 
-                List<Tag> tags = mAddTagsLayout.getAllTags();
+                List<String> tags = mAddTagsLayout.getAllTags();
 
                 try {
                     // Create workspace with associated user (owner) in database

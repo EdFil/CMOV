@@ -3,17 +3,14 @@ package pt.ulisboa.tecnico.cmov.airdesk;
 import android.test.AndroidTestCase;
 import android.test.RenamingDelegatingContext;
 
-import java.io.File;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 
-import pt.ulisboa.tecnico.cmov.airdesk.core.tag.Tag;
 import pt.ulisboa.tecnico.cmov.airdesk.core.user.User;
 import pt.ulisboa.tecnico.cmov.airdesk.core.user.UserManager;
 import pt.ulisboa.tecnico.cmov.airdesk.core.workspace.Workspace;
 import pt.ulisboa.tecnico.cmov.airdesk.core.workspace.WorkspaceManager;
 import pt.ulisboa.tecnico.cmov.airdesk.database.AirDeskDbHelper;
-import pt.ulisboa.tecnico.cmov.airdesk.util.FileManager;
 
 ;
 
@@ -42,10 +39,10 @@ public class DatabaseTest extends AndroidTestCase {
         User bruno = UserManager.getInstance().createUser("bruno@email.com", "Bruno");
 
         UserManager.getInstance().setOwner(edgar);
-        Workspace workspace = WorkspaceManager.getInstance().addLocalWorkspace("Workspace", edgar, 1024, true, new ArrayList<Tag>());
+        Workspace workspace = WorkspaceManager.getInstance().addLocalWorkspace("Workspace", edgar, 1024, true, new ArrayList<String>());
 
         UserManager.getInstance().setOwner(bruno);
-        Workspace workspace2 = WorkspaceManager.getInstance().addLocalWorkspace("Workspace", bruno, 1024, true, new ArrayList<Tag>());
+        Workspace workspace2 = WorkspaceManager.getInstance().addLocalWorkspace("Workspace", bruno, 1024, true, new ArrayList<String>());
         WorkspaceManager.getInstance().insertWorkspaceToForeignWorkspaces(workspace, bruno);
     }
 

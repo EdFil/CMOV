@@ -17,7 +17,6 @@ import java.util.ArrayList;
 import java.util.List;
 
 import pt.ulisboa.tecnico.cmov.airdesk.R;
-import pt.ulisboa.tecnico.cmov.airdesk.core.tag.Tag;
 import pt.ulisboa.tecnico.cmov.airdesk.util.Constants;
 
 public class AddTagsLayout extends LinearLayout {
@@ -98,11 +97,23 @@ public class AddTagsLayout extends LinearLayout {
     }
 
     // Gets all tags from the PredicateLayout
-    public List<Tag> getAllTags() {
-        List<Tag> tags = new ArrayList<>();
+    public List<String> getAllTags() {
+        flush();
+        List<String> tags = new ArrayList<>();
         for(int i = 0; i < mTagsLayout.getChildCount(); i++)
-            tags.add(new Tag(((TextView)((LinearLayout)mTagsLayout.getChildAt(i)).getChildAt(0)).getText().toString()));
+            tags.add(((TextView)((LinearLayout)mTagsLayout.getChildAt(i)).getChildAt(0)).getText().toString());
         return tags;
+    }
+
+    public void flush() {
+        if(mTagsEditText.getText().length() > 0) {
+            addTag(mTagsEditText.getText().toString());
+        }
+        mTagsEditText.getText().clear();
+    }
+
+    public boolean hasTags() {
+        return mTagsLayout.getChildCount() == 0;
     }
 
     // -----------------

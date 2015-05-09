@@ -20,4 +20,10 @@ public final class Constants {
     public static final String USER_INDEX_MESSAGE = "USER_INDEX";
     //
     public static final int MAX_TAGS_PER_WORKSPACE = 6;
+
+    // JSON
+    public static final String ERROR_KEY = "error";
+    public static final String SERVICE_NAME = "service_name";
+    public static final String SERVICE_ARGUMENTS = "service_arguments";
+    public static final String WORKSPACE_LIST_KEY = "workspace_list_key";
 }

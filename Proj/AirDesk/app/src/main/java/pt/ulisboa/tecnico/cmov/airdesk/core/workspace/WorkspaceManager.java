@@ -5,6 +5,7 @@ import android.content.Context;
 import java.io.File;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collection;
 import java.util.List;
 
@@ -62,15 +63,15 @@ public class WorkspaceManager {
         }
     }
 
-    public Workspace addLocalWorkspace(String name, User owner, long quota, boolean isPrivate, Collection<Tag> tags) {
+    public Workspace addLocalWorkspace(String name, User owner, long quota, boolean isPrivate, Collection<String> tags) {
         // Create workspace
         LocalWorkspace newWorkspace = new LocalWorkspace(name, owner, quota, isPrivate, tags);
         newWorkspace.addUser(owner);
         // Insert workspace in DB
         long workspaceId = AirDeskDbHelper.getInstance(getContext()).insertWorkspace(name, owner.getDatabaseId(), quota, isPrivate, true, owner.getDatabaseId());
         newWorkspace.setDatabaseId(workspaceId);
-        for(Tag tag : tags) {
-            AirDeskDbHelper.getInstance(getContext()).addTagToWorkspace(workspaceId, tag.getText());
+        for(String tag : tags) {
+            AirDeskDbHelper.getInstance(getContext()).addTagToWorkspace(workspaceId, tag);
         }
         AirDeskDbHelper.getInstance(getContext()).addUserToWorkspace(workspaceId, owner.getDatabaseId());
         // Create folder for workspace
@@ -173,11 +174,10 @@ public class WorkspaceManager {
         workspace.removeUser(user);
     }
 
-    public Tag addTagToWorkspace(String tagName, Workspace workspace) {
+    public String addTagToWorkspace(String tag, Workspace workspace) {
         // Create folder in internal storage
-        Tag tag = new Tag(tagName);
         workspace.addTag(tag);
-        AirDeskDbHelper.getInstance(getContext()).addTagToWorkspace(workspace.getDatabaseId(), tagName);
+        AirDeskDbHelper.getInstance(getContext()).addTagToWorkspace(workspace.getDatabaseId(), tag);
         return tag;
     }
 
@@ -234,6 +234,14 @@ public class WorkspaceManager {
             return mLocalWorkspaces.get(workspaceIndex);
         else
             return mForeignWorkspaces.get(workspaceIndex);
+    }
+
+    public List<Workspace> getWorkspacesWithTags(String... tags) {
+        List<Workspace> workspaceList = new ArrayList<>();
+        for(Workspace workspace : mLocalWorkspaces)
+            if(workspace.hasAllTags(Arrays.asList(tags)))
+                workspaceList.add(workspace);
+        return workspaceList;
     }
 
     public List<ForeignWorkspace> getForeignWorkspacesWithTags(Collection<Tag> tags) {

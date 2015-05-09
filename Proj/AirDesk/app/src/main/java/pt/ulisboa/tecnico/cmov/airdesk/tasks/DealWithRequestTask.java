@@ -4,6 +4,10 @@ import android.os.AsyncTask;
 import android.util.Log;
 import android.widget.Toast;
 
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
+
 import java.io.BufferedReader;
 import java.io.BufferedWriter;
 import java.io.IOException;
@@ -13,6 +17,7 @@ import java.io.OutputStreamWriter;
 import pt.inesc.termite.wifidirect.sockets.SimWifiP2pSocket;
 import pt.ulisboa.tecnico.cmov.airdesk.core.workspace.WorkspaceManager;
 import pt.ulisboa.tecnico.cmov.airdesk.service.AirDeskService;
+import pt.ulisboa.tecnico.cmov.airdesk.util.Constants;
 
 /**
  * Created by edgar on 06-05-2015.
@@ -27,16 +32,33 @@ public class DealWithRequestTask extends AsyncTask<SimWifiP2pSocket, String, Voi
             BufferedReader reader = new BufferedReader(new InputStreamReader(params[0].getInputStream()));
             BufferedWriter writer = new BufferedWriter(new OutputStreamWriter(params[0].getOutputStream()));
 
-            String serviceName = reader.readLine();
+            // Get the service info
+            JSONObject serviceDto = new JSONObject(reader.readLine());
+            Log.i(TAG, "Received: " + serviceDto.toString());
+            String serviceName = serviceDto.getString(Constants.SERVICE_NAME);
+            JSONArray arguments = serviceDto.getJSONArray(Constants.SERVICE_ARGUMENTS);
 
+
+            //Instantiate the service class
             Class serviceClassName = Class.forName(serviceName);
             AirDeskService serviceClass = (AirDeskService) serviceClassName.newInstance();
-            String response = serviceClass.execute();
 
-            publishProgress("Executed: " + serviceClassName.getSimpleName());
+            JSONObject response = serviceClass.execute(arguments);
 
-            writer.write(response);
-            Log.d(TAG, response);
+            StringBuilder debugString = new StringBuilder();
+            debugString.append(serviceClassName.getSimpleName());
+            debugString.append("(");
+            for(int i = 0; i < arguments.length(); i++) {
+                debugString.append(arguments.get(i));
+                if ((i + 1) != arguments.length())
+                    debugString.append(",");
+            }
+            debugString.append(")");
+
+            publishProgress(debugString.toString());
+
+            writer.write(response.toString());
+            Log.i(TAG, "Wrote: " + response.toString());
             writer.newLine();
             writer.flush();
 
@@ -50,8 +72,9 @@ public class DealWithRequestTask extends AsyncTask<SimWifiP2pSocket, String, Voi
             e.printStackTrace();
         } catch (IllegalAccessException e) {
             e.printStackTrace();
+        } catch (JSONException e) {
+            e.printStackTrace();
         }
-        Log.d(TAG, "Ended");
         return null;
     }
 

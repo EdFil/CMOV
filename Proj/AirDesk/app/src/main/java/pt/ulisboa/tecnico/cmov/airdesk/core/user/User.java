@@ -2,15 +2,14 @@ package pt.ulisboa.tecnico.cmov.airdesk.core.user;
 
 import android.os.Parcel;
 import android.os.Parcelable;
-import android.provider.ContactsContract;
 
-import java.util.Comparator;
-import java.util.HashSet;
-
-import pt.ulisboa.tecnico.cmov.airdesk.core.workspace.ForeignWorkspace;
-import pt.ulisboa.tecnico.cmov.airdesk.core.workspace.LocalWorkspace;
+import org.json.JSONException;
+import org.json.JSONObject;
 
 public class User implements Parcelable {
+
+    public static final String EMAIL_KEY = "email";
+    public static final String NICK_KEY = "nick";
 
     private long mDatabaseId;
     private String mEmail;
@@ -79,4 +78,14 @@ public class User implements Parcelable {
         }
     };
 
+    public JSONObject toJson() {
+        JSONObject jsonUser = new JSONObject();
+        try {
+            jsonUser.put(EMAIL_KEY, mEmail);
+            jsonUser.put(NICK_KEY, mNick);
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+        return jsonUser;
+    }
 }

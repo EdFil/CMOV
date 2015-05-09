@@ -1,26 +1,29 @@
 package pt.ulisboa.tecnico.cmov.airdesk;
 
 import android.app.Activity;
-import android.os.AsyncTask;
 import android.os.Bundle;
 import android.view.View;
 import android.view.View.OnClickListener;
+import android.widget.ListView;
 
+import pt.ulisboa.tecnico.cmov.airdesk.adapter.PeerListAdapter;
 import pt.ulisboa.tecnico.cmov.airdesk.receiver.WifiDirectManager;
-import pt.ulisboa.tecnico.cmov.airdesk.tasks.OutgoingCommTask;
 
 public class WifiSettingsActivity extends Activity  {
 
     public static final String TAG = WifiSettingsActivity.class.getSimpleName();
+    PeerListAdapter mPeerList;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-
         // initialize the UI
         setContentView(R.layout.activity_wifi_settings);
         guiSetButtonListeners();
         guiUpdateInitState();
+
+        mPeerList = new PeerListAdapter(this, WifiDirectManager.getInstance().getPeerList());
+        ((ListView)findViewById(R.id.peerList)).setAdapter(mPeerList);
     }
 
 	/*
@@ -44,6 +47,7 @@ public class WifiSettingsActivity extends Activity  {
     private OnClickListener listenerInRangeButton = new OnClickListener() {
         public void onClick(View v) {
             WifiDirectManager.getInstance().refreshPeerList();
+            mPeerList.notifyDataSetChanged();
         }
     };
 
@@ -57,10 +61,18 @@ public class WifiSettingsActivity extends Activity  {
         @Override
         public void onClick(View v) {
             //findViewById(R.id.idConnectButton).setEnabled(false);
-            String ip = "192.168.0.2";
-            int port = Integer.parseInt(getString(R.string.port));
-            new OutgoingCommTask(ip, port).executeOnExecutor(
-                    AsyncTask.THREAD_POOL_EXECUTOR);
+//            String ip = "192.168.0.2";
+//            int port = Integer.parseInt(getString(R.string.port));
+//            final JSONObject response = null;
+//            RequestTask task = new RequestTask(ip, port, response, GetUserService.class);
+//            task.mDelegate = new AsyncResponse() {
+//                @Override
+//                public void processFinish(String output) {
+//                    mPeerList
+//                }
+//            };
+//            task.executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR);
+//            Toast.makeText(getApplicationContext(), response.toString(), Toast.LENGTH_SHORT).show();
         }
     };
 
