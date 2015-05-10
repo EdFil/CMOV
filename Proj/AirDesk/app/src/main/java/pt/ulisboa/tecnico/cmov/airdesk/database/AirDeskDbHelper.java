@@ -140,12 +140,15 @@ public class AirDeskDbHelper extends SQLiteOpenHelper {
 
 
     public long insertUser(String email, String nick) {
-        SQLiteDatabase db = mInstance.getWritableDatabase();
+        SQLiteDatabase db = mInstance.getReadableDatabase();
+
+
+        db = mInstance.getWritableDatabase();
         ContentValues values = new ContentValues();
         values.put(UsersEntry.COLUMN_USER_EMAIL, email);
         values.put(UsersEntry.COLUMN_USER_NICK, nick);
 
-        long rowId = db.insert(UsersEntry.TABLE_NAME, null, values);
+        long rowId = db. replace(UsersEntry.TABLE_NAME, null, values);
         db.close();
 
         return rowId;

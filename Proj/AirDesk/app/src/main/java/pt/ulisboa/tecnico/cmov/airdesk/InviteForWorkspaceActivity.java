@@ -54,38 +54,10 @@ public class InviteForWorkspaceActivity extends ActionBarActivity {
     protected void onStart() {
         super.onStart();
 
-        getAllConnectedUsers();
-    }
-
-    // Get all connected user asynchronously
-    private void getAllConnectedUsers() {
-        // Create the broadcast task to send the service to all connected peers
-        BroadcastTask task = new BroadcastTask(
-                Integer.parseInt(getString(R.string.port)),
-                GetUserService.class
-        );
-        // Override the callback so we can process the result from the task
-        task.mDelegate = new AsyncResponse() {
-            @Override
-            public void processFinish(String output) {
-                try {
-                    // Get the response as a JSONObject
-                    JSONObject response = new JSONObject(output);
-
-                    // Check if has error
-                    if (response.has(Constants.ERROR_KEY))
-                        throw new Exception(response.getString(Constants.ERROR_KEY));
-
-                    // Add the user to the list
-                    mUserListAdapter.add(UserManager.getInstance().createuser(response));
-                } catch (Exception e) {
-                    // Show our error in a toast
-                    Toast.makeText(getApplicationContext(), e.getMessage(), Toast.LENGTH_SHORT).show();
-                }
-            }
-        };
-        // Execute our task
-        task.executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR);
+        for(User onlineUser : UserManager.getInstance().getUsers()) {
+            if(!mWorkspace.getUsers().contains(onlineUser))
+                mUserListAdapter.add(onlineUser);
+        }
     }
 
     // ---------------------------
@@ -97,13 +69,15 @@ public class InviteForWorkspaceActivity extends ActionBarActivity {
         public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
             final User user = (User) parent.getItemAtPosition(position);
 
+            mWorkspace.addUser(user);
+
             // Create a request task for every device
             RequestTask task = new RequestTask(
-                    "",
+                    user.getDevice().getVirtIp(),
                     Integer.parseInt(getString(R.string.port)),
                     InviteUserService.class,
                     mWorkspace.toJSON().toString());
-            
+
             // Override the callback so we can process the result from the task
             task.mDelegate = new AsyncResponse() {
                 @Override
@@ -113,8 +87,10 @@ public class InviteForWorkspaceActivity extends ActionBarActivity {
                         JSONObject response = new JSONObject(output);
 
                         // Check if has error
-                        if (response.has(Constants.ERROR_KEY))
+                        if (response.has(Constants.ERROR_KEY)) {
+                            mWorkspace.removeUser(user);
                             throw new Exception(response.getString(Constants.ERROR_KEY));
+                        }
 
                         Toast.makeText(getApplicationContext(), response.getString(Constants.RESULT_KEY), Toast.LENGTH_SHORT).show();
                         mUserListAdapter.remove(user);

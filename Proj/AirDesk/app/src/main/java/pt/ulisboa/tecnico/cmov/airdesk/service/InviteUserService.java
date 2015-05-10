@@ -13,9 +13,9 @@ public class InviteUserService implements AirDeskService {
     @Override
     public JSONObject execute(JSONArray arguments) {
         JSONObject object = new JSONObject();
+
         try {
-            ForeignWorkspace workspace = new ForeignWorkspace(arguments.getJSONObject(0));
-            workspace.addUser(UserManager.getInstance().getOwner());
+//            ForeignWorkspace workspace = new ForeignWorkspace(arguments.getJSONObject(0));
             // TODO: Add workspace to foreign
             object.put(Constants.RESULT_KEY, "OK");
         } catch (JSONException e) {

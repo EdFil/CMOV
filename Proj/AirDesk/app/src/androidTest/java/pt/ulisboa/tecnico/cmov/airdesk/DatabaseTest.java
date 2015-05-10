@@ -31,21 +31,6 @@ public class DatabaseTest extends AndroidTestCase {
         mContext.deleteDatabase(AirDeskDbHelper.DATABASE_NAME);
     }
 
-    public void testCustom2() {
-        mContext.deleteDatabase(AirDeskDbHelper.DATABASE_NAME);
-        AirDeskDbHelper dbHelper = AirDeskDbHelper.getInstance(mContext);
-
-        User edgar = UserManager.getInstance().createUser("edgar@email.com", "Edgar");
-        User bruno = UserManager.getInstance().createUser("bruno@email.com", "Bruno");
-
-        UserManager.getInstance().setOwner(edgar);
-        Workspace workspace = WorkspaceManager.getInstance().addLocalWorkspace("Workspace", edgar, 1024, true, new ArrayList<String>());
-
-        UserManager.getInstance().setOwner(bruno);
-        Workspace workspace2 = WorkspaceManager.getInstance().addLocalWorkspace("Workspace", bruno, 1024, true, new ArrayList<String>());
-        WorkspaceManager.getInstance().insertWorkspaceToForeignWorkspaces(workspace, bruno);
-    }
-
 //    public void testCustom(){
 //        AirDeskDbHelper dbHelper = AirDeskDbHelper.getInstance(mContext);
 //

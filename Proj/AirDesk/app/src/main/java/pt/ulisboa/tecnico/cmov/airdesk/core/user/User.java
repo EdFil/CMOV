@@ -6,6 +6,8 @@ import android.os.Parcelable;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import pt.inesc.termite.wifidirect.SimWifiP2pDevice;
+
 public class User implements Parcelable {
 
     public static final String EMAIL_KEY = "email";
@@ -14,6 +16,8 @@ public class User implements Parcelable {
     private long mDatabaseId;
     private String mEmail;
     private String mNick;
+
+    private SimWifiP2pDevice mDevice;
 
     public User(long databaseId, String email, String nick){
         mDatabaseId = databaseId;
@@ -24,6 +28,11 @@ public class User implements Parcelable {
     public String getEmail() { return mEmail; }
     public String getNick() { return mNick; }
     public long getDatabaseId() { return mDatabaseId; }
+    public SimWifiP2pDevice getDevice() { return mDevice; }
+
+    public void setDevice(SimWifiP2pDevice device) {
+        mDevice = device;
+    }
 
     @Override
     public boolean equals(Object o) {

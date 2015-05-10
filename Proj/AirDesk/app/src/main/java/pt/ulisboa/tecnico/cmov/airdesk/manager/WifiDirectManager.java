@@ -10,6 +10,10 @@ import android.os.IBinder;
 import android.os.Looper;
 import android.os.Messenger;
 import android.util.Log;
+import android.widget.Toast;
+
+import org.json.JSONArray;
+import org.json.JSONObject;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -24,8 +28,17 @@ import pt.inesc.termite.wifidirect.SimWifiP2pManager.PeerListListener;
 import pt.inesc.termite.wifidirect.service.SimWifiP2pService;
 import pt.inesc.termite.wifidirect.sockets.SimWifiP2pSocketManager;
 import pt.ulisboa.tecnico.cmov.airdesk.R;
+import pt.ulisboa.tecnico.cmov.airdesk.core.user.User;
+import pt.ulisboa.tecnico.cmov.airdesk.core.workspace.ForeignWorkspace;
 import pt.ulisboa.tecnico.cmov.airdesk.receiver.SimWifiP2pBroadcastReceiver;
+import pt.ulisboa.tecnico.cmov.airdesk.service.GetUserService;
+import pt.ulisboa.tecnico.cmov.airdesk.service.GetWorkspacesWithTagsService;
+import pt.ulisboa.tecnico.cmov.airdesk.tasks.AsyncResponse;
+import pt.ulisboa.tecnico.cmov.airdesk.tasks.BroadcastTask;
+import pt.ulisboa.tecnico.cmov.airdesk.tasks.DiscoverTask;
+import pt.ulisboa.tecnico.cmov.airdesk.tasks.RequestTask;
 import pt.ulisboa.tecnico.cmov.airdesk.tasks.ServerTask;
+import pt.ulisboa.tecnico.cmov.airdesk.util.Constants;
 
 /**
  * Created by edgar on 05-05-2015.
@@ -110,7 +123,6 @@ public class WifiDirectManager implements PeerListListener, GroupInfoListener{
             Intent intent = new Intent(mContext, SimWifiP2pService.class);
             mContext.bindService(intent, mConnection, Context.BIND_AUTO_CREATE);
             mBound = true;
-
             mServer.executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR);
         }
     }
@@ -147,19 +159,20 @@ public class WifiDirectManager implements PeerListListener, GroupInfoListener{
 
     @Override
     public void onGroupInfoAvailable(SimWifiP2pDeviceList devices, SimWifiP2pInfo groupInfo) {
-        // compile list of network members
-        StringBuilder peersStr = new StringBuilder();
-        for (String deviceName : groupInfo.getDevicesInNetwork()) {
-            SimWifiP2pDevice device = devices.getByName(deviceName);
-            String devstr = "" + deviceName + " (" +
-                    ((device == null) ? "??" : device.getVirtIp()) + ")\n";
-            peersStr.append(devstr);
+        List<SimWifiP2pDevice> deviceList = new ArrayList<>(devices.getDeviceList());
+
+        SimWifiP2pDevice myDevice = devices.getByName(groupInfo.getDeviceName());
+        UserManager.getInstance().getOwner().setDevice(myDevice);
+        deviceList.remove(myDevice);
+
+        UserManager.getInstance().clearUserList();
+
+        for (SimWifiP2pDevice device : deviceList) {
+            DiscoverTask task = new DiscoverTask(device, Integer.parseInt(getContext().getString(R.string.port)));
+            // Execute the task
+            task.executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR);
         }
 
-        if(peersStr.length() == 0)
-            Log.i(TAG, "No peers");
-        else
-            Log.i(TAG, peersStr.toString());
     }
 
     public List<SimWifiP2pDevice> getPeerList() {

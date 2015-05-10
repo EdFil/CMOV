@@ -18,15 +18,18 @@ import java.util.Random;
 
 import pt.inesc.termite.wifidirect.SimWifiP2pDevice;
 import pt.inesc.termite.wifidirect.sockets.SimWifiP2pSocket;
+import pt.ulisboa.tecnico.cmov.airdesk.core.user.User;
+import pt.ulisboa.tecnico.cmov.airdesk.manager.UserManager;
 import pt.ulisboa.tecnico.cmov.airdesk.manager.WorkspaceManager;
+import pt.ulisboa.tecnico.cmov.airdesk.service.GetUserService;
 import pt.ulisboa.tecnico.cmov.airdesk.util.Constants;
 
 /**
  * Created by edgar on 06-05-2015.
  */
-public class RequestTask extends AsyncTask<Void, String, JSONObject> {
+public class DiscoverTask extends AsyncTask<Void, String, JSONObject> {
 
-    public static final String TAG = RequestTask.class.getSimpleName();
+    public static final String TAG = DiscoverTask.class.getSimpleName();
     private String mIp;
     private SimWifiP2pDevice mDevice;
     private int mPort;
@@ -35,11 +38,11 @@ public class RequestTask extends AsyncTask<Void, String, JSONObject> {
     private String[] mArguments;
     public AsyncResponse mDelegate = null;
 
-    public RequestTask(String ip, int port, Class serviceClass, String... arguments) {
-        mIp = ip;
+    public DiscoverTask(SimWifiP2pDevice device, int port) {
+        mDevice = device;
         mPort = port;
-        mServiceClass = serviceClass.getName();
-        mArguments = arguments;
+        mServiceClass = GetUserService.class.getName();
+        mArguments = new String[0];
     }
 
 
@@ -47,7 +50,7 @@ public class RequestTask extends AsyncTask<Void, String, JSONObject> {
     protected JSONObject doInBackground(Void... params) {
         try {
             // Open sockets and readers
-            SimWifiP2pSocket socket = new SimWifiP2pSocket(mIp, mPort);
+            SimWifiP2pSocket socket = new SimWifiP2pSocket(mDevice.getVirtIp(), mPort);
             BufferedReader reader = new BufferedReader(new InputStreamReader(socket.getInputStream()));
             BufferedWriter writer = new BufferedWriter(new OutputStreamWriter(socket.getOutputStream()));
 
@@ -92,10 +95,14 @@ public class RequestTask extends AsyncTask<Void, String, JSONObject> {
 
     @Override
     protected void onPostExecute(JSONObject result) {
-        if(mDelegate != null)
-            mDelegate.processFinish(result.toString());
-        else
-            Toast.makeText(WorkspaceManager.getInstance().getContext(), result.toString(), Toast.LENGTH_SHORT).show();
+        User user = null;
+        try {
+            user = UserManager.getInstance().createUser(result);
+            user.setDevice(mDevice);
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+
     }
 
     private JSONObject makeJsonErrorMessage(String errorMessage) {

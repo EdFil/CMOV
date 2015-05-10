@@ -20,7 +20,10 @@ public class WifiSettingsActivity extends Activity  {
         // initialize the UI
         setContentView(R.layout.activity_wifi_settings);
         guiSetButtonListeners();
+
         guiUpdateInitState();
+        if(WifiDirectManager.getInstance().isWifiDirectOn())
+            guiUpdateDisconnectedState();
 
         mPeerList = new PeerListAdapter(this, WifiDirectManager.getInstance().getPeerList());
         ((ListView)findViewById(R.id.peerList)).setAdapter(mPeerList);

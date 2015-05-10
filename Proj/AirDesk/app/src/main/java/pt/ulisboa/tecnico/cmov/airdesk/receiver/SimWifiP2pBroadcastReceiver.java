@@ -7,6 +7,7 @@ import android.util.Log;
 import android.widget.Toast;
 
 import pt.inesc.termite.wifidirect.SimWifiP2pBroadcast;
+import pt.inesc.termite.wifidirect.SimWifiP2pInfo;
 import pt.ulisboa.tecnico.cmov.airdesk.manager.WifiDirectManager;
 
 public class SimWifiP2pBroadcastReceiver extends BroadcastReceiver {
@@ -32,8 +33,8 @@ public class SimWifiP2pBroadcastReceiver extends BroadcastReceiver {
 
             int state = intent.getIntExtra(SimWifiP2pBroadcast.EXTRA_WIFI_STATE, -1);
             if (state == SimWifiP2pBroadcast.WIFI_P2P_STATE_ENABLED) {
-                Toast.makeText(mContext, "WiFi Direct enabled",
-                        Toast.LENGTH_SHORT).show();
+                Toast.makeText(mContext, "WiFi Direct enabled", Toast.LENGTH_SHORT).show();
+
             } else {
                 Toast.makeText(mContext, "WiFi Direct disabled",
                         Toast.LENGTH_SHORT).show();
@@ -43,10 +44,8 @@ public class SimWifiP2pBroadcastReceiver extends BroadcastReceiver {
             Toast.makeText(mContext, "Peer list changed",Toast.LENGTH_SHORT).show();
             WifiDirectManager.getInstance().refreshPeerList();
         } else if (SimWifiP2pBroadcast.WIFI_P2P_NETWORK_MEMBERSHIP_CHANGED_ACTION.equals(action)) {
+            WifiDirectManager.getInstance().refreshGroupInfo();
 
-//            SimWifiP2pInfo ginfo = (SimWifiP2pInfo) intent.getSerializableExtra(
-//                    SimWifiP2pBroadcast.EXTRA_GROUP_INFO);
-//            ginfo.print();
             Toast.makeText(mContext, "Network membership changed",
                     Toast.LENGTH_SHORT).show();
 

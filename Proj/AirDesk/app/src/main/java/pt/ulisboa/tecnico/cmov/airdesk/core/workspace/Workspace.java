@@ -47,7 +47,7 @@ public abstract class Workspace {
 
     public Workspace(JSONObject jsonObject) throws JSONException {
         String workspaceName = jsonObject.getString(Workspace.NAME_KEY);
-        User workspaceOwner = UserManager.getInstance().createuser(jsonObject.getJSONObject(Workspace.OWNER_KEY));
+        User workspaceOwner = UserManager.getInstance().createUser(jsonObject.getJSONObject(Workspace.OWNER_KEY));
         long maxQuota = jsonObject.getLong(Workspace.MAX_QUOTA_KEY);
         boolean isPrivate = jsonObject.getBoolean(Workspace.IS_PRIVATE_KEY);
         List<String> tags = new ArrayList<>();
@@ -57,7 +57,7 @@ public abstract class Workspace {
         List<User> users = new ArrayList<>();
         JSONArray userArray = jsonObject.getJSONArray(Workspace.USERS_KEY);
         for(int i = 0; i < userArray.length(); i++)
-            users.add(UserManager.getInstance().createuser(userArray.getJSONObject(i)));
+            users.add(UserManager.getInstance().createUser(userArray.getJSONObject(i)));
         List<File> files = new ArrayList<>();
         JSONArray fileArray = jsonObject.getJSONArray(Workspace.FILES_KEY);
         for(int i = 0; i < fileArray.length(); i++)

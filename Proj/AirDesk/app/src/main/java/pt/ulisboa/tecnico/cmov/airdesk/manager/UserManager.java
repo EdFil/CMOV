@@ -47,7 +47,7 @@ public class UserManager {
 
     public Context getContext() { return mContext; }
 
-    public User createuser(JSONObject jsonObject) throws JSONException {
+    public User createUser(JSONObject jsonObject) throws JSONException {
         String email = jsonObject.getString(User.EMAIL_KEY);
         String nick = jsonObject.getString(User.NICK_KEY);
         return createUser(email, nick);
@@ -58,6 +58,11 @@ public class UserManager {
         for(User user : mUserList)
             if(user.getEmail().equals(userEmail))
                 return user;
+
+        if(mOwner.getEmail().equals(userEmail)) {
+            return null;
+        }
+
         // If not exists
         long userId = AirDeskDbHelper.getInstance(getContext()).insertUser(userEmail, userNick);
         User user = new User(userId, userEmail, userNick);
@@ -98,4 +103,7 @@ public class UserManager {
     }
 
 
+    public void clearUserList() {
+        mUserList.clear();
+    }
 }
