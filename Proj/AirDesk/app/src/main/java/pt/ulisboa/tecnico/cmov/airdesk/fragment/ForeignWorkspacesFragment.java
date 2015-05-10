@@ -27,8 +27,7 @@ import pt.ulisboa.tecnico.cmov.airdesk.R;
 import pt.ulisboa.tecnico.cmov.airdesk.WorkspaceDetailsActivity;
 import pt.ulisboa.tecnico.cmov.airdesk.adapter.WorkspaceListAdapter;
 import pt.ulisboa.tecnico.cmov.airdesk.core.workspace.ForeignWorkspace;
-import pt.ulisboa.tecnico.cmov.airdesk.core.workspace.Workspace;
-import pt.ulisboa.tecnico.cmov.airdesk.core.workspace.WorkspaceManager;
+import pt.ulisboa.tecnico.cmov.airdesk.manager.WorkspaceManager;
 import pt.ulisboa.tecnico.cmov.airdesk.util.Constants;
 
 public class ForeignWorkspacesFragment extends Fragment {
@@ -92,15 +91,15 @@ public class ForeignWorkspacesFragment extends Fragment {
                         break;
                     }
 
-                Bundle bundle = new Bundle();
-                bundle.putParcelable("Workspace", foreignWorkspace);
-                filesFragment.setArguments(bundle);
-
-                transaction.replace(R.id.container, filesFragment);
-                transaction.addToBackStack(null);
-
-                // Commit the transaction
-                transaction.commit();
+//                Bundle bundle = new Bundle();
+//                bundle.putParcelable("Workspace", foreignWorkspace);
+//                filesFragment.setArguments(bundle);
+//
+//                transaction.replace(R.id.container, filesFragment);
+//                transaction.addToBackStack(null);
+//
+//                // Commit the transaction
+//                transaction.commit();
             }
         });
 

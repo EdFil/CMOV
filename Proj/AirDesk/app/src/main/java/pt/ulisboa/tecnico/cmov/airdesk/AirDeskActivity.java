@@ -19,7 +19,7 @@ import android.view.ViewGroup;
 import android.widget.ListView;
 import android.widget.TextView;
 
-import pt.ulisboa.tecnico.cmov.airdesk.core.user.UserManager;
+import pt.ulisboa.tecnico.cmov.airdesk.manager.UserManager;
 import pt.ulisboa.tecnico.cmov.airdesk.fragment.FilesFragment;
 import pt.ulisboa.tecnico.cmov.airdesk.fragment.ForeignWorkspacesFragment;
 import pt.ulisboa.tecnico.cmov.airdesk.fragment.LocalWorkspacesFragment;
@@ -110,7 +110,7 @@ public class AirDeskActivity extends ActionBarActivity
             // Account information : Nickname and Email
             case 0:
                 break;
-            // MyWorkspaces : Owned workspace list fragment
+            // MyWorkspaces : Owned mWorkspace list fragment
             case 1:
                 fragmentManager.beginTransaction().replace(R.id.container, LocalWorkspacesFragment.newInstance(position)).commit();
                 break;

@@ -76,10 +76,9 @@
 
     </LinearLayout>
 
-    <EditText
-        android:id="@+id/editText2"
+    <ListView
+        android:id="@+id/peerList"
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:inputType="textMultiLine" />
+        android:layout_height="wrap_content"></ListView>
 
 </LinearLayout>

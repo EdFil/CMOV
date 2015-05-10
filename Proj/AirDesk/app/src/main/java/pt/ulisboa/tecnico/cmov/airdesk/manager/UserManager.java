@@ -1,11 +1,14 @@
-package pt.ulisboa.tecnico.cmov.airdesk.core.user;
+package pt.ulisboa.tecnico.cmov.airdesk.manager;
 
 import android.content.Context;
+
+import org.json.JSONException;
+import org.json.JSONObject;
 
 import java.util.ArrayList;
 import java.util.List;
 
-import pt.ulisboa.tecnico.cmov.airdesk.core.workspace.WorkspaceManager;
+import pt.ulisboa.tecnico.cmov.airdesk.core.user.User;
 import pt.ulisboa.tecnico.cmov.airdesk.database.AirDeskDbHelper;
 import pt.ulisboa.tecnico.cmov.airdesk.util.FileManager;
 
@@ -43,6 +46,12 @@ public class UserManager {
     }
 
     public Context getContext() { return mContext; }
+
+    public User createuser(JSONObject jsonObject) throws JSONException {
+        String email = jsonObject.getString(User.EMAIL_KEY);
+        String nick = jsonObject.getString(User.NICK_KEY);
+        return createUser(email, nick);
+    }
 
     public User createUser(String userEmail, String userNick){
         // If already exists

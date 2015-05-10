@@ -16,7 +16,7 @@ import android.widget.Toast;
 
 import pt.ulisboa.tecnico.cmov.airdesk.adapter.UserListAdapter;
 import pt.ulisboa.tecnico.cmov.airdesk.core.user.User;
-import pt.ulisboa.tecnico.cmov.airdesk.core.user.UserManager;
+import pt.ulisboa.tecnico.cmov.airdesk.manager.UserManager;
 import pt.ulisboa.tecnico.cmov.airdesk.util.Constants;
 
 public class LoginActivity extends ActionBarActivity {

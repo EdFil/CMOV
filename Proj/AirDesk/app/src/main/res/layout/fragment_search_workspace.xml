@@ -15,14 +15,14 @@
         android:layout_marginRight="@dimen/activity_horizontal_margin"
         android:orientation="horizontal">
         <pt.ulisboa.tecnico.cmov.airdesk.custom.AddTagsLayout
-            android:id="@+id/workspacesTags"
+            android:id="@+id/workspace_tags"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_weight="3"
             app:titleVisible="false" />
 
         <ImageButton
-            android:id="@+id/searchButton"
+            android:id="@+id/search_button"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_weight="1"
@@ -32,10 +32,9 @@
 
 
     <ListView
+        android:id="@+id/workspace_list"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:id="@+id/workspacesList"
-        android:layout_below="@+id/workspacesList"
         android:visibility="gone"/>
 
     <TextView

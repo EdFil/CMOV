@@ -1,17 +1,20 @@
-package pt.ulisboa.tecnico.cmov.airdesk.core.workspace;
+package pt.ulisboa.tecnico.cmov.airdesk.manager;
 
 import android.content.Context;
 
 import java.io.File;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collection;
 import java.util.List;
 
 import pt.ulisboa.tecnico.cmov.airdesk.core.file.exception.FileAlreadyExistsException;
 import pt.ulisboa.tecnico.cmov.airdesk.core.tag.Tag;
 import pt.ulisboa.tecnico.cmov.airdesk.core.user.User;
-import pt.ulisboa.tecnico.cmov.airdesk.core.user.UserManager;
+import pt.ulisboa.tecnico.cmov.airdesk.core.workspace.ForeignWorkspace;
+import pt.ulisboa.tecnico.cmov.airdesk.core.workspace.LocalWorkspace;
+import pt.ulisboa.tecnico.cmov.airdesk.core.workspace.Workspace;
 import pt.ulisboa.tecnico.cmov.airdesk.database.AirDeskDbHelper;
 import pt.ulisboa.tecnico.cmov.airdesk.util.FileManager;
 
@@ -62,15 +65,15 @@ public class WorkspaceManager {
         }
     }
 
-    public Workspace addLocalWorkspace(String name, User owner, long quota, boolean isPrivate, Collection<Tag> tags) {
+    public Workspace addLocalWorkspace(String name, User owner, long quota, boolean isPrivate, Collection<String> tags) {
         // Create workspace
         LocalWorkspace newWorkspace = new LocalWorkspace(name, owner, quota, isPrivate, tags);
         newWorkspace.addUser(owner);
         // Insert workspace in DB
         long workspaceId = AirDeskDbHelper.getInstance(getContext()).insertWorkspace(name, owner.getDatabaseId(), quota, isPrivate, true, owner.getDatabaseId());
         newWorkspace.setDatabaseId(workspaceId);
-        for(Tag tag : tags) {
-            AirDeskDbHelper.getInstance(getContext()).addTagToWorkspace(workspaceId, tag.getText());
+        for(String tag : tags) {
+            AirDeskDbHelper.getInstance(getContext()).addTagToWorkspace(workspaceId, tag);
         }
         AirDeskDbHelper.getInstance(getContext()).addUserToWorkspace(workspaceId, owner.getDatabaseId());
         // Create folder for workspace
@@ -85,7 +88,7 @@ public class WorkspaceManager {
         User savedOwner = UserManager.getInstance().getOwner();
         UserManager.getInstance().setOwner(userReceiving);
         // Create workspace
-        ForeignWorkspace newWorkspace = new ForeignWorkspace(name, owner, quota, isPrivate, this);
+        ForeignWorkspace newWorkspace = new ForeignWorkspace(name, owner, quota, isPrivate);
         // Insert workspace in DB
         long workspaceId = AirDeskDbHelper.getInstance(getContext()).insertWorkspace(name, owner.getDatabaseId(), quota, isPrivate, false, userReceiving.getDatabaseId());
         newWorkspace.setDatabaseId(workspaceId);
@@ -173,11 +176,10 @@ public class WorkspaceManager {
         workspace.removeUser(user);
     }
 
-    public Tag addTagToWorkspace(String tagName, Workspace workspace) {
+    public String addTagToWorkspace(String tag, Workspace workspace) {
         // Create folder in internal storage
-        Tag tag = new Tag(tagName);
         workspace.addTag(tag);
-        AirDeskDbHelper.getInstance(getContext()).addTagToWorkspace(workspace.getDatabaseId(), tagName);
+        AirDeskDbHelper.getInstance(getContext()).addTagToWorkspace(workspace.getDatabaseId(), tag);
         return tag;
     }
 
@@ -236,6 +238,14 @@ public class WorkspaceManager {
             return mForeignWorkspaces.get(workspaceIndex);
     }
 
+    public List<Workspace> getWorkspacesWithTags(String... tags) {
+        List<Workspace> workspaceList = new ArrayList<>();
+        for(Workspace workspace : mLocalWorkspaces)
+            if(workspace.hasAllTags(Arrays.asList(tags)))
+                workspaceList.add(workspace);
+        return workspaceList;
+    }
+
     public List<ForeignWorkspace> getForeignWorkspacesWithTags(Collection<Tag> tags) {
         long ownerDbId = UserManager.getInstance().getOwner().getDatabaseId();
         return AirDeskDbHelper.getInstance(getContext()).getForeignWorkspacesWithTags(ownerDbId, tags);
@@ -253,8 +263,6 @@ public class WorkspaceManager {
         return mForeignWorkspaces;
     }
 
-    public void insertWorkspaceToForeignWorkspaces(Workspace workspace, User userReceivingWS) {
-        addForeignWorkspace(userReceivingWS, workspace.getName(), workspace.getOwner(), workspace.getMaxQuota(), workspace.isPrivate());
-    }
+
 
 }

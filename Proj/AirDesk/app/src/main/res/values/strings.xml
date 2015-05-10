@@ -26,7 +26,7 @@
 
     <string name="hello_world">Hello world!</string>
     <string name="title_activity_Workspace_Details">Workspace Details</string>
-    <string name="title_activity_invite_for_workspace">InviteForWorkspaceActivity</string>
+    <string name="title_activity_invite_for_workspace">Invite for Workspace</string>
 
     <string name="port">10001</string>
 

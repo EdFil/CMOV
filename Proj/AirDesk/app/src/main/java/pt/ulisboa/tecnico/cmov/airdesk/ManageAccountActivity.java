@@ -11,7 +11,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import pt.ulisboa.tecnico.cmov.airdesk.core.user.User;
-import pt.ulisboa.tecnico.cmov.airdesk.core.user.UserManager;
+import pt.ulisboa.tecnico.cmov.airdesk.manager.UserManager;
 
 public class ManageAccountActivity extends ActionBarActivity {
 

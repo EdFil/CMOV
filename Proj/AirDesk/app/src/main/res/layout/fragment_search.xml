@@ -30,7 +30,7 @@
         </LinearLayout>
 
     <ListView
-        android:id="@+id/workspaceList"
+        android:id="@+id/workspace_list"
         android:layout_width="fill_parent"
         android:layout_height="wrap_content"></ListView>
 

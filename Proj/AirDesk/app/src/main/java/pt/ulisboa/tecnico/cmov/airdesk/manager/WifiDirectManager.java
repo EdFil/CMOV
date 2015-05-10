@@ -1,4 +1,4 @@
-package pt.ulisboa.tecnico.cmov.airdesk.receiver;
+package pt.ulisboa.tecnico.cmov.airdesk.manager;
 
 import android.content.ComponentName;
 import android.content.Context;
@@ -11,6 +11,9 @@ import android.os.Looper;
 import android.os.Messenger;
 import android.util.Log;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import pt.inesc.termite.wifidirect.SimWifiP2pBroadcast;
 import pt.inesc.termite.wifidirect.SimWifiP2pDevice;
 import pt.inesc.termite.wifidirect.SimWifiP2pDeviceList;
@@ -21,6 +24,7 @@ import pt.inesc.termite.wifidirect.SimWifiP2pManager.PeerListListener;
 import pt.inesc.termite.wifidirect.service.SimWifiP2pService;
 import pt.inesc.termite.wifidirect.sockets.SimWifiP2pSocketManager;
 import pt.ulisboa.tecnico.cmov.airdesk.R;
+import pt.ulisboa.tecnico.cmov.airdesk.receiver.SimWifiP2pBroadcastReceiver;
 import pt.ulisboa.tecnico.cmov.airdesk.tasks.ServerTask;
 
 /**
@@ -55,11 +59,11 @@ public class WifiDirectManager implements PeerListListener, GroupInfoListener{
     private ServiceConnection mConnection;
     private ServerTask mServer;
 
-    private SimWifiP2pDeviceList mPeerList;
+    private List<SimWifiP2pDevice> mPeerList;
 
     protected WifiDirectManager(Context context){
         mContext = context;
-        mPeerList = new SimWifiP2pDeviceList();
+        mPeerList = new ArrayList<>();
         mConnection = new ServiceConnection() {
             // callbacks for service binding, passed to bindService()
 
@@ -94,6 +98,8 @@ public class WifiDirectManager implements PeerListListener, GroupInfoListener{
 
         int port = Integer.parseInt(mContext.getString(R.string.port));
         mServer = new ServerTask(port);
+
+        turnOnWifiDirect();
     }
 
     public Context getContext() { return mContext; }
@@ -133,7 +139,8 @@ public class WifiDirectManager implements PeerListListener, GroupInfoListener{
 
     @Override
     public void onPeersAvailable(SimWifiP2pDeviceList peers) {
-        mPeerList.mergeUpdate(peers);
+        mPeerList.clear();
+        mPeerList.addAll(peers.getDeviceList());
         for(SimWifiP2pDevice device : peers.getDeviceList())
         Log.i(TAG, mPeerList.toString());
     }
@@ -153,5 +160,9 @@ public class WifiDirectManager implements PeerListListener, GroupInfoListener{
             Log.i(TAG, "No peers");
         else
             Log.i(TAG, peersStr.toString());
+    }
+
+    public List<SimWifiP2pDevice> getPeerList() {
+        return mPeerList;
     }
 }

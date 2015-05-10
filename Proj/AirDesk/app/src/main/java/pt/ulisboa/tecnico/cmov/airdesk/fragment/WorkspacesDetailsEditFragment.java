@@ -18,10 +18,9 @@ import android.widget.Toast;
 import android.widget.ViewSwitcher;
 
 import pt.ulisboa.tecnico.cmov.airdesk.R;
-import pt.ulisboa.tecnico.cmov.airdesk.core.tag.Tag;
 import pt.ulisboa.tecnico.cmov.airdesk.core.user.User;
 import pt.ulisboa.tecnico.cmov.airdesk.core.workspace.Workspace;
-import pt.ulisboa.tecnico.cmov.airdesk.core.workspace.WorkspaceManager;
+import pt.ulisboa.tecnico.cmov.airdesk.manager.WorkspaceManager;
 import pt.ulisboa.tecnico.cmov.airdesk.custom.AddTagsLayout;
 import pt.ulisboa.tecnico.cmov.airdesk.custom.QuotaValueLayout;
 
@@ -90,8 +89,8 @@ public class WorkspacesDetailsEditFragment extends Fragment {
         mQuotaValueLayout.setQuota(mWorkspace.getMaxQuota());
         mPrivacyInformationSwitch.setChecked(!mWorkspace.isPrivate());
 
-        for(Tag tag : mWorkspace.getTags())
-            addTagToTable(tag.getText());
+        for(String tag : mWorkspace.getTags())
+            addTagToTable(tag);
 
         for(User user : mWorkspace.getUsers())
             addUserToTable(user.getEmail());
