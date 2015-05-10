@@ -20,7 +20,7 @@ import android.widget.ListView;
 import android.widget.TextView;
 
 import pt.ulisboa.tecnico.cmov.airdesk.manager.UserManager;
-import pt.ulisboa.tecnico.cmov.airdesk.fragment.FilesFragment;
+import pt.ulisboa.tecnico.cmov.airdesk.fragment.LocalFilesFragment;
 import pt.ulisboa.tecnico.cmov.airdesk.fragment.ForeignWorkspacesFragment;
 import pt.ulisboa.tecnico.cmov.airdesk.fragment.LocalWorkspacesFragment;
 import pt.ulisboa.tecnico.cmov.airdesk.fragment.NavigationDrawerFragment;
@@ -198,7 +198,7 @@ public class AirDeskActivity extends ActionBarActivity
 
     @Override
     public void updateFileList() {
-        FilesFragment filesFrag = (FilesFragment) getSupportFragmentManager().findFragmentById(R.id.container);
+        LocalFilesFragment filesFrag = (LocalFilesFragment) getSupportFragmentManager().findFragmentById(R.id.container);
 
         if (filesFrag != null)
             filesFrag.updateFileList();

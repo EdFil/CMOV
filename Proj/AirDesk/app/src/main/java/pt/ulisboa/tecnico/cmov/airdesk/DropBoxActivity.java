@@ -15,13 +15,10 @@ import com.dropbox.client2.android.AndroidAuthSession;
 import com.dropbox.client2.exception.DropboxException;
 import com.dropbox.client2.session.AppKeyPair;
 
-import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
-
-import pt.ulisboa.tecnico.cmov.airdesk.util.FileManager;
 
 
 public class DropBoxActivity extends ActionBarActivity {

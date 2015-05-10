@@ -29,18 +29,18 @@ import pt.ulisboa.tecnico.cmov.airdesk.adapter.FileListAdapter;
 import pt.ulisboa.tecnico.cmov.airdesk.core.workspace.Workspace;
 import pt.ulisboa.tecnico.cmov.airdesk.manager.WorkspaceManager;
 import pt.ulisboa.tecnico.cmov.airdesk.util.Constants;
-import pt.ulisboa.tecnico.cmov.airdesk.util.FileManager;
+import pt.ulisboa.tecnico.cmov.airdesk.manager.FileManager;
 
-public class FilesFragment extends Fragment {
+public class LocalFilesFragment extends Fragment {
 
-    public static final String TAG = FilesFragment.class.getSimpleName();
+    public static final String TAG = LocalFilesFragment.class.getSimpleName();
 
     Workspace mWorkspace;
 
     List<File> mFiles;
     FileListAdapter mFileListAdapter;
 
-    public FilesFragment() {setHasOptionsMenu(true);}
+    public LocalFilesFragment() {setHasOptionsMenu(true);}
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -59,7 +59,7 @@ public class FilesFragment extends Fragment {
 
         // Get the WORKSPACE of the files
         Bundle bundle = getArguments();
-        mWorkspace = manager.getWorkspaceWithId(bundle.getLong(Constants.WORKSPACE_ID));
+        mWorkspace = manager.getWorkspaceWithId(bundle.getLong(Constants.WORKSPACE_ID_KEY));
 
         // Request the MANAGER for the FILES (and its ADAPTER) of the WORKSPACE
         mFiles = manager.getFilesFromWorkspace(mWorkspace);
@@ -77,7 +77,7 @@ public class FilesFragment extends Fragment {
 
                 Intent intent = new Intent(getActivity(), FileActivity.class);
                 intent.putExtra(Constants.FILE_EXTRA, file);
-                intent.putExtra(Constants.WORKSPACE_ID, mWorkspace.getDatabaseId());
+                intent.putExtra(Constants.WORKSPACE_ID_KEY, mWorkspace.getDatabaseId());
                 startActivity(intent);
             }
 
@@ -91,16 +91,16 @@ public class FilesFragment extends Fragment {
         newFileButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View buttonView) {
-//                // Create fragment
-//                NewFileFragment newFileFragment = new NewFileFragment();
-//
-//                // set the Workspace to send to fragment
-//                Bundle bundle = new Bundle();
-//                bundle.putParcelable("Workspace", mWorkspace);
-//                newFileFragment.setArguments(bundle);
-//
-//                // Show dialog fragment
-//                newFileFragment.show(getActivity().getFragmentManager(), "New File");
+                // Create fragment
+                NewFileFragment newFileFragment = new NewFileFragment();
+
+                // set the Workspace to send to fragment
+                Bundle bundle = new Bundle();
+                bundle.putLong(Constants.WORKSPACE_ID_KEY, mWorkspace.getDatabaseId());
+                        newFileFragment.setArguments(bundle);
+
+                // Show dialog fragment
+                newFileFragment.show(getActivity().getFragmentManager(), NewFileFragment.class.getSimpleName());
             }
         });
         return fileFragmentView;
@@ -193,6 +193,6 @@ public class FilesFragment extends Fragment {
 
 
     public static Fragment newInstance() {
-        return new FilesFragment();
+        return new LocalFilesFragment();
     }
 }

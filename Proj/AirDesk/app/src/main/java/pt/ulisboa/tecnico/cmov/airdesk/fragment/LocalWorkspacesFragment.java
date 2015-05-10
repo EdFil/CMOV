@@ -77,13 +77,13 @@ public class LocalWorkspacesFragment extends Fragment {
                 FragmentManager fragmentManager = getActivity().getSupportFragmentManager();
                 FragmentTransaction transaction = fragmentManager.beginTransaction();
 
-                FilesFragment filesFragment = new FilesFragment();
+                LocalFilesFragment filesFragment = new LocalFilesFragment();
                 Bundle bundle = new Bundle();
-                bundle.putLong(Constants.WORKSPACE_ID, ((Workspace)parent.getItemAtPosition(position)).getDatabaseId());
+                bundle.putLong(Constants.WORKSPACE_ID_KEY, ((Workspace)parent.getItemAtPosition(position)).getDatabaseId());
                 filesFragment.setArguments(bundle);
 
                 transaction.replace(R.id.container, filesFragment);
-                transaction.addToBackStack(FilesFragment.class.getSimpleName());
+                transaction.addToBackStack(LocalFilesFragment.class.getSimpleName());
 
                 // Commit the transaction
                 transaction.commit();

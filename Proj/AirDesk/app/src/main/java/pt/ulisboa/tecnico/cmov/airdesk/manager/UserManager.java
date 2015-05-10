@@ -10,7 +10,6 @@ import java.util.List;
 
 import pt.ulisboa.tecnico.cmov.airdesk.core.user.User;
 import pt.ulisboa.tecnico.cmov.airdesk.database.AirDeskDbHelper;
-import pt.ulisboa.tecnico.cmov.airdesk.util.FileManager;
 
 /**
  * Created by edgar on 08-04-2015.

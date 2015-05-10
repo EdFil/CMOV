@@ -49,7 +49,7 @@ public class FileActivity extends ActionBarActivity {
         Intent intent = getIntent();
 
         file = (File) intent.getSerializableExtra(Constants.FILE_EXTRA);
-        workspace = WorkspaceManager.getInstance().getWorkspaceWithId(intent.getLongExtra(Constants.WORKSPACE_ID, -1));
+        workspace = WorkspaceManager.getInstance().getWorkspaceWithId(intent.getLongExtra(Constants.WORKSPACE_ID_KEY, -1));
 
         // Action bar back button e name
         getSupportActionBar().setTitle(file.getName());

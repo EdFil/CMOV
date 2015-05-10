@@ -1,15 +1,11 @@
-package pt.ulisboa.tecnico.cmov.airdesk.util;
+package pt.ulisboa.tecnico.cmov.airdesk.manager;
 
 import android.content.Context;
 import android.os.Environment;
 import android.os.StatFs;
 
 import java.io.File;
-import java.io.FileNotFoundException;
-import java.io.FileOutputStream;
 import java.io.IOException;
-
-import pt.ulisboa.tecnico.cmov.airdesk.core.workspace.Workspace;
 
 /**
  * Created by edgar on 22-03-2015.

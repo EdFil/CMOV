@@ -3,8 +3,6 @@ package pt.ulisboa.tecnico.cmov.airdesk.core.workspace.exception;
 import android.content.Context;
 import android.text.format.Formatter;
 
-import pt.ulisboa.tecnico.cmov.airdesk.util.FileManager;
-
 /**
  * Created by edgar on 30-03-2015.
  */

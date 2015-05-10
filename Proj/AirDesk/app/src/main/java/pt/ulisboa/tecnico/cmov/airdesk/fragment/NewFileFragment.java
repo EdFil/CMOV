@@ -14,6 +14,7 @@ import android.widget.Toast;
 import pt.ulisboa.tecnico.cmov.airdesk.R;
 import pt.ulisboa.tecnico.cmov.airdesk.core.workspace.Workspace;
 import pt.ulisboa.tecnico.cmov.airdesk.manager.WorkspaceManager;
+import pt.ulisboa.tecnico.cmov.airdesk.util.Constants;
 
 public class NewFileFragment extends DialogFragment {
 
@@ -42,7 +43,7 @@ public class NewFileFragment extends DialogFragment {
 
         // Get the WORKSPACE selected in order to retrieve the respective files
         Bundle bundle = getArguments();
-        mWorkspace = bundle.getParcelable("Workspace");
+        mWorkspace = WorkspaceManager.getInstance().getWorkspaceWithId(bundle.getLong(Constants.WORKSPACE_ID_KEY));
 
 //        getDialog().setTitle("Create new Workspace");
 

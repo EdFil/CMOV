@@ -21,7 +21,7 @@ import pt.ulisboa.tecnico.cmov.airdesk.core.workspace.exception.WorkspaceQuotaBe
 import pt.ulisboa.tecnico.cmov.airdesk.core.workspace.exception.WorkspaceQuotaIsZeroException;
 import pt.ulisboa.tecnico.cmov.airdesk.core.workspace.exception.WorkspaceRemoveOwnerException;
 import pt.ulisboa.tecnico.cmov.airdesk.manager.WorkspaceManager;
-import pt.ulisboa.tecnico.cmov.airdesk.util.FileManager;
+import pt.ulisboa.tecnico.cmov.airdesk.manager.FileManager;
 
 public abstract class Workspace {
 

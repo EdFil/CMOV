@@ -78,7 +78,7 @@ public class ForeignWorkspacesFragment extends Fragment {
                 FragmentManager fragmentManager = getActivity().getSupportFragmentManager();
                 FragmentTransaction transaction = fragmentManager.beginTransaction();
 
-                FilesFragment filesFragment = new FilesFragment();
+                LocalFilesFragment localFilesFragment = new LocalFilesFragment();
 
                 ForeignWorkspace foreignWorkspace = (ForeignWorkspace) parent.getItemAtPosition(position);
                 long foreignId = foreignWorkspace.getOwner().getDatabaseId();

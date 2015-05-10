@@ -10,7 +10,7 @@ public final class Constants {
     public static final String LOG_OUT_MESSAGE = "LOG_OUT";
     // Workspaces Fragment
     public static final String WORKSPACE_INDEX = "WORKSPACE_INDEX";
-    public static final String WORKSPACE_ID = "WORKSPACE_ID";
+    public static final String WORKSPACE_ID_KEY = "WORKSPACE_ID";
     public static final String BYTE = "B";
     public static final String KILOBYTE = "KB";
     public static final String MEGABYTE = "MB";
