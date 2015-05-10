@@ -50,8 +50,7 @@ public class User implements Parcelable {
     // Stuff for Parcelable
     // ---------------------
 
-
-    private User(Parcel in){
+    public User(Parcel in){
         mEmail = in.readString();
         mNick = in.readString();
     }

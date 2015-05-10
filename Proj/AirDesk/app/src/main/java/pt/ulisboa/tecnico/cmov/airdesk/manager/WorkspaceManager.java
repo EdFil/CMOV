@@ -263,8 +263,6 @@ public class WorkspaceManager {
         return mForeignWorkspaces;
     }
 
-    public void insertWorkspaceToForeignWorkspaces(Workspace workspace, User userReceivingWS) {
-        addForeignWorkspace(userReceivingWS, workspace.getName(), workspace.getOwner(), workspace.getMaxQuota(), workspace.isPrivate());
-    }
+
 
 }

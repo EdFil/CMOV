@@ -54,14 +54,14 @@ public class DatabaseTest extends AndroidTestCase {
 //        User stevens = UserManager.getInstance().createUser("stevens@email.com", "Stevens");
 //        UserManager.getInstance().setOwner(edgar);
 //
-//        Workspace workspace = WorkspaceManager.getInstance().addLocalWorkspace("Workspace", edgar, 1024, true, new ArrayList<Tag>());
-//        File file = WorkspaceManager.getInstance().addFileToWorkspace("New File", workspace);
-//        Tag tag = WorkspaceManager.getInstance().addTagToWorkspace("New Tag", workspace);
-//        User user = WorkspaceManager.getInstance().addUserToWorkspace(bruno, workspace);
-//        WorkspaceManager.getInstance().removeFileFromWorkspace(file, workspace);
-//        WorkspaceManager.getInstance().removeTagFromWorkspace(tag.getText(), workspace);
-//        WorkspaceManager.getInstance().removeUserFromWorkspace(user, workspace);
-//        WorkspaceManager.getInstance().updateWorkspace(workspace, "Updated Name", 120120120l, false);
+//        Workspace mWorkspace = WorkspaceManager.getInstance().addLocalWorkspace("Workspace", edgar, 1024, true, new ArrayList<Tag>());
+//        File file = WorkspaceManager.getInstance().addFileToWorkspace("New File", mWorkspace);
+//        Tag tag = WorkspaceManager.getInstance().addTagToWorkspace("New Tag", mWorkspace);
+//        User user = WorkspaceManager.getInstance().addUserToWorkspace(bruno, mWorkspace);
+//        WorkspaceManager.getInstance().removeFileFromWorkspace(file, mWorkspace);
+//        WorkspaceManager.getInstance().removeTagFromWorkspace(tag.getText(), mWorkspace);
+//        WorkspaceManager.getInstance().removeUserFromWorkspace(user, mWorkspace);
+//        WorkspaceManager.getInstance().updateWorkspace(mWorkspace, "Updated Name", 120120120l, false);
 //
 //        UserManager.getInstance().deleteUser(edgar);
 //

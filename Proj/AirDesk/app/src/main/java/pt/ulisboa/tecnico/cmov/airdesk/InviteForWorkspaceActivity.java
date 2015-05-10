@@ -1,94 +1,134 @@
 package pt.ulisboa.tecnico.cmov.airdesk;
 
 import android.content.Intent;
-import android.support.v7.app.ActionBarActivity;
+import android.os.AsyncTask;
 import android.os.Bundle;
+import android.support.v7.app.ActionBarActivity;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ListView;
 import android.widget.Toast;
 
+import org.json.JSONObject;
+
 import java.util.ArrayList;
-import java.util.List;
 
 import pt.ulisboa.tecnico.cmov.airdesk.adapter.UserListAdapter;
 import pt.ulisboa.tecnico.cmov.airdesk.core.user.User;
-import pt.ulisboa.tecnico.cmov.airdesk.manager.UserManager;
 import pt.ulisboa.tecnico.cmov.airdesk.core.workspace.Workspace;
+import pt.ulisboa.tecnico.cmov.airdesk.manager.UserManager;
 import pt.ulisboa.tecnico.cmov.airdesk.manager.WorkspaceManager;
+import pt.ulisboa.tecnico.cmov.airdesk.service.GetUserService;
+import pt.ulisboa.tecnico.cmov.airdesk.service.InviteUserService;
+import pt.ulisboa.tecnico.cmov.airdesk.tasks.AsyncResponse;
+import pt.ulisboa.tecnico.cmov.airdesk.tasks.BroadcastTask;
+import pt.ulisboa.tecnico.cmov.airdesk.tasks.RequestTask;
 import pt.ulisboa.tecnico.cmov.airdesk.util.Constants;
 
 public class InviteForWorkspaceActivity extends ActionBarActivity {
 
-    UserManager userManager;
+    public static final String TAG = InviteForWorkspaceActivity.class.getSimpleName();
     UserListAdapter mUserListAdapter;
-    Workspace workspace;
+    Workspace mWorkspace;
 
     ListView mUsersList;
-    List<User> usersToInvite;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_invite_for_workspace);
 
-        setTitle("Invite for Workspace");
-
         Intent intent = getIntent();
         int workspaceIndex = intent.getIntExtra(Constants.WORKSPACE_INDEX, -1);
-        workspace = WorkspaceManager.getInstance().getWorkspaceAtIndex(true, workspaceIndex);
+        mWorkspace = WorkspaceManager.getInstance().getWorkspaceAtIndex(true, workspaceIndex);
 
-        userManager = UserManager.getInstance();
+        mUsersList = (ListView) findViewById(R.id.user_list);
 
-        usersToInvite = getUsersToInvite(workspace);
-
-        mUserListAdapter = new UserListAdapter(this, usersToInvite);
-
-        mUsersList = (ListView) findViewById(R.id.usersListView);
+        mUserListAdapter = new UserListAdapter(this, new ArrayList<User>());
         mUsersList.setAdapter(mUserListAdapter);
 
-        mUsersList.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+        mUsersList.setOnItemClickListener(mUserListOnItemClickListener);
+    }
+
+    @Override
+    protected void onStart() {
+        super.onStart();
+
+        getAllConnectedUsers();
+    }
+
+    // Get all connected user asynchronously
+    private void getAllConnectedUsers() {
+        // Create the broadcast task to send the service to all connected peers
+        BroadcastTask task = new BroadcastTask(
+                Integer.parseInt(getString(R.string.port)),
+                GetUserService.class
+        );
+        // Override the callback so we can process the result from the task
+        task.mDelegate = new AsyncResponse() {
             @Override
-            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                String userEmail = ((User) parent.getItemAtPosition(position)).getEmail();
-                User user = userManager.getUserByEmail(userEmail);
-                WorkspaceManager.getInstance().insertWorkspaceToForeignWorkspaces(workspace, user);
-                mUserListAdapter.remove(user);
-                Toast.makeText(getApplicationContext(), "User '" + userEmail + "' was added", Toast.LENGTH_SHORT).show();
+            public void processFinish(String output) {
+                try {
+                    // Get the response as a JSONObject
+                    JSONObject response = new JSONObject(output);
+
+                    // Check if has error
+                    if (response.has(Constants.ERROR_KEY))
+                        throw new Exception(response.getString(Constants.ERROR_KEY));
+
+                    // Add the user to the list
+                    mUserListAdapter.add(UserManager.getInstance().createuser(response));
+                } catch (Exception e) {
+                    // Show our error in a toast
+                    Toast.makeText(getApplicationContext(), e.getMessage(), Toast.LENGTH_SHORT).show();
+                }
             }
-        });
+        };
+        // Execute our task
+        task.executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR);
     }
 
-    private List<User> getUsersToInvite(Workspace workspace) {
-        List<User> list = new ArrayList<User>(userManager.getUsers());
-        List<User> workspaceUsers = workspace.getUsers();
-        for(int i = list.size()-1; i >= 0; i--){
-            if (workspaceUsers.contains(list.get(i)))
-                list.remove(list.get(i));
+    // ---------------------------
+    // -------- Listeners --------
+    // ---------------------------
+
+    private AdapterView.OnItemClickListener mUserListOnItemClickListener = new AdapterView.OnItemClickListener() {
+        @Override
+        public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+            final User user = (User) parent.getItemAtPosition(position);
+
+            // Create a request task for every device
+            RequestTask task = new RequestTask(
+                    "",
+                    Integer.parseInt(getString(R.string.port)),
+                    InviteUserService.class,
+                    mWorkspace.toJSON().toString());
+            
+            // Override the callback so we can process the result from the task
+            task.mDelegate = new AsyncResponse() {
+                @Override
+                public void processFinish(String output) {
+                    try {
+                        // Get the response as a JSONObject
+                        JSONObject response = new JSONObject(output);
+
+                        // Check if has error
+                        if (response.has(Constants.ERROR_KEY))
+                            throw new Exception(response.getString(Constants.ERROR_KEY));
+
+                        Toast.makeText(getApplicationContext(), response.getString(Constants.RESULT_KEY), Toast.LENGTH_SHORT).show();
+                        mUserListAdapter.remove(user);
+
+                    } catch (Exception e) {
+                        // Show our error in a toast
+                        Toast.makeText(getApplicationContext(), e.getMessage(), Toast.LENGTH_SHORT).show();
+                    }
+                }
+            };
+            // Execute the task
+            task.executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR);
+
         }
-            return list;
-    }
+    };
 
-    // I guess this activity doesn't need a menu, but I will not delete it yet
-//    @Override
-//    public boolean onCreateOptionsMenu(Menu menu) {
-//        // Inflate the menu; this adds items to the action bar if it is present.
-//        getMenuInflater().inflate(R.menu.menu_invite_for_workspace, menu);
-//        return true;
-//    }
-//
-//    @Override
-//    public boolean onOptionsItemSelected(MenuItem item) {
-//        // Handle action bar item clicks here. The action bar will
-//        // automatically handle clicks on the Home/Up button, so long
-//        // as you specify a parent activity in AndroidManifest.xml.
-//        int id = item.getItemId();
-//
-//        //noinspection SimplifiableIfStatement
-//        if (id == R.id.action_settings) {
-//            return true;
-//        }
-//
-//        return super.onOptionsItemSelected(item);
-//    }
 }

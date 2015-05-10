@@ -110,7 +110,7 @@ public class AirDeskActivity extends ActionBarActivity
             // Account information : Nickname and Email
             case 0:
                 break;
-            // MyWorkspaces : Owned workspace list fragment
+            // MyWorkspaces : Owned mWorkspace list fragment
             case 1:
                 fragmentManager.beginTransaction().replace(R.id.container, LocalWorkspacesFragment.newInstance(position)).commit();
                 break;
