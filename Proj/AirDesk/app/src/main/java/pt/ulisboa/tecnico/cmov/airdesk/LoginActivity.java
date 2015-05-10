@@ -33,6 +33,8 @@ public class LoginActivity extends ActionBarActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_login);
 
+        Toast.makeText(this, "LOGIN", Toast.LENGTH_SHORT).show();
+
         boolean logout = getIntent().getBooleanExtra(Constants.LOG_OUT_MESSAGE, false);
         mSharedPreferences = getSharedPreferences(Constants.SHARED_PREF_FILE, MODE_PRIVATE);
 
@@ -47,8 +49,8 @@ public class LoginActivity extends ActionBarActivity {
                     mSharedPreferences.edit().remove(Constants.EMAIL_KEY).commit();
                 } else {
                     UserManager.getInstance().setOwner(user);
-                    Intent intent2 = new Intent(getApplicationContext(), AirDeskActivity.class);
-                    startActivity(intent2);
+                    Intent intent = new Intent(getApplicationContext(), AirDeskActivity.class);
+                    startActivity(intent);
                 }
             }
         }
