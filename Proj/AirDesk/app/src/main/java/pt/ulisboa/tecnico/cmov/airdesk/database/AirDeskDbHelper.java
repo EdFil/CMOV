@@ -11,14 +11,16 @@ import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Collections;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 
+import pt.ulisboa.tecnico.cmov.airdesk.core.file.LocalFile;
+import pt.ulisboa.tecnico.cmov.airdesk.core.file.MyFile;
 import pt.ulisboa.tecnico.cmov.airdesk.core.file.exception.FileAlreadyExistsException;
 import pt.ulisboa.tecnico.cmov.airdesk.core.tag.Tag;
 import pt.ulisboa.tecnico.cmov.airdesk.core.user.User;
-import pt.ulisboa.tecnico.cmov.airdesk.manager.UserManager;
 import pt.ulisboa.tecnico.cmov.airdesk.core.workspace.ForeignWorkspace;
 import pt.ulisboa.tecnico.cmov.airdesk.core.workspace.LocalWorkspace;
 import pt.ulisboa.tecnico.cmov.airdesk.core.workspace.Workspace;
@@ -27,6 +29,7 @@ import pt.ulisboa.tecnico.cmov.airdesk.database.AirDeskContract.FilesEntry;
 import pt.ulisboa.tecnico.cmov.airdesk.database.AirDeskContract.TagsEntry;
 import pt.ulisboa.tecnico.cmov.airdesk.database.AirDeskContract.UsersEntry;
 import pt.ulisboa.tecnico.cmov.airdesk.database.AirDeskContract.UsersWorkspacesEntry;
+import pt.ulisboa.tecnico.cmov.airdesk.manager.UserManager;
 
 public class AirDeskDbHelper extends SQLiteOpenHelper {
 
@@ -279,9 +282,9 @@ public class AirDeskDbHelper extends SQLiteOpenHelper {
         return users;
     }
 
-    public Collection<File> getWorkspaceFiles(long workspaceId) {
+    public Collection<MyFile> getWorkspaceFiles(long workspaceId) {
         SQLiteDatabase db = mInstance.getReadableDatabase();
-        ArrayList<File> files = new ArrayList<>();
+        ArrayList<MyFile> files = new ArrayList<>();
 
         Cursor cursor = db.query(
                 FilesEntry.TABLE_NAME,
@@ -301,7 +304,7 @@ public class AirDeskDbHelper extends SQLiteOpenHelper {
                 SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
                 Date date = dateFormat.parse(cursor.getString(columnEditIndex));
                 file.setLastModified(date.getTime());
-                files.add(file);
+                files.add(new LocalFile(file));
             } catch (ParseException e) {
                 e.printStackTrace();
             }
@@ -341,9 +344,9 @@ public class AirDeskDbHelper extends SQLiteOpenHelper {
                         owner,
                         workspaceCursor.getLong(columnQuotaIndex),
                         workspaceCursor.getInt(columnIsPrivateIndex) == 1 ? true : false,
-                        tagList.containsKey(workspaceId) ? tagList.get(workspaceId) : new ArrayList<String>(),
-                        userList.containsKey(workspaceId) ? userList.get(workspaceId) : new ArrayList<User>(),
-                        fileList.containsKey(workspaceId) ? fileList.get(workspaceId) : new ArrayList<File>()));
+                        tagList.containsKey(workspaceId) ? tagList.get(workspaceId) : Collections.EMPTY_LIST,
+                        userList.containsKey(workspaceId) ? userList.get(workspaceId) : Collections.EMPTY_LIST,
+                        fileList.containsKey(workspaceId) ? fileList.get(workspaceId) : Collections.EMPTY_LIST));
             } else {
                 workspaces.add(new ForeignWorkspace(
                         workspaceId,
@@ -351,9 +354,9 @@ public class AirDeskDbHelper extends SQLiteOpenHelper {
                         owner,
                         workspaceCursor.getLong(columnQuotaIndex),
                         workspaceCursor.getInt(columnIsPrivateIndex) == 1 ? true : false,
-                        tagList.containsKey(workspaceId) ? tagList.get(workspaceId) : new ArrayList<String>(),
-                        userList.containsKey(workspaceId) ? userList.get(workspaceId) : new ArrayList<User>(),
-                        fileList.containsKey(workspaceId) ? fileList.get(workspaceId) : new ArrayList<File>()));
+                        tagList.containsKey(workspaceId) ? tagList.get(workspaceId) : Collections.EMPTY_LIST,
+                        userList.containsKey(workspaceId) ? userList.get(workspaceId) : Collections.EMPTY_LIST,
+                        fileList.containsKey(workspaceId) ? fileList.get(workspaceId) : Collections.EMPTY_LIST));
             }
 
         }
@@ -391,9 +394,9 @@ public class AirDeskDbHelper extends SQLiteOpenHelper {
                         owner,
                         workspaceCursor.getLong(columnQuotaIndex),
                         workspaceCursor.getInt(columnIsPrivateIndex) == 1,
-                        tagList.containsKey(workspaceId) ? tagList.get(workspaceId) : new ArrayList<String>(),
-                        userList.containsKey(workspaceId) ? userList.get(workspaceId) : new ArrayList<User>(),
-                        fileList.containsKey(workspaceId) ? fileList.get(workspaceId) : new ArrayList<File>()));
+                        tagList.containsKey(workspaceId) ? tagList.get(workspaceId) : Collections.EMPTY_LIST,
+                        userList.containsKey(workspaceId) ? userList.get(workspaceId) : Collections.EMPTY_LIST,
+                        fileList.containsKey(workspaceId) ? fileList.get(workspaceId) : Collections.EMPTY_LIST));
 
         }
         return workspaces;
@@ -580,7 +583,7 @@ public class AirDeskDbHelper extends SQLiteOpenHelper {
             User owner = UserManager.getInstance().getUserById(cursor.getInt(columnOwnerIndex));
             Collection<String> tags = getWorkspaceTags(workspaceId);
             Collection<User> users = getWorkspaceUsers(workspaceId);
-            Collection<File> files = getWorkspaceFiles(workspaceId);
+            Collection<MyFile> files = getWorkspaceFiles(workspaceId);
             long id = cursor.getLong(columnDatabaseIndex);
             String name = cursor.getString(columnNameIndex);
             long quota = cursor.getLong(columnQuotaIndex);
@@ -656,9 +659,9 @@ public class AirDeskDbHelper extends SQLiteOpenHelper {
                     UserManager.getInstance().getUserById(workspaceCursor.getLong(columnOwnerIndex)),
                     workspaceCursor.getLong(columnQuotaIndex),
                     workspaceCursor.getInt(columnIsPrivateIndex) == 1 ? true : false,
-                    new ArrayList<String>(),
-                    new ArrayList<User>(),
-                    new ArrayList<File>()));
+                    Collections.EMPTY_LIST,
+                    Collections.EMPTY_LIST,
+                    Collections.EMPTY_LIST));
 
         db.close();
         workspaceCursor.close();

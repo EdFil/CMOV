@@ -58,7 +58,7 @@ public class UserManager {
             if(user.getEmail().equals(userEmail))
                 return user;
 
-        if(mOwner.getEmail().equals(userEmail)) {
+        if(mOwner != null && mOwner.getEmail().equals(userEmail)) {
             return null;
         }
 
@@ -86,17 +86,17 @@ public class UserManager {
     public User getOwner() { return mOwner; }
     public void setOwner(User owner) {
         mOwner = owner;
-        FileManager.WORKSPACES_FOLDER_NAME = mOwner.getEmail().replace("@", "_").replace(".", "_") + "_workspace";
+        FileManager.getInstance().setWorkspacesFolderName(mOwner.getEmail().replace("@", "_").replace(".", "_") + "_workspace");
     }
 
 
     public List<User> getUsers() { return mUserList; }
 
     public void deleteUser(User user) {
-        WorkspaceManager.getInstance().deleteAllUserWorkspaces(true);
-        WorkspaceManager.getInstance().deleteAllUserWorkspaces(false);
+        WorkspaceManager.getInstance().deletaAllLocalWorkspaces();
+        WorkspaceManager.getInstance().unmountAllForeignWorkspaces();
         AirDeskDbHelper.getInstance(getContext()).deleteUser(user.getDatabaseId());
-        FileManager.deleteRootFolder(getContext());
+        FileManager.getInstance().deleteRootFolder();
         mOwner = null;
         mUserList.remove(user);
     }

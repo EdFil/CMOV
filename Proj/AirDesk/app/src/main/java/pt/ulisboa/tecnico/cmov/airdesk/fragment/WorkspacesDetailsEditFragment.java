@@ -150,7 +150,7 @@ public class WorkspacesDetailsEditFragment extends Fragment {
         Long newWorkspaceQuota = mQuotaValueLayout.getQuota();
         boolean newWorkspacePrivacy = !mPrivacyInformationSwitch.isChecked();
         try {
-            WorkspaceManager.getInstance().updateWorkspace(mWorkspace, newWorkspaceName, newWorkspaceQuota, newWorkspacePrivacy);
+//            WorkspaceManager.getInstance().updateWorkspace(mWorkspace, newWorkspaceName, newWorkspaceQuota, newWorkspacePrivacy);
         }catch (Exception e) {
             Toast.makeText(getActivity(), e.getMessage(), Toast.LENGTH_SHORT).show();
         }

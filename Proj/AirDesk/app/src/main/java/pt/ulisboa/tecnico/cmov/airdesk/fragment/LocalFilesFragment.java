@@ -4,7 +4,6 @@ import android.app.Activity;
 import android.app.AlertDialog;
 import android.content.Context;
 import android.content.DialogInterface;
-import android.content.Intent;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.view.ContextMenu;
@@ -19,17 +18,16 @@ import android.widget.Button;
 import android.widget.ListView;
 import android.widget.Toast;
 
-import java.io.File;
 import java.util.List;
 
 import pt.ulisboa.tecnico.cmov.airdesk.AirDeskActivity;
-import pt.ulisboa.tecnico.cmov.airdesk.FileActivity;
 import pt.ulisboa.tecnico.cmov.airdesk.R;
 import pt.ulisboa.tecnico.cmov.airdesk.adapter.FileListAdapter;
+import pt.ulisboa.tecnico.cmov.airdesk.core.file.LocalFile;
+import pt.ulisboa.tecnico.cmov.airdesk.core.file.MyFile;
 import pt.ulisboa.tecnico.cmov.airdesk.core.workspace.Workspace;
 import pt.ulisboa.tecnico.cmov.airdesk.manager.WorkspaceManager;
 import pt.ulisboa.tecnico.cmov.airdesk.util.Constants;
-import pt.ulisboa.tecnico.cmov.airdesk.manager.FileManager;
 
 public class LocalFilesFragment extends Fragment {
 
@@ -37,7 +35,7 @@ public class LocalFilesFragment extends Fragment {
 
     Workspace mWorkspace;
 
-    List<File> mFiles;
+    List<MyFile> mFiles;
     FileListAdapter mFileListAdapter;
 
     public LocalFilesFragment() {setHasOptionsMenu(true);}
@@ -71,14 +69,13 @@ public class LocalFilesFragment extends Fragment {
         listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                // Send file to the File activity
-                String fileName = ((File) parent.getItemAtPosition(position)).getName();
-                File file = FileManager.fileNameToFile(getActivity(), mWorkspace.getWorkspaceFolderName(), fileName);
-
-                Intent intent = new Intent(getActivity(), FileActivity.class);
-                intent.putExtra(Constants.FILE_EXTRA, file);
-                intent.putExtra(Constants.WORKSPACE_ID_KEY, mWorkspace.getDatabaseId());
-                startActivity(intent);
+//                // Send file to the File activity
+//                MyFile file = ((MyFile) parent.getItemAtPosition(position));
+//
+//                Intent intent = new Intent(getActivity(), FileActivity.class);
+//                intent.putExtra(Constants.FILE_EXTRA, file);
+//                intent.putExtra(Constants.WORKSPACE_ID_KEY, mWorkspace.getDatabaseId());
+//                startActivity(intent);
             }
 
 
@@ -173,7 +170,7 @@ public class LocalFilesFragment extends Fragment {
 
         switch(item.getItemId()){
             case R.id.menu_file_delete:
-                File file = mFileListAdapter.getItem(info.position);
+                LocalFile file = (LocalFile) mFileListAdapter.getItem(info.position);
                 WorkspaceManager.getInstance().removeFileFromWorkspace(file, mWorkspace);
                 mFileListAdapter.notifyDataSetChanged();
                 break;

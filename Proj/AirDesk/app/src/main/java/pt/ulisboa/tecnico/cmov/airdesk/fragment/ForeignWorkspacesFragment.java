@@ -149,7 +149,7 @@ public class ForeignWorkspacesFragment extends Fragment {
                 getActivity().startActivity(intent);
                 break;
             case R.id.menu_foreign_leave:
-                WorkspaceManager.getInstance().deleteWorkspace(false, info.position);
+                WorkspaceManager.getInstance().unmountForeignWorkspace(info.position);
                 updateWorkspaceList();
                 break;
         }
@@ -207,7 +207,7 @@ public class ForeignWorkspacesFragment extends Fragment {
     }
 
     public void deleteAllWorkspaces() {
-        manager.deleteAllUserWorkspaces(false);
+        WorkspaceManager.getInstance().unmountAllForeignWorkspaces();
         updateWorkspaceList();
     }
 

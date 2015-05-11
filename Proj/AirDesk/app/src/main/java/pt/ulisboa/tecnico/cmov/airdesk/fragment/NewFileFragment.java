@@ -27,8 +27,9 @@ public class NewFileFragment extends DialogFragment {
 
     Workspace mWorkspace;
 
-    Button cancelButton, newButton;
-    EditText newFileNameText;
+    Button mCancelButton;
+    Button mCreateButton;
+    EditText mFileNameText;
 
     public static NewFileFragment newInstance() {
         return new NewFileFragment();
@@ -36,53 +37,21 @@ public class NewFileFragment extends DialogFragment {
 
     @Override
     public View onCreateView(LayoutInflater inflater, final ViewGroup container, Bundle savedInstanceState) {
-
         View view = inflater.inflate(R.layout.fragment_new_file, container, false);
-
         getDialog().getWindow().requestFeature(Window.FEATURE_NO_TITLE);
 
         // Get the WORKSPACE selected in order to retrieve the respective files
         Bundle bundle = getArguments();
         mWorkspace = WorkspaceManager.getInstance().getWorkspaceWithId(bundle.getLong(Constants.WORKSPACE_ID_KEY));
 
-//        getDialog().setTitle("Create new Workspace");
+        // Store the references to the view elements in this fragment
+        mFileNameText = (EditText) view.findViewById(R.id.newFileName);
+        mCancelButton = (Button)view.findViewById(R.id.cancelFile);
+        mCreateButton = (Button) view.findViewById(R.id.createFile);
 
-        view.getContext();
-
-        newFileNameText = (EditText) view.findViewById(R.id.newFileName);
-
-        cancelButton = (Button)view.findViewById(R.id.cancelFile);
-        newButton = (Button) view.findViewById(R.id.createFile);
-
-        cancelButton.setOnClickListener(new View.OnClickListener() {
-
-            @Override
-            public void onClick(View v) {
-                dismiss();
-            }
-        });
-
-        newButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                String fileName = newFileNameText.getText().toString().trim();
-
-                try {
-                    // Create workspace with associated user (owner) in database
-                    WorkspaceManager.getInstance().addFileToWorkspace(fileName, mWorkspace);
-
-                    // request the activity to update the FilesFragment's files
-                    mCallback.updateFileList();
-
-                    Toast.makeText(v.getContext(), "File created", Toast.LENGTH_SHORT).show();
-
-                    // Close dialog fragment
-                    dismiss();
-                }catch (Exception e) {
-                    Toast.makeText(v.getContext(), e.getMessage(), Toast.LENGTH_SHORT).show();
-                }
-            }
-        });
+        // Setup listeners
+        mCancelButton.setOnClickListener(mCancelButtonOnClickListener);
+        mCreateButton.setOnClickListener(mCreateButtonOnClickListener);
 
         return view;
     }
@@ -99,4 +68,40 @@ public class NewFileFragment extends DialogFragment {
             throw new ClassCastException(activity.toString() + " must implement OnHeadlineSelectedListener");
         }
     }
+
+    // -------------------------
+    // ------- Listeners -------
+    // -------------------------
+
+    // What to do when cancel is pressed
+    private View.OnClickListener mCancelButtonOnClickListener = new View.OnClickListener() {
+        @Override
+        public void onClick(View v) {
+            dismiss();
+        }
+    };
+
+    // What to do when create is pressed
+    private View.OnClickListener mCreateButtonOnClickListener = new View.OnClickListener() {
+        @Override
+        public void onClick(View v) {
+            String fileName = mFileNameText.getText().toString().trim();
+
+            try {
+                // Create workspace with associated user (owner) in database
+                WorkspaceManager.getInstance().addFileToWorkspace(fileName, mWorkspace);
+
+                // request the activity to update the FilesFragment's files
+                mCallback.updateFileList();
+
+                Toast.makeText(v.getContext(), "File created", Toast.LENGTH_SHORT).show();
+
+                // Close dialog fragment
+                dismiss();
+            } catch (Exception e) {
+                Toast.makeText(v.getContext(), e.getMessage(), Toast.LENGTH_SHORT).show();
+            }
+        }
+    };
+
 }

@@ -21,12 +21,11 @@ import java.util.ArrayList;
 import java.util.List;
 
 import pt.ulisboa.tecnico.cmov.airdesk.R;
-import pt.ulisboa.tecnico.cmov.airdesk.manager.UserManager;
-import pt.ulisboa.tecnico.cmov.airdesk.manager.WorkspaceManager;
 import pt.ulisboa.tecnico.cmov.airdesk.core.workspace.exception.WorkspaceException;
 import pt.ulisboa.tecnico.cmov.airdesk.custom.AddTagsLayout;
 import pt.ulisboa.tecnico.cmov.airdesk.custom.PredicateLayout;
 import pt.ulisboa.tecnico.cmov.airdesk.custom.QuotaValueLayout;
+import pt.ulisboa.tecnico.cmov.airdesk.manager.WorkspaceManager;
 
 public class NewWorkspaceFragment extends DialogFragment {
 
@@ -119,7 +118,7 @@ public class NewWorkspaceFragment extends DialogFragment {
 
                 try {
                     // Create workspace with associated user (owner) in database
-                    WorkspaceManager.getInstance().addLocalWorkspace(workspaceName, UserManager.getInstance().getOwner(), workspaceQuota, !privacySwitch.isChecked(), tags);
+                    WorkspaceManager.getInstance().createLocalWorkspace(workspaceName, workspaceQuota, !privacySwitch.isChecked(), tags);
                     mCallback.updateWorkspaceList();
                     Toast.makeText(view.getContext(), "Workspace created", Toast.LENGTH_SHORT).show();
 

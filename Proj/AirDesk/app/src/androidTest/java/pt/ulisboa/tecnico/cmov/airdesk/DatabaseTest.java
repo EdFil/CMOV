@@ -39,7 +39,7 @@ public class DatabaseTest extends AndroidTestCase {
 //        User stevens = UserManager.getInstance().createUser("stevens@email.com", "Stevens");
 //        UserManager.getInstance().setOwner(edgar);
 //
-//        Workspace mWorkspace = WorkspaceManager.getInstance().addLocalWorkspace("Workspace", edgar, 1024, true, new ArrayList<Tag>());
+//        Workspace mWorkspace = WorkspaceManager.getInstance().createLocalWorkspace("Workspace", edgar, 1024, true, new ArrayList<Tag>());
 //        File file = WorkspaceManager.getInstance().addFileToWorkspace("New File", mWorkspace);
 //        Tag tag = WorkspaceManager.getInstance().addTagToWorkspace("New Tag", mWorkspace);
 //        User user = WorkspaceManager.getInstance().addUserToWorkspace(bruno, mWorkspace);

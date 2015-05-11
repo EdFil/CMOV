@@ -23,10 +23,10 @@ import java.util.List;
 import pt.ulisboa.tecnico.cmov.airdesk.AirDeskActivity;
 import pt.ulisboa.tecnico.cmov.airdesk.R;
 import pt.ulisboa.tecnico.cmov.airdesk.adapter.WorkspaceListAdapter;
-import pt.ulisboa.tecnico.cmov.airdesk.core.workspace.ForeignWorkspace;
 import pt.ulisboa.tecnico.cmov.airdesk.core.workspace.Workspace;
 import pt.ulisboa.tecnico.cmov.airdesk.custom.AddTagsLayout;
 import pt.ulisboa.tecnico.cmov.airdesk.manager.UserManager;
+import pt.ulisboa.tecnico.cmov.airdesk.manager.WorkspaceManager;
 import pt.ulisboa.tecnico.cmov.airdesk.service.GetWorkspacesWithTagsService;
 import pt.ulisboa.tecnico.cmov.airdesk.tasks.AsyncResponse;
 import pt.ulisboa.tecnico.cmov.airdesk.tasks.BroadcastTask;
@@ -144,7 +144,7 @@ public class SearchWorkspaceFragment extends Fragment {
                         // Get the list of workspaces returned and add them to our list
                         JSONArray workspaceArray = response.getJSONArray(Constants.WORKSPACE_LIST_KEY);
                         for(int i = 0; i < workspaceArray.length(); i++) {
-                            mWorkspaceListAdapter.add(new ForeignWorkspace(workspaceArray.getJSONObject(i)));
+                            mWorkspaceListAdapter.add(WorkspaceManager.getInstance().mountForeignWorkspace(workspaceArray.getJSONObject(i)));
                         }
                     } catch (Exception e1) {
                         // Show our error in a toast

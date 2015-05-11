@@ -6,14 +6,13 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
-import java.io.File;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 
+import pt.ulisboa.tecnico.cmov.airdesk.core.file.MyFile;
 import pt.ulisboa.tecnico.cmov.airdesk.core.tag.Tag;
 import pt.ulisboa.tecnico.cmov.airdesk.core.user.User;
-import pt.ulisboa.tecnico.cmov.airdesk.manager.UserManager;
 import pt.ulisboa.tecnico.cmov.airdesk.core.workspace.exception.WorkspaceExceedsMaxSpaceException;
 import pt.ulisboa.tecnico.cmov.airdesk.core.workspace.exception.WorkspaceNameIsEmptyException;
 import pt.ulisboa.tecnico.cmov.airdesk.core.workspace.exception.WorkspaceNegativeQuotaException;
@@ -21,7 +20,6 @@ import pt.ulisboa.tecnico.cmov.airdesk.core.workspace.exception.WorkspaceQuotaBe
 import pt.ulisboa.tecnico.cmov.airdesk.core.workspace.exception.WorkspaceQuotaIsZeroException;
 import pt.ulisboa.tecnico.cmov.airdesk.core.workspace.exception.WorkspaceRemoveOwnerException;
 import pt.ulisboa.tecnico.cmov.airdesk.manager.WorkspaceManager;
-import pt.ulisboa.tecnico.cmov.airdesk.manager.FileManager;
 
 public abstract class Workspace {
 
@@ -42,35 +40,11 @@ public abstract class Workspace {
     private long mDatabaseId;
     private List<String> mTags;
     private List<User> mUsers;
-    private List<File> mFiles;
+    private List<MyFile> mFiles;
     private WorkspaceManager mWorkspaceManager;
 
-    public Workspace(JSONObject jsonObject) throws JSONException {
-        String workspaceName = jsonObject.getString(Workspace.NAME_KEY);
-        User workspaceOwner = UserManager.getInstance().createUser(jsonObject.getJSONObject(Workspace.OWNER_KEY));
-        long maxQuota = jsonObject.getLong(Workspace.MAX_QUOTA_KEY);
-        boolean isPrivate = jsonObject.getBoolean(Workspace.IS_PRIVATE_KEY);
-        List<String> tags = new ArrayList<>();
-        JSONArray tagArray = jsonObject.getJSONArray(Workspace.TAGS_KEY);
-        for(int i = 0; i < tagArray.length(); i++)
-            tags.add(tagArray.getString(i));
-        List<User> users = new ArrayList<>();
-        JSONArray userArray = jsonObject.getJSONArray(Workspace.USERS_KEY);
-        for(int i = 0; i < userArray.length(); i++)
-            users.add(UserManager.getInstance().createUser(userArray.getJSONObject(i)));
-        List<File> files = new ArrayList<>();
-        JSONArray fileArray = jsonObject.getJSONArray(Workspace.FILES_KEY);
-        for(int i = 0; i < fileArray.length(); i++)
-            files.add(FileManager.fileNameToFile(WorkspaceManager.getInstance().getContext(), workspaceName, fileArray.getString(i)));
 
-        init(-1, workspaceName, workspaceOwner, maxQuota, isPrivate, tags, users, files);
-    }
-
-    public Workspace(long workspaceId, String name, User owner, long quota, boolean isPrivate, Collection<String> tags, Collection<User> users, Collection<File> files){
-        init(workspaceId, name, owner, quota, isPrivate, tags, users, files);
-    }
-
-    private void init(long workspaceId, String name, User owner, long quota, boolean isPrivate, Collection<String> tags, Collection<User> users, Collection<File> files) {
+    public Workspace(long workspaceId, String name, User owner, long quota, boolean isPrivate, Collection<String> tags, Collection<User> users, Collection<MyFile> files){
         setDatabaseId(workspaceId);
         setWorkspaceManager(WorkspaceManager.getInstance());
         setName(name);
@@ -90,7 +64,7 @@ public abstract class Workspace {
     public long getDatabaseId() { return mDatabaseId; }
     public List<String> getTags() { return mTags; }
     public List<User> getUsers() { return mUsers; }
-    public List<File> getFiles() { return mFiles; }
+    public List<MyFile> getFiles() { return mFiles; }
     public String getWorkspaceFolderName() { return getOwner().getDatabaseId() + "_" + getName(); }
 
     // Setters
@@ -144,10 +118,10 @@ public abstract class Workspace {
         }
     }
 
-    public void setFiles(Collection<File> files) {
+    public void setFiles(Collection<MyFile> files) {
         if(files == null)
             throw new NullPointerException("Files cannot be null");
-        mFiles = new ArrayList<File>(files);
+        mFiles = new ArrayList<MyFile>(files);
     }
 
     public void setWorkspaceManager(WorkspaceManager workspaceManager){
@@ -183,12 +157,12 @@ public abstract class Workspace {
 
     public long getUsedQuota(){
         long bytesUsed = 0;
-        for(File file : mFiles)
-            bytesUsed += file.length();
+        for(MyFile file : mFiles)
+            bytesUsed += file.getFile().length();
         return bytesUsed;
     }
-    public void addFile(File file) { mFiles.add(file); }
-    public void removeFile(File file) { mFiles.remove(file); }
+    public void addFile(MyFile file) { mFiles.add(file); }
+    public void removeFile(MyFile file) { mFiles.remove(file); }
 
     public JSONObject toJSON() {
         JSONObject jsonObject = new JSONObject();
@@ -207,8 +181,8 @@ public abstract class Workspace {
                 usersArray.put(user.toJson());
             jsonObject.put(USERS_KEY, usersArray);
             JSONArray filesArray = new JSONArray();
-            for(File file : mFiles){
-                filesArray.put(file.getName());
+            for(MyFile file : mFiles){
+                filesArray.put(file.getFile().getName());
             }
             jsonObject.put(FILES_KEY, filesArray);
         } catch (JSONException e) {

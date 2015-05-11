@@ -13,68 +13,81 @@ import java.io.IOException;
 public class FileManager {
 
     private static final String TAG = FileManager.class.getSimpleName();
+
+    // ------------------------
+    //     Singleton Stuff
+    // ------------------------
+
+    private static FileManager mInstance;
+
+
+    public static synchronized FileManager getInstance() {
+        return mInstance;
+    }
+
+    public static synchronized void initFileManager(Context context) {
+        mInstance = new FileManager(context);
+    }
+
+    // ------------------------
+    //      Manager Stuff
+    // ------------------------
+
     // Name used to internal storage folder for local workspaces
-    public static String WORKSPACES_FOLDER_NAME = "default_workspace";
+    private String mWorkspaceFolderName = "workspace_name_placeholder";
+    private Context mContext;
 
-    public static boolean isWorkspaceNameAvailable(Context context, String workspaceName) {
-        File rootFolder = context.getDir(WORKSPACES_FOLDER_NAME, Context.MODE_PRIVATE);
-        File newFolder = new File(rootFolder, workspaceName); //Getting a folder within the dir.
-        return !newFolder.exists();
+    private java.io.File mRootFolder;
+    private java.io.File mCacheFolder;
+
+    public FileManager(Context context) {
+        mContext = context;
+        mRootFolder = mContext.getDir(mWorkspaceFolderName, Context.MODE_PRIVATE);
+        mCacheFolder = mContext.getCacheDir();
     }
 
-
-    public static boolean createFolder(Context context, String folderName){
-        File rootFolder = context.getDir(WORKSPACES_FOLDER_NAME, Context.MODE_PRIVATE);
-        File newFolder = new File(rootFolder, folderName); //Getting a folder within the dir.
-        if(newFolder.exists())
-            deleteDir(newFolder);
-        return newFolder.mkdir();
+    public void setWorkspacesFolderName(String workspacesFolderName) {
+        mWorkspaceFolderName = workspacesFolderName;
     }
 
-    public static void deleteFolder(Context context, String folderName) {
-        File rootFolder = context.getDir(WORKSPACES_FOLDER_NAME, Context.MODE_PRIVATE);
-        deleteDir(new File(rootFolder.toString(), folderName));
+    public File createLocalFile(String folderName, String fileName) {
+        return createFile(mRootFolder, folderName, fileName);
     }
 
-    public static File fileNameToFile(Context context, String workspaceName, String fileName) {
-        File rootFolder = context.getDir(WORKSPACES_FOLDER_NAME, Context.MODE_PRIVATE);
-        return new File(rootFolder.toString() + "/" + workspaceName, fileName);
+    public File createTempFile(String folderName, String fileName) {
+        return createFile(mCacheFolder, folderName, fileName);
     }
 
-    public static File createFile(Context context, String folderName, String fileName){
-        File rootFolder = context.getDir(WORKSPACES_FOLDER_NAME, Context.MODE_PRIVATE);
-        File newFile = new File(rootFolder.toString() + "/" + folderName, fileName); //Getting a file within the dir.
-        try {
-            if(newFile.exists())
-                deleteDir(newFile);
-            newFile.createNewFile();
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-        return newFile;
+    public void deleteLocalFile(String folderName, String fileName) {
+        deleteFile(mRootFolder, folderName, fileName);
     }
 
-    public static void deleteFile(Context context, String folderName, String fileName){
-        File rootFolder = context.getDir(WORKSPACES_FOLDER_NAME, Context.MODE_PRIVATE);
-        File file = new File(rootFolder.toString() + "/" + folderName, fileName); //Getting a file within the dir.
-        if(file.exists())
-            file.delete();
+    public void deleteTempFile(String folderName, String fileName) {
+        deleteFile(mCacheFolder, folderName, fileName);
     }
 
-    private static boolean deleteDir(File dir) {
-        if (dir != null && dir.isDirectory()) {
-            String[] children = dir.list();
-            for (int i = 0; i < children.length; i++) {
-                boolean success = deleteDir(new File(dir, children[i]));
-                if (!success) {
-                    return false;
-                }
-            }
-        }
-        return dir.delete();
+    public File createLocalFolder(String folderName) {
+        return createFolder(mRootFolder, folderName);
     }
 
-    public static long getAvailableSpace(Context context){
+    public File createTempFolder(String folderName) {
+        return createFolder(mCacheFolder, folderName);
+    }
+
+    public void deleteLocalFolder(String folderName) {
+        delete(new File(mRootFolder, folderName));
+    }
+
+    public void deleteTempFolder(String folderName) {
+        delete(new File(mCacheFolder, folderName));
+    }
+
+    public void deleteRootFolder() {
+        delete(mRootFolder);
+        delete(mCacheFolder);
+    }
+
+    public long getAvailableSpace(){
         File path = Environment.getDataDirectory();
         StatFs stat = new StatFs(path.getPath());
         long blockSize = stat.getBlockSize();
@@ -82,19 +95,47 @@ public class FileManager {
         return availableBlocks * blockSize;
     }
 
-    public static void renameFolder(Context context, String folderName, String newFolderName) {
-        File rootFolder = context.getDir(WORKSPACES_FOLDER_NAME, Context.MODE_PRIVATE);
-        File folder = new File(rootFolder, folderName); //Getting a folder within the dir
-        folder.renameTo(new File(rootFolder, newFolderName));
+    // -------------------------
+    // -------------------------
+    // -------------------------
+
+    private File createFile(File rootFolder, String folderName, String fileName) {
+        File file = null;
+        try {
+            File workspaceFolder = new File(rootFolder, folderName);
+            File createdFile = new File(workspaceFolder, fileName);
+
+            createdFile.createNewFile();
+        } catch (IOException e) {
+            e.printStackTrace();
+        } finally {
+            return file;
+        }
     }
 
-    public static void renameFile(Context context, String folderName, String fileName, String newFileName) {
-        File rootFolder = context.getDir(WORKSPACES_FOLDER_NAME, Context.MODE_PRIVATE);
-        File file = new File(rootFolder + "/" + folderName, fileName); //Getting a folder within the dir
-        file.renameTo(new File(rootFolder + "/" + folderName, newFileName));
+    private void deleteFile(File rootFolder, String folderName, String fileName){
+        File workspaceFolder = new File(rootFolder, folderName);
+        File file = new File(workspaceFolder, fileName);
+        delete(file);
     }
 
-    public static void deleteRootFolder(Context context) {
-        deleteDir(context.getDir(WORKSPACES_FOLDER_NAME, Context.MODE_PRIVATE));
+    private File createFolder(File rootFolder, String folderName){
+        File newFolder = new File(rootFolder, folderName);
+        newFolder.mkdir();
+        return newFolder;
     }
+
+    private boolean delete(File file) {
+        if (file != null && file.isDirectory()) {
+            String[] children = file.list();
+            for (int i = 0; i < children.length; i++) {
+                boolean success = delete(new File(file, children[i]));
+                if (!success) {
+                    return false;
+                }
+            }
+        }
+        return file.delete();
+    }
+
 }

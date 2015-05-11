@@ -142,7 +142,7 @@ public class LocalWorkspacesFragment extends Fragment {
                 getActivity().startActivity(intent);
                 break;
             case R.id.menu_my_delete:
-                WorkspaceManager.getInstance().deleteWorkspace(true, info.position);
+                WorkspaceManager.getInstance().deleteLocalWorkspace(info.position);
                 updateWorkspaceList();
                 break;
             case R.id.menu_my_invite:
@@ -205,7 +205,7 @@ public class LocalWorkspacesFragment extends Fragment {
     }
 
     public void deleteAllWorkspaces() {
-        manager.deleteAllUserWorkspaces(true);
+        manager.deletaAllLocalWorkspaces();
         updateWorkspaceList();
     }
 

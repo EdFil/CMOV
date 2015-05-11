@@ -1,12 +1,12 @@
 package pt.ulisboa.tecnico.cmov.airdesk.core.file;
 
-
 /**
  * Created by Diogo on 10-May-15.
  */
-public class RemoteFile extends MyFile {
+public class LocalFile extends MyFile {
 
-    public RemoteFile(java.io.File file) {
+    public LocalFile(java.io.File file) {
         super(file);
     }
+
 }
