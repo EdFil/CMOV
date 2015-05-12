@@ -119,11 +119,11 @@ public abstract class Workspace {
         return false;
     }
 
-    public boolean hasAllTags(Collection<String> tags) {
+    public boolean containsAtLeastOneTag(Collection<String> tags) {
         for(String tag : tags)
-            if(!hasTag(tag))
-                return false;
-        return true;
+            if(hasTag(tag))
+                return true;
+        return false;
     }
 
     public void addAccessToUser(String user) { mAccessList.add(user); }

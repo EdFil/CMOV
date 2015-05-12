@@ -1,0 +1,50 @@
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context=".AirDeskActivity$WorkspacesFragment">
+
+    <TextView
+        android:id="@+id/typeWS"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Subscriptions"
+        android:textSize="20dp"
+        android:paddingLeft="@dimen/activity_horizontal_margin"
+        android:textColor="@android:color/white"
+        android:background="#8F0000"
+        />
+
+    <ListView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:id="@+id/subscriptionWorkspacesList"
+        android:layout_below="@+id/typeWS"
+        />
+
+    <ListView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:id="@+id/foreignWorkspacesList"
+        android:clickable="true"
+        android:visibility="gone"
+        />
+
+    <Button
+        android:id="@+id/newSubscriptionButton"
+
+        android:text="+"
+        android:textColor="#FFFF"
+        android:textSize="30sp"
+
+        android:layout_width="60dp"
+        android:layout_height="60dp"
+        android:background="@drawable/button_background"
+        android:layout_alignParentBottom="true"
+        android:layout_alignParentRight="true"
+        android:layout_marginRight="16dp"
+        android:layout_marginBottom="16dp"
+        />
+
+
+</RelativeLayout>

@@ -46,16 +46,14 @@ public class SimWifiP2pBroadcastReceiver extends BroadcastReceiver {
         } else if (SimWifiP2pBroadcast.WIFI_P2P_NETWORK_MEMBERSHIP_CHANGED_ACTION.equals(action)) {
             WifiDirectManager.getInstance().refreshGroupInfo();
 
-            Toast.makeText(mContext, "Network membership changed",
-                    Toast.LENGTH_SHORT).show();
+            Toast.makeText(mContext, "Network membership changed", Toast.LENGTH_SHORT).show();
 
         } else if (SimWifiP2pBroadcast.WIFI_P2P_GROUP_OWNERSHIP_CHANGED_ACTION.equals(action)) {
 
 //            SimWifiP2pInfo info = (SimWifiP2pInfo) intent.getSerializableExtra(
 //                    SimWifiP2pBroadcast.EXTRA_GROUP_INFO);
 //            info.print();
-            Toast.makeText(mContext, "Group ownership changed",
-                    Toast.LENGTH_SHORT).show();
+            Toast.makeText(mContext, "Group ownership changed", Toast.LENGTH_SHORT).show();
         }
     }
 }

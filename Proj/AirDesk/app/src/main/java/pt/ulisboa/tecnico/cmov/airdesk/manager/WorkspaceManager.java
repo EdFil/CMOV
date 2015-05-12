@@ -34,6 +34,7 @@ public class WorkspaceManager {
     private List<ForeignWorkspace> mForeignWorkspaces;
 
 
+
     public static synchronized WorkspaceManager getInstance() {
         return mInstance;
     }
@@ -218,10 +219,11 @@ public class WorkspaceManager {
         return null;
     }
 
+
     public List<LocalWorkspace> getLocalWorkspacesWithTags(String... tags) {
         List<LocalWorkspace> workspaceList = new ArrayList<>();
         for(LocalWorkspace workspace : mLocalWorkspaces)
-            if(workspace.hasAllTags(Arrays.asList(tags)))
+            if(workspace.containsAtLeastOneTag(Arrays.asList(tags)))
                 workspaceList.add(workspace);
         return workspaceList;
     }

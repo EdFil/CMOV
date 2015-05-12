@@ -8,9 +8,6 @@ import pt.inesc.termite.wifidirect.SimWifiP2pDevice;
 import pt.ulisboa.tecnico.cmov.airdesk.manager.WifiDirectManager;
 import pt.ulisboa.tecnico.cmov.airdesk.service.AirDeskService;
 
-/**
- * Created by edgar on 06-05-2015.
- */
 public class BroadcastTask extends AsyncTask<Void, String, Void> {
 
     public static final String TAG = BroadcastTask.class.getSimpleName();

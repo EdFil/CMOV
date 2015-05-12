@@ -121,7 +121,7 @@ public class LocalWorkspacesFragment extends Fragment {
                 intent = new Intent(getActivity(), WorkspaceDetailsActivity.class);
                 intent.putExtra(WorkspaceDetailsActivity.IS_LOCAL_WS, true);
                 intent.putExtra(WorkspaceDetailsActivity.EDIT_MODE, false);
-                intent.putExtra(Constants.WORKSPACE_ID_KEY,  );
+                intent.putExtra(Constants.WORKSPACE_ID_KEY, mWorkspaceListAdapter.getItem(info.position).getDatabaseId());
                 getActivity().startActivity(intent);
                 break;
             case R.id.menu_my_delete:
