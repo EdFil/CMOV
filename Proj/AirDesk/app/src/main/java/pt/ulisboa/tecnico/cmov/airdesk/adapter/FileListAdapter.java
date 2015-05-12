@@ -15,8 +15,8 @@ import pt.ulisboa.tecnico.cmov.airdesk.core.file.MyFile;
 public class FileListAdapter extends ArrayAdapter<MyFile> {
 
 
-    public FileListAdapter(Context context, List<MyFile> files) {
-        super(context, 0, files);
+    public FileListAdapter(Context context, List<? extends MyFile> files) {
+        super(context, 0, (List<MyFile>) files);
     }
 
     @Override

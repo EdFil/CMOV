@@ -37,8 +37,8 @@ public class WorkspaceDetailsActivity extends ActionBarActivity {
 
         ws_type = intent.getBooleanExtra(IS_LOCAL_WS, true);
 
-        int workspaceIndex = intent.getIntExtra(Constants.WORKSPACE_INDEX, -1);
-        workspace = WorkspaceManager.getInstance().getWorkspaceAtIndex(ws_type, workspaceIndex);
+        int workspaceId = intent.getIntExtra(Constants.WORKSPACE_ID_KEY, -1);
+        workspace = WorkspaceManager.getInstance().getLocalWorkspaceWithId(workspaceId);
     }
 
     @Override

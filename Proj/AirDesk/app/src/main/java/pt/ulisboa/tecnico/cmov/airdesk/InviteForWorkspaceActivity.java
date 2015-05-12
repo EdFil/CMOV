@@ -15,13 +15,11 @@ import java.util.ArrayList;
 
 import pt.ulisboa.tecnico.cmov.airdesk.adapter.UserListAdapter;
 import pt.ulisboa.tecnico.cmov.airdesk.core.user.User;
-import pt.ulisboa.tecnico.cmov.airdesk.core.workspace.Workspace;
+import pt.ulisboa.tecnico.cmov.airdesk.core.workspace.LocalWorkspace;
 import pt.ulisboa.tecnico.cmov.airdesk.manager.UserManager;
 import pt.ulisboa.tecnico.cmov.airdesk.manager.WorkspaceManager;
-import pt.ulisboa.tecnico.cmov.airdesk.service.GetUserService;
 import pt.ulisboa.tecnico.cmov.airdesk.service.InviteUserService;
 import pt.ulisboa.tecnico.cmov.airdesk.tasks.AsyncResponse;
-import pt.ulisboa.tecnico.cmov.airdesk.tasks.BroadcastTask;
 import pt.ulisboa.tecnico.cmov.airdesk.tasks.RequestTask;
 import pt.ulisboa.tecnico.cmov.airdesk.util.Constants;
 
@@ -29,7 +27,7 @@ public class InviteForWorkspaceActivity extends ActionBarActivity {
 
     public static final String TAG = InviteForWorkspaceActivity.class.getSimpleName();
     UserListAdapter mUserListAdapter;
-    Workspace mWorkspace;
+    LocalWorkspace mWorkspace;
 
     ListView mUsersList;
 
@@ -39,8 +37,8 @@ public class InviteForWorkspaceActivity extends ActionBarActivity {
         setContentView(R.layout.activity_invite_for_workspace);
 
         Intent intent = getIntent();
-        int workspaceIndex = intent.getIntExtra(Constants.WORKSPACE_INDEX, -1);
-        mWorkspace = WorkspaceManager.getInstance().getWorkspaceAtIndex(true, workspaceIndex);
+        long workspaceIndex = intent.getLongExtra(Constants.WORKSPACE_ID_KEY, -1);
+        mWorkspace = WorkspaceManager.getInstance().getLocalWorkspaceWithId(workspaceIndex);
 
         mUsersList = (ListView) findViewById(R.id.user_list);
 
@@ -55,7 +53,7 @@ public class InviteForWorkspaceActivity extends ActionBarActivity {
         super.onStart();
 
         for(User onlineUser : UserManager.getInstance().getUsers()) {
-            if(!mWorkspace.getUsers().contains(onlineUser))
+            if(!mWorkspace.getAccessList().contains(onlineUser.getEmail()))
                 mUserListAdapter.add(onlineUser);
         }
     }
@@ -69,7 +67,7 @@ public class InviteForWorkspaceActivity extends ActionBarActivity {
         public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
             final User user = (User) parent.getItemAtPosition(position);
 
-            mWorkspace.addUser(user);
+            mWorkspace.addAccessToUser(user.getEmail());
 
             // Create a request task for every device
             RequestTask task = new RequestTask(
@@ -88,7 +86,7 @@ public class InviteForWorkspaceActivity extends ActionBarActivity {
 
                         // Check if has error
                         if (response.has(Constants.ERROR_KEY)) {
-                            mWorkspace.removeUser(user);
+                            mWorkspace.removeAccessToUser(user.getEmail());
                             throw new Exception(response.getString(Constants.ERROR_KEY));
                         }
 

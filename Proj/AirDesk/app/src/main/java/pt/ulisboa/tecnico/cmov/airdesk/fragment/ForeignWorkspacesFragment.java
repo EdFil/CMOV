@@ -20,8 +20,6 @@ import android.widget.Button;
 import android.widget.ListView;
 import android.widget.Toast;
 
-import java.util.List;
-
 import pt.ulisboa.tecnico.cmov.airdesk.AirDeskActivity;
 import pt.ulisboa.tecnico.cmov.airdesk.R;
 import pt.ulisboa.tecnico.cmov.airdesk.WorkspaceDetailsActivity;
@@ -83,13 +81,6 @@ public class ForeignWorkspacesFragment extends Fragment {
                 ForeignWorkspace foreignWorkspace = (ForeignWorkspace) parent.getItemAtPosition(position);
                 long foreignId = foreignWorkspace.getOwner().getDatabaseId();
                 String foreignName = foreignWorkspace.getName();
-
-                List<ForeignWorkspace> foreignWorkspaceList = WorkspaceManager.getInstance().getWorkspacesFromDB(foreignId);
-                for (ForeignWorkspace foreignWorkspaceElement : foreignWorkspaceList)
-                    if(foreignWorkspaceElement.getName().equals(foreignName)) {
-                        foreignWorkspace = foreignWorkspaceElement;
-                        break;
-                    }
 
 //                Bundle bundle = new Bundle();
 //                bundle.putParcelable("Workspace", foreignWorkspace);

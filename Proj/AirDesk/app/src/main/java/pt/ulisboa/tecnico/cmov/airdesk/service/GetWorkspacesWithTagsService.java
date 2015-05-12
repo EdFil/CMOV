@@ -8,7 +8,7 @@ import org.json.JSONObject;
 
 import java.util.List;
 
-import pt.ulisboa.tecnico.cmov.airdesk.core.workspace.Workspace;
+import pt.ulisboa.tecnico.cmov.airdesk.core.workspace.LocalWorkspace;
 import pt.ulisboa.tecnico.cmov.airdesk.manager.WorkspaceManager;
 import pt.ulisboa.tecnico.cmov.airdesk.util.Constants;
 import pt.ulisboa.tecnico.cmov.airdesk.util.Util;
@@ -25,10 +25,10 @@ public class GetWorkspacesWithTagsService implements AirDeskService {
         // Parse the array to get the arguments
         String[] tagValues = Util.parseArguments(jsonArray);
 
-        List<Workspace> workspaceList = WorkspaceManager.getInstance().getWorkspacesWithTags(tagValues);
+        List<LocalWorkspace> workspaceList = WorkspaceManager.getInstance().getLocalWorkspacesWithTags(tagValues);
 
         JSONArray response = new JSONArray();
-        for(Workspace workspace : workspaceList) {
+        for(LocalWorkspace workspace : workspaceList) {
             response.put(workspace.toJSON());
         }
 

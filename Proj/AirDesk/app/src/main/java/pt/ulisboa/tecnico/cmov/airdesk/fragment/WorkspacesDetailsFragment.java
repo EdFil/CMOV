@@ -1,6 +1,7 @@
 package pt.ulisboa.tecnico.cmov.airdesk.fragment;
 
 import android.app.Activity;
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v7.app.ActionBar;
@@ -12,8 +13,10 @@ import android.widget.TableRow;
 import android.widget.TextView;
 
 import pt.ulisboa.tecnico.cmov.airdesk.R;
-import pt.ulisboa.tecnico.cmov.airdesk.core.user.User;
+import pt.ulisboa.tecnico.cmov.airdesk.core.workspace.LocalWorkspace;
 import pt.ulisboa.tecnico.cmov.airdesk.core.workspace.Workspace;
+import pt.ulisboa.tecnico.cmov.airdesk.manager.WorkspaceManager;
+import pt.ulisboa.tecnico.cmov.airdesk.util.Constants;
 
 public class WorkspacesDetailsFragment extends Fragment {
 
@@ -36,6 +39,16 @@ public class WorkspacesDetailsFragment extends Fragment {
     }
 
     @Override
+    public void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+
+        Intent intent = getActivity().getIntent();
+        long workspaceIndex = intent.getLongExtra(Constants.WORKSPACE_ID_KEY, -1);
+        mWorkspace = WorkspaceManager.getInstance().getLocalWorkspaceWithId(workspaceIndex);
+
+    }
+
+    @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         final View workspaceFragmentView = inflater.inflate(R.layout.fragment_workspace_details_view, container, false);
 
@@ -52,16 +65,18 @@ public class WorkspacesDetailsFragment extends Fragment {
         mNameInformationText.setText(mWorkspace.getName());
         mOwnerInformationText.setText(mWorkspace.getOwner().getNick());
 
-        mQuotaInformationText.setText("Used " + mWorkspace.getUsedQuota() + " out of " + mWorkspace.getMaxQuota());
+        if(mWorkspace instanceof LocalWorkspace)
+            mQuotaInformationText.setText("Used " + ((LocalWorkspace) mWorkspace).getUsedQuota() + " out of " + mWorkspace.getMaxQuota());
+        else
+            mQuotaInformationText.setText("NaN");
 
         mPrivacyInformationText.setText(mWorkspace.isPrivate()? "Private" : "Public");
 
         for(String tag : mWorkspace.getTags())
             addTagToTable(tag);
 
-        for(User user : mWorkspace.getUsers())
-            addUserToTable(user.getEmail());
-
+        for(String userEmail : mWorkspace.getAccessList())
+            addUserToTable(userEmail);
 
         return workspaceFragmentView;
     }

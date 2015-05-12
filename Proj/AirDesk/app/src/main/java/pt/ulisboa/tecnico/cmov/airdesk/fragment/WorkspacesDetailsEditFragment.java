@@ -18,11 +18,10 @@ import android.widget.Toast;
 import android.widget.ViewSwitcher;
 
 import pt.ulisboa.tecnico.cmov.airdesk.R;
-import pt.ulisboa.tecnico.cmov.airdesk.core.user.User;
 import pt.ulisboa.tecnico.cmov.airdesk.core.workspace.Workspace;
-import pt.ulisboa.tecnico.cmov.airdesk.manager.WorkspaceManager;
 import pt.ulisboa.tecnico.cmov.airdesk.custom.AddTagsLayout;
 import pt.ulisboa.tecnico.cmov.airdesk.custom.QuotaValueLayout;
+import pt.ulisboa.tecnico.cmov.airdesk.manager.WorkspaceManager;
 
 public class WorkspacesDetailsEditFragment extends Fragment {
 
@@ -92,8 +91,8 @@ public class WorkspacesDetailsEditFragment extends Fragment {
         for(String tag : mWorkspace.getTags())
             addTagToTable(tag);
 
-        for(User user : mWorkspace.getUsers())
-            addUserToTable(user.getEmail());
+        for(String userEmail : mWorkspace.getAccessList())
+            addUserToTable(userEmail);
 
         // Set Listeners
         mPrivacyInformationSwitch.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {

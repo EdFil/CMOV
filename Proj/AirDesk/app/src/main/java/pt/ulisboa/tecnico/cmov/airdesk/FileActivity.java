@@ -13,6 +13,7 @@ import java.io.File;
 
 import pt.ulisboa.tecnico.cmov.airdesk.core.file.exception.FileExceedsAvailableSpaceException;
 import pt.ulisboa.tecnico.cmov.airdesk.core.file.exception.FileExceedsMaxQuotaException;
+import pt.ulisboa.tecnico.cmov.airdesk.core.workspace.LocalWorkspace;
 import pt.ulisboa.tecnico.cmov.airdesk.core.workspace.Workspace;
 import pt.ulisboa.tecnico.cmov.airdesk.manager.WorkspaceManager;
 import pt.ulisboa.tecnico.cmov.airdesk.tasks.ReadFileTask;
@@ -48,8 +49,8 @@ public class FileActivity extends ActionBarActivity {
 
         Intent intent = getIntent();
 
-        file = (File) intent.getSerializableExtra(Constants.FILE_EXTRA);
-        workspace = WorkspaceManager.getInstance().getWorkspaceWithId(intent.getLongExtra(Constants.WORKSPACE_ID_KEY, -1));
+        file = (File) intent.getSerializableExtra(Constants.FILE_NAME_KEY);
+        workspace = WorkspaceManager.getInstance().getLocalWorkspaceWithId(intent.getLongExtra(Constants.WORKSPACE_ID_KEY, -1));
 
         // Action bar back button e name
         getSupportActionBar().setTitle(file.getName());
@@ -76,7 +77,7 @@ public class FileActivity extends ActionBarActivity {
 
         try {
 
-            long bytesToUse = textToEdit.length() - textToView.length() + workspace.getUsedQuota();
+            long bytesToUse = textToEdit.length() - textToView.length() + ((LocalWorkspace)workspace).getUsedQuota();
             long usableSpace = WorkspaceManager.getInstance().getSpaceAvailableInternalStorage();
 
             if(bytesToUse > usableSpace) {

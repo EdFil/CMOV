@@ -208,7 +208,7 @@ public class AirDeskActivity extends ActionBarActivity
     public void updateWorkspaceList() {
         LocalWorkspacesFragment workspaceFrag = (LocalWorkspacesFragment) getSupportFragmentManager().findFragmentById(R.id.container);
 
-        if (workspaceFrag != null)
+        if (workspaceFrag != null);
             workspaceFrag.addWorkspace();
     }
 

@@ -25,7 +25,6 @@ import pt.ulisboa.tecnico.cmov.airdesk.R;
 import pt.ulisboa.tecnico.cmov.airdesk.adapter.WorkspaceListAdapter;
 import pt.ulisboa.tecnico.cmov.airdesk.core.workspace.Workspace;
 import pt.ulisboa.tecnico.cmov.airdesk.custom.AddTagsLayout;
-import pt.ulisboa.tecnico.cmov.airdesk.manager.UserManager;
 import pt.ulisboa.tecnico.cmov.airdesk.manager.WorkspaceManager;
 import pt.ulisboa.tecnico.cmov.airdesk.service.GetWorkspacesWithTagsService;
 import pt.ulisboa.tecnico.cmov.airdesk.tasks.AsyncResponse;
@@ -75,7 +74,7 @@ public class SearchWorkspaceFragment extends Fragment {
 
         // Setup the on click listeners
         mSearchButton.setOnClickListener(mSearchButtonOnClickListener);
-        mWorkspaceListView.setOnItemClickListener(mListViewOnClickListener);
+        mWorkspaceListView.setOnItemClickListener(mWorkspaceListViewOnClickListener);
 
         return searchFragmentView;
     }
@@ -157,12 +156,12 @@ public class SearchWorkspaceFragment extends Fragment {
         }
     };
 
-    private AdapterView.OnItemClickListener mListViewOnClickListener = new AdapterView.OnItemClickListener() {
+    private AdapterView.OnItemClickListener mWorkspaceListViewOnClickListener = new AdapterView.OnItemClickListener() {
         @Override
         public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
             Workspace workspace = mWorkspaceListAdapter.getItem(position);
             try {
-                workspace.addUser(UserManager.getInstance().getOwner());
+                //workspace.addAccessToUser(UserManager.getInstance().getOwner().getEmail());
                 //TODO: Foreign Workspace
                 //WorkspaceManager.getInstance().insertWorkspaceToForeignWorkspaces(workspace, UserManager.getInstance().getOwner());
                 Toast.makeText(getActivity(), "Workspace added to Foreign Workspaces", Toast.LENGTH_SHORT).show();

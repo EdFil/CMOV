@@ -15,7 +15,7 @@ public final class Constants {
     public static final String KILOBYTE = "KB";
     public static final String MEGABYTE = "MB";
     // File Fragment
-    public static final String FILE_EXTRA = "FILE_EXTRA";
+    public static final String FILE_NAME_KEY = "FILE_NAME_KEY";
     // Manage Account
     public static final String USER_INDEX_MESSAGE = "USER_INDEX";
     //

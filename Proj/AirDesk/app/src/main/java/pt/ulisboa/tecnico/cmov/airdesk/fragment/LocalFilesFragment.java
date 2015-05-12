@@ -4,6 +4,7 @@ import android.app.Activity;
 import android.app.AlertDialog;
 import android.content.Context;
 import android.content.DialogInterface;
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.view.ContextMenu;
@@ -21,11 +22,11 @@ import android.widget.Toast;
 import java.util.List;
 
 import pt.ulisboa.tecnico.cmov.airdesk.AirDeskActivity;
+import pt.ulisboa.tecnico.cmov.airdesk.FileActivity;
 import pt.ulisboa.tecnico.cmov.airdesk.R;
 import pt.ulisboa.tecnico.cmov.airdesk.adapter.FileListAdapter;
 import pt.ulisboa.tecnico.cmov.airdesk.core.file.LocalFile;
-import pt.ulisboa.tecnico.cmov.airdesk.core.file.MyFile;
-import pt.ulisboa.tecnico.cmov.airdesk.core.workspace.Workspace;
+import pt.ulisboa.tecnico.cmov.airdesk.core.workspace.LocalWorkspace;
 import pt.ulisboa.tecnico.cmov.airdesk.manager.WorkspaceManager;
 import pt.ulisboa.tecnico.cmov.airdesk.util.Constants;
 
@@ -33,9 +34,10 @@ public class LocalFilesFragment extends Fragment {
 
     public static final String TAG = LocalFilesFragment.class.getSimpleName();
 
-    Workspace mWorkspace;
+    LocalWorkspace mWorkspace;
 
-    List<MyFile> mFiles;
+    List<LocalFile> mFiles;
+    ListView mFileListView;
     FileListAdapter mFileListAdapter;
 
     public LocalFilesFragment() {setHasOptionsMenu(true);}
@@ -44,45 +46,38 @@ public class LocalFilesFragment extends Fragment {
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setHasOptionsMenu(true);
+        Bundle bundle = getArguments();
+        mWorkspace = WorkspaceManager.getInstance().getLocalWorkspaceWithId(bundle.getLong(Constants.WORKSPACE_ID_KEY));
     }
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-
         Context context = container.getContext();
         View fileFragmentView = inflater.inflate(R.layout.fragment_files, container, false);
 
-        // Get manager
-        WorkspaceManager manager = WorkspaceManager.getInstance();
-
-        // Get the WORKSPACE of the files
-        Bundle bundle = getArguments();
-        mWorkspace = manager.getWorkspaceWithId(bundle.getLong(Constants.WORKSPACE_ID_KEY));
-
         // Request the MANAGER for the FILES (and its ADAPTER) of the WORKSPACE
-        mFiles = manager.getFilesFromWorkspace(mWorkspace);
+        mFiles = mWorkspace.getFiles();
         mFileListAdapter = new FileListAdapter(context, mFiles);
 
-        ListView listView = (ListView) fileFragmentView.findViewById(R.id.filesList);
-        listView.setAdapter(mFileListAdapter);
-
-        listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+        mFileListView = (ListView) fileFragmentView.findViewById(R.id.filesList);
+        mFileListView.setAdapter(mFileListAdapter);
+        mFileListView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-//                // Send file to the File activity
-//                MyFile file = ((MyFile) parent.getItemAtPosition(position));
-//
-//                Intent intent = new Intent(getActivity(), FileActivity.class);
-//                intent.putExtra(Constants.FILE_EXTRA, file);
-//                intent.putExtra(Constants.WORKSPACE_ID_KEY, mWorkspace.getDatabaseId());
-//                startActivity(intent);
+                // Send file to the File activity
+                LocalFile file = ((LocalFile) parent.getItemAtPosition(position));
+
+                Intent intent = new Intent(getActivity(), FileActivity.class);
+                intent.putExtra(Constants.FILE_NAME_KEY, file.getFile().getName());
+                intent.putExtra(Constants.WORKSPACE_ID_KEY, mWorkspace.getDatabaseId());
+                startActivity(intent);
             }
 
 
         });
 
         // Register the list of Files for the ContextMenu
-        registerForContextMenu(listView);
+        registerForContextMenu(mFileListView);
 
         Button newFileButton = (Button) fileFragmentView.findViewById(R.id.newFileButton);
         newFileButton.setOnClickListener(new View.OnClickListener() {
@@ -94,7 +89,7 @@ public class LocalFilesFragment extends Fragment {
                 // set the Workspace to send to fragment
                 Bundle bundle = new Bundle();
                 bundle.putLong(Constants.WORKSPACE_ID_KEY, mWorkspace.getDatabaseId());
-                        newFileFragment.setArguments(bundle);
+                newFileFragment.setArguments(bundle);
 
                 // Show dialog fragment
                 newFileFragment.show(getActivity().getFragmentManager(), NewFileFragment.class.getSimpleName());

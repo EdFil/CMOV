@@ -41,9 +41,8 @@ public class LocalWorkspacesFragment extends Fragment {
 
     WorkspaceManager manager;
 
+    ListView mWorkspaceListView;
     WorkspaceListAdapter mWorkspaceListAdapter;
-
-    public LocalWorkspacesFragment() {setHasOptionsMenu(true);}
 
     public static LocalWorkspacesFragment newInstance(int sectionNumber) {
         LocalWorkspacesFragment fragment = new LocalWorkspacesFragment();
@@ -56,7 +55,9 @@ public class LocalWorkspacesFragment extends Fragment {
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+
         manager = WorkspaceManager.getInstance();
+        // TODO: This in global state?
         manager.refreshWorkspaceLists();
         mWorkspaceListAdapter = new WorkspaceListAdapter(getActivity(), WorkspaceManager.getInstance().getLocalWorkspaces());
         setHasOptionsMenu(true);
@@ -66,32 +67,14 @@ public class LocalWorkspacesFragment extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View workspaceFragmentView = inflater.inflate(R.layout.fragment_workspaces, container, false);
 
-        ListView listView = (ListView) workspaceFragmentView.findViewById(R.id.workspacesList);
-        listView.setAdapter(mWorkspaceListAdapter);
+        mWorkspaceListView = (ListView) workspaceFragmentView.findViewById(R.id.workspacesList);
+        mWorkspaceListView.setAdapter(mWorkspaceListAdapter);
 
         // When selecting a workspace replaces this fragment for the FilesFragment
-        listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
-            @Override
-            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-
-                FragmentManager fragmentManager = getActivity().getSupportFragmentManager();
-                FragmentTransaction transaction = fragmentManager.beginTransaction();
-
-                LocalFilesFragment filesFragment = new LocalFilesFragment();
-                Bundle bundle = new Bundle();
-                bundle.putLong(Constants.WORKSPACE_ID_KEY, ((Workspace)parent.getItemAtPosition(position)).getDatabaseId());
-                filesFragment.setArguments(bundle);
-
-                transaction.replace(R.id.container, filesFragment);
-                transaction.addToBackStack(LocalFilesFragment.class.getSimpleName());
-
-                // Commit the transaction
-                transaction.commit();
-            }
-        });
+        mWorkspaceListView.setOnItemClickListener(mWorkspaceListOnItemClickListener);
 
         // Register the list of Files for the ContextMenu
-        registerForContextMenu(listView);
+        registerForContextMenu(mWorkspaceListView);
 
         // Setup create new workspace button
         Button newWorkspaceButton = (Button) workspaceFragmentView.findViewById(R.id.newWorkspaceButton);
@@ -138,7 +121,7 @@ public class LocalWorkspacesFragment extends Fragment {
                 intent = new Intent(getActivity(), WorkspaceDetailsActivity.class);
                 intent.putExtra(WorkspaceDetailsActivity.IS_LOCAL_WS, true);
                 intent.putExtra(WorkspaceDetailsActivity.EDIT_MODE, false);
-                intent.putExtra(Constants.WORKSPACE_INDEX, info.position);
+                intent.putExtra(Constants.WORKSPACE_ID_KEY,  );
                 getActivity().startActivity(intent);
                 break;
             case R.id.menu_my_delete:
@@ -147,7 +130,7 @@ public class LocalWorkspacesFragment extends Fragment {
                 break;
             case R.id.menu_my_invite:
                 intent = new Intent(getActivity(), InviteForWorkspaceActivity.class);
-                intent.putExtra(Constants.WORKSPACE_INDEX, info.position);
+                intent.putExtra(Constants.WORKSPACE_ID_KEY, mWorkspaceListAdapter.getItem(info.position).getDatabaseId());
                 getActivity().startActivity(intent);
                 break;
         }
@@ -212,4 +195,23 @@ public class LocalWorkspacesFragment extends Fragment {
     public void updateWorkspaceList() {
         mWorkspaceListAdapter.notifyDataSetChanged();
     }
+
+    private AdapterView.OnItemClickListener mWorkspaceListOnItemClickListener = new AdapterView.OnItemClickListener() {
+        @Override
+        public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+            FragmentManager fragmentManager = getActivity().getSupportFragmentManager();
+            FragmentTransaction transaction = fragmentManager.beginTransaction();
+
+            LocalFilesFragment filesFragment = new LocalFilesFragment();
+            Bundle bundle = new Bundle();
+            bundle.putLong(Constants.WORKSPACE_ID_KEY, ((Workspace)parent.getItemAtPosition(position)).getDatabaseId());
+            filesFragment.setArguments(bundle);
+
+            transaction.replace(R.id.container, filesFragment);
+            transaction.addToBackStack(LocalFilesFragment.class.getSimpleName());
+
+            // Commit the transaction
+            transaction.commit();
+        }
+    };
 }

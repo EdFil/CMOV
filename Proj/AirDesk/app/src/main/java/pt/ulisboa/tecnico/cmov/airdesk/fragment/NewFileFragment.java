@@ -12,7 +12,7 @@ import android.widget.EditText;
 import android.widget.Toast;
 
 import pt.ulisboa.tecnico.cmov.airdesk.R;
-import pt.ulisboa.tecnico.cmov.airdesk.core.workspace.Workspace;
+import pt.ulisboa.tecnico.cmov.airdesk.core.workspace.LocalWorkspace;
 import pt.ulisboa.tecnico.cmov.airdesk.manager.WorkspaceManager;
 import pt.ulisboa.tecnico.cmov.airdesk.util.Constants;
 
@@ -25,7 +25,7 @@ public class NewFileFragment extends DialogFragment {
         public void updateFileList();
     }
 
-    Workspace mWorkspace;
+    LocalWorkspace mWorkspace;
 
     Button mCancelButton;
     Button mCreateButton;
@@ -42,7 +42,7 @@ public class NewFileFragment extends DialogFragment {
 
         // Get the WORKSPACE selected in order to retrieve the respective files
         Bundle bundle = getArguments();
-        mWorkspace = WorkspaceManager.getInstance().getWorkspaceWithId(bundle.getLong(Constants.WORKSPACE_ID_KEY));
+        mWorkspace = WorkspaceManager.getInstance().getLocalWorkspaceWithId(bundle.getLong(Constants.WORKSPACE_ID_KEY));
 
         // Store the references to the view elements in this fragment
         mFileNameText = (EditText) view.findViewById(R.id.newFileName);
