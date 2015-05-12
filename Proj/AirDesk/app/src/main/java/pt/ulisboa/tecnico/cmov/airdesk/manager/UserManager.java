@@ -8,6 +8,7 @@ import org.json.JSONObject;
 import java.util.ArrayList;
 import java.util.List;
 
+import pt.ulisboa.tecnico.cmov.airdesk.core.subscription.Subscription;
 import pt.ulisboa.tecnico.cmov.airdesk.core.user.User;
 import pt.ulisboa.tecnico.cmov.airdesk.database.AirDeskDbHelper;
 
@@ -37,11 +38,14 @@ public class UserManager {
 
     private Context mContext = null;
     private List<User> mUserList;
+    private List<Subscription> mSubscriptionList;
     private User mOwner;
 
     protected UserManager(Context context){
         mContext = context;
         mUserList = new ArrayList<>(AirDeskDbHelper.getInstance(context).getAllUsers());
+        // TODO : IR BUSCAR AS SUBSCRICOES A BD
+        mSubscriptionList = new ArrayList<>();
     }
 
     public Context getContext() { return mContext; }
@@ -67,6 +71,10 @@ public class UserManager {
         User user = new User(userId, userEmail, userNick);
         mUserList.add(user);
         return user;
+    }
+
+    public List<Subscription> getSubscriptionList() {
+        return mSubscriptionList;
     }
 
     public User getUserById(long databaseId) {

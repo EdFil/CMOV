@@ -6,8 +6,6 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
-import android.support.v4.app.FragmentManager;
-import android.support.v4.app.FragmentTransaction;
 import android.view.ContextMenu;
 import android.view.LayoutInflater;
 import android.view.Menu;
@@ -20,33 +18,35 @@ import android.widget.Button;
 import android.widget.ListView;
 import android.widget.Toast;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import pt.ulisboa.tecnico.cmov.airdesk.AirDeskActivity;
 import pt.ulisboa.tecnico.cmov.airdesk.R;
-import pt.ulisboa.tecnico.cmov.airdesk.WorkspaceDetailsActivity;
-import pt.ulisboa.tecnico.cmov.airdesk.adapter.WorkspaceListAdapter;
-import pt.ulisboa.tecnico.cmov.airdesk.core.workspace.ForeignWorkspace;
+import pt.ulisboa.tecnico.cmov.airdesk.adapter.SubscriptionListAdapter;
+import pt.ulisboa.tecnico.cmov.airdesk.core.subscription.Subscription;
+import pt.ulisboa.tecnico.cmov.airdesk.core.workspace.LocalWorkspace;
+import pt.ulisboa.tecnico.cmov.airdesk.manager.UserManager;
 import pt.ulisboa.tecnico.cmov.airdesk.manager.WorkspaceManager;
-import pt.ulisboa.tecnico.cmov.airdesk.util.Constants;
 
-public class ForeignWorkspacesFragment extends Fragment {
+public class SubscriptionsFragment extends Fragment {
 
     /**
      * The fragment argument representing the section number for this
      * fragment.
      */
     private static final String ARG_SECTION_NUMBER = "section_number";
-    public static final String TAG = ForeignWorkspacesFragment.class.getSimpleName();
+
+    public static final String TAG = SubscriptionsFragment.class.getSimpleName();
 
     WorkspaceManager manager;
 
-    WorkspaceListAdapter mWorkspaceListAdapter;
+    SubscriptionListAdapter mSubscriptionListAdapter;
 
-    public ForeignWorkspacesFragment() {setHasOptionsMenu(true);}
+    public SubscriptionsFragment() {}
 
-    public static ForeignWorkspacesFragment newInstance(int sectionNumber) {
-        ForeignWorkspacesFragment fragment = new ForeignWorkspacesFragment();
+    public static SubscriptionsFragment newInstance(int sectionNumber) {
+        SubscriptionsFragment fragment = new SubscriptionsFragment();
         Bundle args = new Bundle();
         args.putInt(ARG_SECTION_NUMBER, sectionNumber);
         fragment.setArguments(args);
@@ -57,49 +57,22 @@ public class ForeignWorkspacesFragment extends Fragment {
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         manager = WorkspaceManager.getInstance();
-        manager.refreshWorkspaceLists();
-        mWorkspaceListAdapter = new WorkspaceListAdapter(getActivity(), WorkspaceManager.getInstance().getForeignWorkspaces());
-        setHasOptionsMenu(true);
+        mSubscriptionListAdapter = new SubscriptionListAdapter(getActivity(), UserManager.getInstance().getSubscriptionList());
     }
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-        View workspaceFragmentView = inflater.inflate(R.layout.fragment_workspaces, container, false);
+        View subscriptionFragmentView = inflater.inflate(R.layout.fragment_subscriptions, container, false);
 
-
-        ListView listView = (ListView) workspaceFragmentView.findViewById(R.id.workspacesList);
-        listView.setAdapter(mWorkspaceListAdapter);
+        ListView listView = (ListView) subscriptionFragmentView.findViewById(R.id.subscriptionWorkspacesList);
+        listView.setAdapter(mSubscriptionListAdapter);
 
         // When selecting a workspace replaces this fragment for the FilesFragment
         listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
 
-                FragmentManager fragmentManager = getActivity().getSupportFragmentManager();
-                FragmentTransaction transaction = fragmentManager.beginTransaction();
-
-                LocalFilesFragment localFilesFragment = new LocalFilesFragment();
-
-                ForeignWorkspace foreignWorkspace = (ForeignWorkspace) parent.getItemAtPosition(position);
-                long foreignId = foreignWorkspace.getOwner().getDatabaseId();
-                String foreignName = foreignWorkspace.getName();
-
-                List<ForeignWorkspace> foreignWorkspaceList = WorkspaceManager.getInstance().getWorkspacesFromDB(foreignId);
-                for (ForeignWorkspace foreignWorkspaceElement : foreignWorkspaceList)
-                    if(foreignWorkspaceElement.getName().equals(foreignName)) {
-                        foreignWorkspace = foreignWorkspaceElement;
-                        break;
-                    }
-
-//                Bundle bundle = new Bundle();
-//                bundle.putParcelable("Workspace", foreignWorkspace);
-//                filesFragment.setArguments(bundle);
-//
-//                transaction.replace(R.id.container, filesFragment);
-//                transaction.addToBackStack(null);
-//
-//                // Commit the transaction
-//                transaction.commit();
+                // TODO : CALL SUBSCRIPTION ACTIVITY
             }
         });
 
@@ -107,28 +80,29 @@ public class ForeignWorkspacesFragment extends Fragment {
         registerForContextMenu(listView);
 
         // Setup create new workspace button
-        Button searchWorkspacesButton = (Button) workspaceFragmentView.findViewById(R.id.newWorkspaceButton);
-        searchWorkspacesButton.setOnClickListener(new View.OnClickListener() {
+        Button newSubscriptionButton = (Button) subscriptionFragmentView.findViewById(R.id.newSubscriptionButton);
+        newSubscriptionButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View buttonView) {
                 NewSubscriptionFragment.newInstance().show(getActivity().getFragmentManager(), NewSubscriptionFragment.class.getSimpleName());
             }
         });
 
-        return workspaceFragmentView;
+        return subscriptionFragmentView;
     }
 
     @Override
     public void onResume() {
         super.onResume();
-        updateWorkspaceList();
+        ((AirDeskActivity) getActivity()).updateActionBarTitle();
+        updateSubscriptionList();
     }
 
     // This will be invoked when an item in the listView is long pressed
     @Override
     public void onCreateContextMenu(ContextMenu menu, View v, ContextMenu.ContextMenuInfo menuInfo) {
         super.onCreateContextMenu(menu, v, menuInfo);
-        getActivity().getMenuInflater().inflate(R.menu.menu_context_foreign_workspaces, menu);
+        getActivity().getMenuInflater().inflate(R.menu.menu_context_subscriptions, menu);
     }
 
     // This will be invoked when a menu item is selected
@@ -139,23 +113,10 @@ public class ForeignWorkspacesFragment extends Fragment {
 
         Intent intent;
         switch(item.getItemId()){
-            case R.id.menu_foreign_edit:
-                intent = new Intent(getActivity(), WorkspaceDetailsActivity.class);
-                intent.putExtra(WorkspaceDetailsActivity.IS_LOCAL_WS, false);
-                intent.putExtra(WorkspaceDetailsActivity.EDIT_MODE, true);
-                intent.putExtra(Constants.WORKSPACE_INDEX, info.position);
-                getActivity().startActivity(intent);
-                break;
-            case R.id.menu_foreign_details:
-                intent = new Intent(getActivity(), WorkspaceDetailsActivity.class);
-                intent.putExtra(WorkspaceDetailsActivity.IS_LOCAL_WS, false);
-                intent.putExtra(WorkspaceDetailsActivity.EDIT_MODE, false);
-                intent.putExtra(Constants.WORKSPACE_INDEX, info.position);
-                getActivity().startActivity(intent);
-                break;
-            case R.id.menu_foreign_leave:
-                WorkspaceManager.getInstance().deleteWorkspace(false, info.position);
-                updateWorkspaceList();
+            case R.id.menu_my_delete:
+                // TODO : DELETE SUBSCRIPTION ON USERMANAGER
+//                WorkspaceManager.getInstance().deleteWorkspace(true, info.position);
+                updateSubscriptionList();
                 break;
         }
         return true;
@@ -175,7 +136,7 @@ public class ForeignWorkspacesFragment extends Fragment {
         // as you specify a parent activity in AndroidManifest.xml.
 
         if (item.getItemId() == R.id.refresh_workspaces) {
-            updateWorkspaceList();
+            updateSubscriptionList();
             return true;
         }
 
@@ -185,7 +146,8 @@ public class ForeignWorkspacesFragment extends Fragment {
                     .setMessage("Are you sure you want to delete all your workspaces?")
                     .setPositiveButton(android.R.string.yes, new DialogInterface.OnClickListener() {
                         public void onClick(DialogInterface dialog, int which) {
-                            deleteAllWorkspaces();
+                            // TODO : DELETE ALL WORKSPACES ON USERMANAGER
+                                deleteAllWorkspaces();
                             Toast.makeText(getActivity(), "DELETED", Toast.LENGTH_SHORT).show();
                         }
                     })
@@ -208,15 +170,15 @@ public class ForeignWorkspacesFragment extends Fragment {
     }
 
     public void addWorkspace() {
-        updateWorkspaceList();
+        updateSubscriptionList();
     }
 
     public void deleteAllWorkspaces() {
-        manager.deleteAllUserWorkspaces(false);
-        updateWorkspaceList();
+        manager.deleteAllUserWorkspaces(true);
+        updateSubscriptionList();
     }
 
-    public void updateWorkspaceList() {
-        mWorkspaceListAdapter.notifyDataSetChanged();
+    public void updateSubscriptionList() {
+        mSubscriptionListAdapter.notifyDataSetChanged();
     }
 }

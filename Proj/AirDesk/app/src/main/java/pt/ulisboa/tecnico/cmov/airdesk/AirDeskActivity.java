@@ -19,6 +19,8 @@ import android.view.ViewGroup;
 import android.widget.ListView;
 import android.widget.TextView;
 
+import pt.ulisboa.tecnico.cmov.airdesk.fragment.NewSubscriptionFragment;
+import pt.ulisboa.tecnico.cmov.airdesk.fragment.SubscriptionsFragment;
 import pt.ulisboa.tecnico.cmov.airdesk.manager.UserManager;
 import pt.ulisboa.tecnico.cmov.airdesk.fragment.LocalFilesFragment;
 import pt.ulisboa.tecnico.cmov.airdesk.fragment.ForeignWorkspacesFragment;
@@ -26,13 +28,13 @@ import pt.ulisboa.tecnico.cmov.airdesk.fragment.LocalWorkspacesFragment;
 import pt.ulisboa.tecnico.cmov.airdesk.fragment.NavigationDrawerFragment;
 import pt.ulisboa.tecnico.cmov.airdesk.fragment.NewFileFragment;
 import pt.ulisboa.tecnico.cmov.airdesk.fragment.NewWorkspaceFragment;
-import pt.ulisboa.tecnico.cmov.airdesk.fragment.SearchWorkspaceFragment;
 import pt.ulisboa.tecnico.cmov.airdesk.util.Constants;
 
 public class AirDeskActivity extends ActionBarActivity
         implements NavigationDrawerFragment.NavigationDrawerCallbacks,
                    NewFileFragment.OnNewFileFragmentListener,
-                   NewWorkspaceFragment.OnNewWorkspaceFragmentListener {
+                   NewWorkspaceFragment.OnNewWorkspaceFragmentListener,
+                   NewSubscriptionFragment.OnNewSubscriptionFragmentListener {
 
     public static final String TAG = AirDeskActivity.class.getSimpleName();
 
@@ -120,7 +122,7 @@ public class AirDeskActivity extends ActionBarActivity
                 break;
             // Search Workspace
             case 3:
-                fragmentManager.beginTransaction().replace(R.id.container, SearchWorkspaceFragment.newInstance(position)).commit();
+                fragmentManager.beginTransaction().replace(R.id.container, SubscriptionsFragment.newInstance(position)).commit();
                 break;
             // Search Workspace
             case 4:
@@ -214,6 +216,14 @@ public class AirDeskActivity extends ActionBarActivity
 
     public void updateActionBarTitle() {
         getSupportActionBar().setTitle(mTitle);
+    }
+
+    @Override
+    public void updateSubscriptionList() {
+        SubscriptionsFragment subscriptionsFragment = (SubscriptionsFragment)getSupportFragmentManager().findFragmentById(R.id.container);
+
+        if (subscriptionsFragment != null)
+            subscriptionsFragment.updateSubscriptionList();
     }
 
     /**

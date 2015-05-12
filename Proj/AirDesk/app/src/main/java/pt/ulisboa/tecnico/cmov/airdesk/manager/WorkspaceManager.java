@@ -30,6 +30,7 @@ public class WorkspaceManager {
     private List<ForeignWorkspace> mForeignWorkspaces;
 
 
+
     public static synchronized WorkspaceManager getInstance() {
         return mInstance;
     }
@@ -240,7 +241,15 @@ public class WorkspaceManager {
     public List<Workspace> getWorkspacesWithTags(String... tags) {
         List<Workspace> workspaceList = new ArrayList<>();
         for(Workspace workspace : mLocalWorkspaces)
-            if(workspace.hasAllTags(Arrays.asList(tags)))
+            if(workspace.containsAtLeastOneTag(Arrays.asList(tags)))
+                workspaceList.add(workspace);
+        return workspaceList;
+    }
+
+    public List<LocalWorkspace> getLocalWorkspacesWithTags(String... tags) {
+        List<LocalWorkspace> workspaceList = new ArrayList<>();
+        for(LocalWorkspace workspace : mLocalWorkspaces)
+            if(workspace.containsAtLeastOneTag(Arrays.asList(tags)))
                 workspaceList.add(workspace);
         return workspaceList;
     }
