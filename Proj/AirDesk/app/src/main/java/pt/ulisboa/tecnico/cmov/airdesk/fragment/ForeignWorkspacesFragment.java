@@ -55,7 +55,6 @@ public class ForeignWorkspacesFragment extends Fragment {
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         manager = WorkspaceManager.getInstance();
-        manager.refreshWorkspaceLists();
         mWorkspaceListAdapter = new WorkspaceListAdapter(getActivity(), WorkspaceManager.getInstance().getForeignWorkspaces());
         setHasOptionsMenu(true);
     }

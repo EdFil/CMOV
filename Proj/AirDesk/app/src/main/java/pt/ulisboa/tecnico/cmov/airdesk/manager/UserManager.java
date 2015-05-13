@@ -113,4 +113,10 @@ public class UserManager {
     public void clearUserList() {
         mUserList.clear();
     }
+
+    public void deleteSubscription(int position) {
+        Subscription subscription = mSubscriptionList.get(position);
+
+        mSubscriptionList.remove(position);
+    }
 }

@@ -13,12 +13,14 @@ import android.widget.EditText;
 import android.widget.Toast;
 
 import org.json.JSONArray;
+import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.util.List;
 
 import pt.ulisboa.tecnico.cmov.airdesk.R;
 import pt.ulisboa.tecnico.cmov.airdesk.core.subscription.Subscription;
+import pt.ulisboa.tecnico.cmov.airdesk.core.workspace.ForeignWorkspace;
 import pt.ulisboa.tecnico.cmov.airdesk.core.workspace.LocalWorkspace;
 import pt.ulisboa.tecnico.cmov.airdesk.core.workspace.Workspace;
 import pt.ulisboa.tecnico.cmov.airdesk.custom.AddTagsLayout;
@@ -40,7 +42,7 @@ public class NewSubscriptionFragment extends DialogFragment {
 
     // AirDeskActivity must implement this interface
     public interface OnNewSubscriptionFragmentListener {
-        public void updateSubscriptionList();
+        void updateSubscriptionList();
     }
 
     public static NewSubscriptionFragment newInstance() {
@@ -126,7 +128,7 @@ public class NewSubscriptionFragment extends DialogFragment {
 //                        JSONArray workspaceArray = response.getJSONArray(Constants.WORKSPACE_LIST_KEY);
 //                        for(int i = 0; i < workspaceArray.length(); i++) {
 //                            Toast.makeText(getActivity(), "TODO : WORKSPACE TO ADD", Toast.LENGTH_SHORT).show();
-////                            mWorkspaceListAdapter.add(new ForeignWorkspace(workspaceArray.getJSONObject(i)));
+//                                WorkspaceManager.getInstance().mountForeignWorkspace(workspaceArray.getJSONObject(i));
 //                        }
 //                    } catch (Exception e1) {
 //                        // Show our error in a toast
@@ -137,19 +139,32 @@ public class NewSubscriptionFragment extends DialogFragment {
 //            // Execute our task
 //            task.executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR);
 
-            // TODO : DESCOMENTAR QUANDO SE PASSAR PARA NETWORK ATE AQUI
 
 
+            // TODO : QUANDO ONLINE (COMENTADO EM CIMA) , REMOVER ESTE CICLO MOUNT
             // Workspaces with at least one of the tags
-            List<LocalWorkspace> workspaceList = WorkspaceManager.getInstance().getLocalWorkspacesWithTags(tagValues);
+            List<JSONObject> jsonWorkspaceList = WorkspaceManager.getInstance().getJsonWorkspacesWithTags(tagValues);
+
+            for (JSONObject jsonWorkspace : jsonWorkspaceList) {
+                try {
+                    WorkspaceManager.getInstance().mountForeignWorkspace(jsonWorkspace);
+                } catch (JSONException e) {
+                    Toast.makeText(getActivity(), "NewSubscriptionFragment : " + e.toString(), Toast.LENGTH_SHORT).show();
+                }
+            }
+
+            // TODO : ATE AQUI
 
             // Create the subscription with the tags and workspaces
-            Subscription subscription = new Subscription(subscriptionName.getText().toString(), tagValues, workspaceList);
+            Subscription subscription = new Subscription(subscriptionName.getText().toString(), tagValues);
 
             // Add the subscription to the subscription list of the user
             UserManager.getInstance().getSubscriptionList().add(subscription);
 
+            // CALL back to refresh subscription list on the SubscriptionFragment through the AirDeskActivity
             mCallback.updateSubscriptionList();
+
+            // Close dialog fragment
             dismiss();
         }
 
