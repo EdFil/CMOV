@@ -272,7 +272,7 @@ public class WorkspaceManager {
     }
 
     public void unmountForeignWorkspacesWithTags(String[] tags) {
-        List<ForeignWorkspace> foreignWorkspaces = getForeignWorkspacesWithTags();
+        List<ForeignWorkspace> foreignWorkspaces = getForeignWorkspacesWithTags(tags);
         for(ForeignWorkspace foreignWorkspace : foreignWorkspaces)
             unmountForeignWorkspace(foreignWorkspace);
     }

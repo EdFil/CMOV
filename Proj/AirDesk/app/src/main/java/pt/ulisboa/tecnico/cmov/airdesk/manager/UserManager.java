@@ -143,13 +143,20 @@ public class UserManager {
 
     public String[] removeTagsFromSubscription(String[] tags, List<String> tagsToRemove) {
         List<String> tagsRemoved = new ArrayList<>();
+        boolean tagOnOtherWorkspace = false;
 
-        for(String tagToRemove : tagsToRemove)
-            for(String tag : tags)
-                if(!tag.equals(tagToRemove))
-                    tagsRemoved.add(tag);
+        for(String tag : tags) {
+            for (String tagToRemove : tagsToRemove)
+                if (tag.equals(tagToRemove)) {
+                    tagOnOtherWorkspace = true;
+                    break;
+                }
+            if(!tagOnOtherWorkspace)
+                tagsRemoved.add(tag);
+        }
 
-        return new String[tagsRemoved.size()];
+
+        return tagsRemoved.toArray(new String[tagsRemoved.size()]);
     }
 
 
