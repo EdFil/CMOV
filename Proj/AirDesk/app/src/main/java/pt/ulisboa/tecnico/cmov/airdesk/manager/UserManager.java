@@ -6,6 +6,7 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 import pt.ulisboa.tecnico.cmov.airdesk.core.subscription.Subscription;
@@ -23,6 +24,7 @@ public class UserManager {
 
     public static final String TAG = UserManager.class.getSimpleName();
     private static UserManager mInstance;
+    private ArrayList allTags;
 
     public static synchronized UserManager getInstance() {
         return mInstance;
@@ -114,9 +116,41 @@ public class UserManager {
         mUserList.clear();
     }
 
-    public void deleteSubscription(int position) {
-        Subscription subscription = mSubscriptionList.get(position);
+    // Returns tags from all subscriptions (as a list)
+    public ArrayList<String> getAllTags() {
 
+        ArrayList<String> allTags = new ArrayList();
+
+        for(Subscription sub : mSubscriptionList)
+            allTags.addAll(Arrays.asList(sub.getTags()));
+
+        return allTags;
+    }
+
+
+    public String[] removeTagsFromSubscription(String[] tags, List<String> tagsToRemove) {
+        List<String> tagsRemoved = new ArrayList<>();
+
+        for(String tagToRemove : tagsToRemove)
+            for(String tag : tags)
+                if(!tag.equals(tagToRemove))
+                    tagsRemoved.add(tag);
+
+        return new String[tagsRemoved.size()];
+    }
+
+
+    public void deleteSubscription(int position) {
+        // remove subscription from the user's subscriptions
+        Subscription subscription = mSubscriptionList.get(position);
+        String[] subTags = subscription.getTags();
         mSubscriptionList.remove(position);
+
+        // remove foreign workspaces regarding this subscription and no one else
+        ArrayList allOtherTags = getAllTags();
+        String[] tagsToRemove = removeTagsFromSubscription(subTags, allOtherTags);
+
+        WorkspaceManager.getInstance().unmountForeignWorkspacesWithTags(tagsToRemove);
+        // TODO : REMOVE FROM DB
     }
 }

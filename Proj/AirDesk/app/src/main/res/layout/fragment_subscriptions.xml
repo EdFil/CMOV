@@ -22,14 +22,6 @@
         android:layout_below="@+id/typeWS"
         />
 
-    <ListView
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:id="@+id/foreignWorkspacesList"
-        android:clickable="true"
-        android:visibility="gone"
-        />
-
     <Button
         android:id="@+id/newSubscriptionButton"
 

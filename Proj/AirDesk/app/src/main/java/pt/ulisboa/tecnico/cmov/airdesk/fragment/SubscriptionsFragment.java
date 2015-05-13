@@ -50,6 +50,7 @@ public class SubscriptionsFragment extends Fragment {
         super.onCreate(savedInstanceState);
         manager = WorkspaceManager.getInstance();
         mSubscriptionListAdapter = new SubscriptionListAdapter(getActivity(), UserManager.getInstance().getSubscriptionList());
+        setHasOptionsMenu(true);
     }
 
     @Override
@@ -103,9 +104,8 @@ public class SubscriptionsFragment extends Fragment {
 
         AdapterView.AdapterContextMenuInfo info = (AdapterView.AdapterContextMenuInfo) item.getMenuInfo();
 
-        Intent intent;
         switch(item.getItemId()){
-            case R.id.menu_my_delete:
+            case R.id.menu_delete_subscription:
                 // TODO : DELETE SUBSCRIPTION ON USERMANAGER
                 UserManager.getInstance().deleteSubscription(info.position);
                 updateSubscriptionList();

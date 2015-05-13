@@ -29,6 +29,9 @@ public class Subscription {
         mTags = tags;
     }
 
+    public String[] getTags() {
+        return mTags;
+    }
 
     public String getName() {
         return mName;
