@@ -107,7 +107,7 @@ public class SubscriptionsFragment extends Fragment {
         switch(item.getItemId()){
             case R.id.menu_my_delete:
                 // TODO : DELETE SUBSCRIPTION ON USERMANAGER
-//                WorkspaceManager.getInstance().deleteWorkspace(true, info.position);
+                UserManager.getInstance().deleteSubscription(info.position);
                 updateSubscriptionList();
                 break;
         }

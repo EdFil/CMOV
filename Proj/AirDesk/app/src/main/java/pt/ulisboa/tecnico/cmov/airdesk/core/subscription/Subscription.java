@@ -24,15 +24,9 @@ public class Subscription {
         mTags = tags;
     }
 
-    public Subscription(String[] tags, List<LocalWorkspace> workspaceList) {
-        mTags = tags;
-        mLocalWorkspace = workspaceList;
-    }
-
-    public Subscription(String name, String[] tags, List<LocalWorkspace> workspaceList) {
+    public Subscription(String name, String[] tags) {
         mName = name;
         mTags = tags;
-        mLocalWorkspace = workspaceList;
     }
 
 

@@ -237,5 +237,11 @@ public class WorkspaceManager {
     }
 
 
-
+    public List<JSONObject> getJsonWorkspacesWithTags(String[] tags) {
+        List<JSONObject> jsonWorkspaceList = new ArrayList<>();
+        for(LocalWorkspace workspace : mLocalWorkspaces)
+            if(workspace.containsAtLeastOneTag(Arrays.asList(tags)))
+                jsonWorkspaceList.add(workspace.toJSON());
+        return jsonWorkspaceList;
+    }
 }

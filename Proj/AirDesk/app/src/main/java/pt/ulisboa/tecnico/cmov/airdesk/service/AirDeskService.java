@@ -8,6 +8,6 @@ import org.json.JSONObject;
  */
 public interface AirDeskService {
 
-    public JSONObject execute(JSONArray arguments);
+    JSONObject execute(JSONArray arguments);
 
 }
