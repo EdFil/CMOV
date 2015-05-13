@@ -5,7 +5,8 @@ import android.os.AsyncTask;
 import java.util.List;
 
 import pt.inesc.termite.wifidirect.SimWifiP2pDevice;
-import pt.ulisboa.tecnico.cmov.airdesk.manager.WifiDirectManager;
+import pt.ulisboa.tecnico.cmov.airdesk.core.user.User;
+import pt.ulisboa.tecnico.cmov.airdesk.manager.UserManager;
 import pt.ulisboa.tecnico.cmov.airdesk.service.AirDeskService;
 
 public class BroadcastTask extends AsyncTask<Void, String, Void> {
@@ -25,14 +26,13 @@ public class BroadcastTask extends AsyncTask<Void, String, Void> {
 
     @Override
     protected Void doInBackground(Void... params) {
-        // Get all connected peers
-        List<SimWifiP2pDevice> devices = WifiDirectManager.getInstance().getPeerList();
-        // TODO: Get all connected peers and not all peers maybe (peers in the same group)
+        // Get all peers in network
+        List<User> usersInNetwork = UserManager.getInstance().getUsers();
 
 
         // Iterate all the devices
-        for(int i = 0; i < devices.size(); i++) {
-            SimWifiP2pDevice device = devices.get(i);
+        for(int i = 0; i < usersInNetwork.size(); i++) {
+            SimWifiP2pDevice device = usersInNetwork.get(i).getDevice();
             // Create a request task for every device
             RequestTask task = new RequestTask(device.getVirtIp(), mPort, mServiceClass, mArguments);
             // Override the callback so we can process the result from the task

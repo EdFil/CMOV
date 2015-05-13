@@ -53,7 +53,20 @@ public class UserManager {
     public User createUser(JSONObject jsonObject) throws JSONException {
         String email = jsonObject.getString(User.EMAIL_KEY);
         String nick = jsonObject.getString(User.NICK_KEY);
-        return createUser(email, nick);
+
+        // If already exists
+        for(User user : mUserList)
+            if(user.getEmail().equals(email))
+                return user;
+
+        if(mOwner != null && mOwner.getEmail().equals(email)) {
+            return null;
+        }
+
+        // If not exists
+        User user = new User(-1, email, nick);
+        mUserList.add(user);
+        return user;
     }
 
     public User createUser(String userEmail, String userNick){
