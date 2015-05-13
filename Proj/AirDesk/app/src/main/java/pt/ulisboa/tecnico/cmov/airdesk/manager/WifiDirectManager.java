@@ -10,10 +10,6 @@ import android.os.IBinder;
 import android.os.Looper;
 import android.os.Messenger;
 import android.util.Log;
-import android.widget.Toast;
-
-import org.json.JSONArray;
-import org.json.JSONObject;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -28,17 +24,9 @@ import pt.inesc.termite.wifidirect.SimWifiP2pManager.PeerListListener;
 import pt.inesc.termite.wifidirect.service.SimWifiP2pService;
 import pt.inesc.termite.wifidirect.sockets.SimWifiP2pSocketManager;
 import pt.ulisboa.tecnico.cmov.airdesk.R;
-import pt.ulisboa.tecnico.cmov.airdesk.core.user.User;
-import pt.ulisboa.tecnico.cmov.airdesk.core.workspace.ForeignWorkspace;
 import pt.ulisboa.tecnico.cmov.airdesk.receiver.SimWifiP2pBroadcastReceiver;
-import pt.ulisboa.tecnico.cmov.airdesk.service.GetUserService;
-import pt.ulisboa.tecnico.cmov.airdesk.service.GetWorkspacesWithTagsService;
-import pt.ulisboa.tecnico.cmov.airdesk.tasks.AsyncResponse;
-import pt.ulisboa.tecnico.cmov.airdesk.tasks.BroadcastTask;
 import pt.ulisboa.tecnico.cmov.airdesk.tasks.DiscoverTask;
-import pt.ulisboa.tecnico.cmov.airdesk.tasks.RequestTask;
 import pt.ulisboa.tecnico.cmov.airdesk.tasks.ServerTask;
-import pt.ulisboa.tecnico.cmov.airdesk.util.Constants;
 
 /**
  * Created by edgar on 05-05-2015.

@@ -41,7 +41,7 @@ public class ServerTask extends AsyncTask<Void, SimWifiP2pSocket, Void> {
             try {
                 SimWifiP2pSocket incommingSocket = mServerSocket.accept();
                 if(incommingSocket != null)
-                    new DealWithRequestTask().executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR, incommingSocket);
+                    new DealWithRequestTask().doInBackground(incommingSocket);
             } catch (Exception e) {
                 e.printStackTrace();
             }
