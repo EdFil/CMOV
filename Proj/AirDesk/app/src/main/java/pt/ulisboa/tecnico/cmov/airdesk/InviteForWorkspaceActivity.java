@@ -26,6 +26,7 @@ import pt.ulisboa.tecnico.cmov.airdesk.util.Constants;
 public class InviteForWorkspaceActivity extends ActionBarActivity {
 
     public static final String TAG = InviteForWorkspaceActivity.class.getSimpleName();
+
     UserListAdapter mUserListAdapter;
     LocalWorkspace mWorkspace;
 
