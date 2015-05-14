@@ -22,7 +22,7 @@ public class AirDeskContract {
     }
 
     /* Inner class that defines the table contents of the Tag table */
-    public static final class SubscriptionEntry implements BaseColumns {
+    public static final class SubscriptionEntry {
         // Table Name
         public static final String TABLE_NAME = "subscription";
         // Name of the tag

@@ -44,7 +44,7 @@ public class ReadFileTask extends AsyncTask<File, Integer, String> {
                 try {
                     fis.close();
                 } catch (IOException e) {
-                    Log.d("LOG_TAG", "Close error.");
+                    Log.d("TAG", "Close error.");
                 }
             }
             if (scanner != null) {

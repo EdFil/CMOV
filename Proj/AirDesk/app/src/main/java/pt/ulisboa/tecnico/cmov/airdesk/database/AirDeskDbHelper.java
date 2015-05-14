@@ -77,11 +77,11 @@ public class AirDeskDbHelper extends SQLiteOpenHelper {
                 " );";
 
         final String SQL_SUBSCRIPTIONS_TABLE = "CREATE TABLE " + SubscriptionEntry.TABLE_NAME + " (" +
-                SubscriptionEntry._ID + " INTEGER PRIMARY KEY AUTOINCREMENT, " +
                 SubscriptionEntry.COLUMN_USER_KEY+ " TEXT NOT NULL, " +
                 SubscriptionEntry.COLUMN_NAME + " TEXT NOT NULL, " +
                 SubscriptionEntry.COLUMN_TAGS + " TEXT NOT NULL, " +
-                "FOREIGN KEY (" + SubscriptionEntry.COLUMN_USER_KEY  + ") REFERENCES " + UsersEntry.TABLE_NAME + "( " + UsersEntry._ID + " ) " +
+                "FOREIGN KEY (" + SubscriptionEntry.COLUMN_USER_KEY  + ") REFERENCES " + UsersEntry.TABLE_NAME + "( " + UsersEntry._ID + " ), " +
+                "PRIMARY KEY (" + SubscriptionEntry.COLUMN_USER_KEY + ", " + SubscriptionEntry.COLUMN_NAME + ") " +
                 " );";
 
 

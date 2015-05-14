@@ -5,6 +5,7 @@ import org.json.JSONObject;
 
 import java.io.File;
 
+import pt.ulisboa.tecnico.cmov.airdesk.core.file.exception.FileAlreadyBeeingEditedException;
 import pt.ulisboa.tecnico.cmov.airdesk.core.workspace.Workspace;
 
 /**
@@ -38,18 +39,17 @@ public abstract class MyFile {
         mFile = file;
     }
 
-    public synchronized boolean open() {
+    public synchronized void open() {
         if(isLocked)
-            return false;
+            throw new FileAlreadyBeeingEditedException(getName());
         isLocked = true;
-        return true;
     }
 
-    public synchronized boolean close() {
-        if(!isLocked)
-            return false;
-        isLocked = false;
-        return true;
+    public synchronized void close() {
+        if(isLocked) {
+            mVersion++;
+            isLocked = false;
+        }
     }
 
     public JSONObject toJson() {

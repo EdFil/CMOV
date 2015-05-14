@@ -18,7 +18,7 @@
         />
 
     <TextView
-        android:id="@+id/textFile"
+        android:id="@+id/text_view"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:paddingRight="@dimen/activity_horizontal_margin"
@@ -33,7 +33,7 @@
         />
 
     <ImageButton
-        android:id="@+id/editTextFile"
+        android:id="@+id/editTextImage"
 
         android:src="@android:drawable/ic_menu_edit"
 
@@ -48,7 +48,7 @@
         />
 
     <EditText
-        android:id="@+id/editedTextFile"
+        android:id="@+id/edit_text"
         android:paddingRight="@dimen/activity_horizontal_margin"
         android:paddingLeft="@dimen/activity_horizontal_margin"
         android:paddingTop="@dimen/activity_horizontal_margin"
@@ -65,7 +65,7 @@
 
 
     <ImageButton
-        android:id="@+id/saveTextFile"
+        android:id="@+id/saveTextImage"
         android:src="@android:drawable/ic_menu_save"
         android:background="@drawable/button_background"
         android:visibility="gone"

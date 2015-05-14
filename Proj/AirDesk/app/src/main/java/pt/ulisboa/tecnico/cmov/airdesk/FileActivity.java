@@ -12,6 +12,7 @@ import android.widget.Toast;
 import pt.ulisboa.tecnico.cmov.airdesk.core.file.LocalFile;
 import pt.ulisboa.tecnico.cmov.airdesk.core.file.exception.FileExceedsAvailableSpaceException;
 import pt.ulisboa.tecnico.cmov.airdesk.core.file.exception.FileExceedsMaxQuotaException;
+import pt.ulisboa.tecnico.cmov.airdesk.core.file.exception.FileException;
 import pt.ulisboa.tecnico.cmov.airdesk.core.workspace.LocalWorkspace;
 import pt.ulisboa.tecnico.cmov.airdesk.manager.WorkspaceManager;
 import pt.ulisboa.tecnico.cmov.airdesk.tasks.ReadFileTask;
@@ -22,14 +23,13 @@ import pt.ulisboa.tecnico.cmov.airdesk.util.Constants;
 
 public class FileActivity extends ActionBarActivity {
 
-    public static final String LOG_TAG = FileActivity.class.getSimpleName();
+    public static final String TAG = FileActivity.class.getSimpleName();
 
+    private TextView mTextToView;
+    private ImageView mEditImageView;
 
-    private TextView textToView;
-    private ImageView edit;
-
-    private EditText textToEdit;
-    private ImageView save;
+    private EditText mTextToEdit;
+    private ImageView mSaveImageView;
 
     private LocalFile mFile;
     private LocalWorkspace mWorkspace;
@@ -39,11 +39,11 @@ public class FileActivity extends ActionBarActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_file);
 
-        textToView = (TextView) findViewById(R.id.textFile);
-        edit = (ImageView) findViewById(R.id.editTextFile);
+        mTextToView = (TextView) findViewById(R.id.text_view);
+        mEditImageView = (ImageView) findViewById(R.id.editTextImage);
 
-        textToEdit = (EditText) findViewById(R.id.editedTextFile);
-        save = (ImageView) findViewById(R.id.saveTextFile);
+        mTextToEdit = (EditText) findViewById(R.id.edit_text);
+        mSaveImageView = (ImageView) findViewById(R.id.saveTextImage);
 
         Intent intent = getIntent();
 
@@ -56,29 +56,28 @@ public class FileActivity extends ActionBarActivity {
         // Action bar back button e name
         getSupportActionBar().setTitle(mFile.getName());
 
-        Toast.makeText(getApplicationContext(), "Filename : " + mFile.getName(), Toast.LENGTH_SHORT).show();
-
-        new ReadFileTask(textToView).execute(mFile.getFile());
-
+        new ReadFileTask(mTextToView).execute(mFile.getFile());
     }
 
-
     public void onClickEdit(View view) {
+        try {
+            mFile.open();
 
-        new ReadFileTask(textToEdit).execute(mFile.getFile());
+            new ReadFileTask(mTextToEdit).execute(mFile.getFile());
 
-        textToView.setVisibility(View.GONE);
-        edit.setVisibility(View.GONE);
+            mTextToView.setVisibility(View.GONE);
+            mEditImageView.setVisibility(View.GONE);
 
-        textToEdit.setVisibility(View.VISIBLE);
-        save.setVisibility(View.VISIBLE);
+            mTextToEdit.setVisibility(View.VISIBLE);
+            mSaveImageView.setVisibility(View.VISIBLE);
+        } catch (FileException e) {
+            Toast.makeText(this, e.getMessage(), Toast.LENGTH_SHORT).show();
+        }
     }
 
     public void onClickSave(View view) {
-
         try {
-
-            long bytesToUse = textToEdit.length() - textToView.length() + ((LocalWorkspace) mWorkspace).getUsedQuota();
+            long bytesToUse = mTextToEdit.length() - mTextToView.length() + (mWorkspace).getUsedQuota();
             long usableSpace = WorkspaceManager.getInstance().getSpaceAvailableInternalStorage();
 
             if(bytesToUse > usableSpace) {
@@ -88,14 +87,17 @@ public class FileActivity extends ActionBarActivity {
                 throw new FileExceedsMaxQuotaException(bytesToUse, mWorkspace.getMaxQuota());
             }
 
-            new WriteFileTask(textToEdit, mWorkspace).execute(mFile.getFile());
-            new ReadFileTask(textToView).execute(mFile.getFile());
+            new WriteFileTask(mTextToEdit, mWorkspace).execute(mFile.getFile());
 
-            textToView.setVisibility(View.VISIBLE);
-            edit.setVisibility(View.VISIBLE);
+            mFile.close();
 
-            textToEdit.setVisibility(View.GONE);
-            save.setVisibility(View.GONE);
+            new ReadFileTask(mTextToView).execute(mFile.getFile());
+
+            mTextToView.setVisibility(View.VISIBLE);
+            mEditImageView.setVisibility(View.VISIBLE);
+
+            mTextToEdit.setVisibility(View.GONE);
+            mSaveImageView.setVisibility(View.GONE);
         }catch (Exception e) {
             Toast.makeText(getApplicationContext(), e.getMessage(), Toast.LENGTH_SHORT).show();
         }
