@@ -14,7 +14,6 @@ import java.util.List;
 
 import pt.ulisboa.tecnico.cmov.airdesk.core.file.LocalFile;
 import pt.ulisboa.tecnico.cmov.airdesk.core.file.RemoteFile;
-import pt.ulisboa.tecnico.cmov.airdesk.core.file.exception.FileAlreadyExistsException;
 import pt.ulisboa.tecnico.cmov.airdesk.core.user.User;
 import pt.ulisboa.tecnico.cmov.airdesk.core.workspace.ForeignWorkspace;
 import pt.ulisboa.tecnico.cmov.airdesk.core.workspace.LocalWorkspace;
@@ -152,16 +151,10 @@ public class WorkspaceManager {
     }
 
     public LocalFile addFileToWorkspace(String fileName, LocalWorkspace workspace) {
-        LocalFile localFile = null;
-        try {
-            localFile = new LocalFile(workspace, fileName, 0);
             AirDeskDbHelper.getInstance(getContext()).insertFileToWorkspace(workspace, fileName, 0);
+            LocalFile localFile = new LocalFile(workspace, fileName, 0);
             workspace.addFile(localFile);
-        } catch (Exception e) {
-            throw new FileAlreadyExistsException(fileName);
-        } finally {
             return localFile;
-        }
     }
 
     public void removeFileFromWorkspace(LocalFile file, LocalWorkspace workspace) {

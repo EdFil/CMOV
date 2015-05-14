@@ -27,4 +27,8 @@ public final class Constants {
     public static final String SERVICE_NAME = "service_name";
     public static final String SERVICE_ARGUMENTS = "service_arguments";
     public static final String WORKSPACE_LIST_KEY = "workspace_list_key";
+
+    // Threads & Requests
+    public static final long TIME_TO_DEAL_WITH_REQUESTS = 2000;
+    public static final int REQUEST_DELAY = 1000;
 }

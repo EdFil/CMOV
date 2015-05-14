@@ -34,12 +34,29 @@ public class RequestTask extends AsyncTask<Void, String, JSONObject> {
     private String mServiceClass;
     private String[] mArguments;
     public AsyncResponse mDelegate = null;
+    private Thread mTimeLimitThread;
 
     public RequestTask(String ip, int port, Class serviceClass, String... arguments) {
         mIp = ip;
         mPort = port;
         mServiceClass = serviceClass.getName();
         mArguments = arguments;
+    }
+
+    @Override
+    protected void onPreExecute() {
+        mTimeLimitThread = new Thread(new Runnable() {
+            @Override
+            public void run() {
+                try {
+                    Thread.sleep(Constants.TIME_TO_DEAL_WITH_REQUESTS);
+                    Log.i(TAG + "[THREAD]", "Canceling");
+                    RequestTask.this.cancel(true);
+                } catch (InterruptedException e) {
+                    Log.i(TAG + "[THREAD]", "Interrupted");
+                }
+            }
+        });
     }
 
 
@@ -75,7 +92,7 @@ public class RequestTask extends AsyncTask<Void, String, JSONObject> {
             socket.close();
 
             // To simulate delays in the network
-            Thread.sleep(new Random().nextInt(1000));
+            Thread.sleep(new Random().nextInt(Constants.REQUEST_DELAY));
 
             // Return the request response
             return serverResponse;

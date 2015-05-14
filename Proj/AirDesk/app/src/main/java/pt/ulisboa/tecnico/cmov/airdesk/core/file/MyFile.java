@@ -19,6 +19,7 @@ public abstract class MyFile {
     private boolean isLocked;
     private Workspace mWorkspace;
     private String mName;
+    private File mFile;
 
     public MyFile(Workspace workspace, String name, int version) {
         mWorkspace = workspace;
@@ -31,8 +32,11 @@ public abstract class MyFile {
     public boolean isLocked() { return isLocked; }
     public Workspace getWorkspace() { return mWorkspace; }
     public String getName() { return mName; }
+    public File getFile() { return mFile; }
 
-    public abstract File getFile();
+    public void setFile(File file) {
+        mFile = file;
+    }
 
     public synchronized boolean open() {
         if(isLocked)

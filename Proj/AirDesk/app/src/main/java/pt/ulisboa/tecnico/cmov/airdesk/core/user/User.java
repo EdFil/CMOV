@@ -50,7 +50,13 @@ public class User implements Parcelable {
 
     @Override
     public String toString(){
-        return "Email = " + getEmail() + ", Nick = " + getNick();
+        return new StringBuilder()
+                .append("Email = ")
+                .append(getEmail())
+                .append(", Nick = ")
+                .append(getNick())
+                .append(", Device = ")
+                .append((getDevice() == null)?getDevice().getVirtIp():"null").toString();
     }
 
 

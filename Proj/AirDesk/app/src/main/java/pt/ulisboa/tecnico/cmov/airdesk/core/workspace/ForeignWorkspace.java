@@ -19,7 +19,7 @@ public class ForeignWorkspace extends Workspace {
         long uuid;
         do {
             uuid = new Random().nextLong();
-        } while (WorkspaceManager.getInstance().getForeignWorkspaceWithId(uuid) != null);
+        } while (WorkspaceManager.getInstance().getForeignWorkspaceWithId(uuid) == null);
         setFiles(Collections.EMPTY_LIST);
         setDatabaseId(uuid);
     }
