@@ -12,6 +12,7 @@ import java.util.List;
 
 import pt.ulisboa.tecnico.cmov.airdesk.core.subscription.Subscription;
 import pt.ulisboa.tecnico.cmov.airdesk.core.user.User;
+import pt.ulisboa.tecnico.cmov.airdesk.core.workspace.Workspace;
 import pt.ulisboa.tecnico.cmov.airdesk.database.AirDeskDbHelper;
 
 /**
@@ -105,12 +106,19 @@ public class UserManager {
     }
 
     // Clears the subscription list
-    public void refreshSubscriptionList(){
+    public void loadSubscriptions(){
         List<Subscription> subscriptions = AirDeskDbHelper.getInstance(getContext()).getSubscriptions(getOwner());
         mSubscriptionList.clear();
 
         for(Subscription subscription : subscriptions)
             mSubscriptionList.add(subscription);
+    }
+
+    public void loadForeignWorkspaces(){
+        loadSubscriptions();
+        // TODO : DESCOMENTAR PARA FAZER LOAD DOS FOREIGN WORKSPACES
+//        for(Subscription subscription : mSubscriptionList)
+//            WorkspaceManager.getInstance().mountForeignWorkspacesWithTags(subscription.getTags());
     }
 
 

@@ -23,7 +23,7 @@ import android.widget.Toast;
 import pt.ulisboa.tecnico.cmov.airdesk.AirDeskActivity;
 import pt.ulisboa.tecnico.cmov.airdesk.R;
 import pt.ulisboa.tecnico.cmov.airdesk.WorkspaceDetailsActivity;
-import pt.ulisboa.tecnico.cmov.airdesk.adapter.WorkspaceListAdapter;
+import pt.ulisboa.tecnico.cmov.airdesk.adapter.ForeignWorkspaceListAdapter;
 import pt.ulisboa.tecnico.cmov.airdesk.core.workspace.ForeignWorkspace;
 import pt.ulisboa.tecnico.cmov.airdesk.manager.WorkspaceManager;
 import pt.ulisboa.tecnico.cmov.airdesk.util.Constants;
@@ -39,7 +39,7 @@ public class ForeignWorkspacesFragment extends Fragment {
 
     WorkspaceManager manager;
 
-    WorkspaceListAdapter mWorkspaceListAdapter;
+    ForeignWorkspaceListAdapter mForeignWorkspaceListAdapter;
 
     public ForeignWorkspacesFragment() {setHasOptionsMenu(true);}
 
@@ -55,7 +55,7 @@ public class ForeignWorkspacesFragment extends Fragment {
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         manager = WorkspaceManager.getInstance();
-        mWorkspaceListAdapter = new WorkspaceListAdapter(getActivity(), WorkspaceManager.getInstance().getForeignWorkspaces());
+        mForeignWorkspaceListAdapter = new ForeignWorkspaceListAdapter(getActivity(), WorkspaceManager.getInstance().getForeignWorkspaces());
         setHasOptionsMenu(true);
     }
 
@@ -65,7 +65,7 @@ public class ForeignWorkspacesFragment extends Fragment {
 
 
         ListView listView = (ListView) workspaceFragmentView.findViewById(R.id.workspacesList);
-        listView.setAdapter(mWorkspaceListAdapter);
+        listView.setAdapter(mForeignWorkspaceListAdapter);
 
         // When selecting a workspace replaces this fragment for the FilesFragment
         listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
@@ -205,6 +205,6 @@ public class ForeignWorkspacesFragment extends Fragment {
     }
 
     public void updateWorkspaceList() {
-        mWorkspaceListAdapter.notifyDataSetChanged();
+        mForeignWorkspaceListAdapter.notifyDataSetChanged();
     }
 }

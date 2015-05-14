@@ -31,9 +31,9 @@ public class GlobalState extends Application implements SimWifiP2pManager.PeerLi
     public void onCreate() {
         super.onCreate();
 
+        WifiDirectManager.getInstance().initWifiDirectManager(this);
         WorkspaceManager.getInstance().initWorkspaceManager(this);
         UserManager.getInstance().initUserManager(this);
-        WifiDirectManager.getInstance().initWifiDirectManager(this);
         FileManager.getInstance().initFileManager(this);
 
     }

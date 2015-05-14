@@ -49,7 +49,7 @@ public class LoginActivity extends ActionBarActivity {
                     mSharedPreferences.edit().remove(Constants.EMAIL_KEY).commit();
                 } else {
                     UserManager.getInstance().setOwner(user);
-                    Intent intent = new Intent(getApplicationContext(), AirDeskActivity.class);
+                    Intent intent = new Intent(getApplicationContext(), LoadActivity.class);
                     startActivity(intent);
                 }
             }
@@ -95,7 +95,7 @@ public class LoginActivity extends ActionBarActivity {
             editor.commit();
         }
 
-        Intent intent = new Intent(getApplicationContext(), AirDeskActivity.class);
+        Intent intent = new Intent(getApplicationContext(), LoadActivity.class);
         startActivity(intent);
     }
 

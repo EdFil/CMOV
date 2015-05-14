@@ -47,7 +47,6 @@ public class SubscriptionsFragment extends Fragment {
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
-        UserManager.getInstance().refreshSubscriptionList();
         mSubscriptionListAdapter = new SubscriptionListAdapter(getActivity(), UserManager.getInstance().getSubscriptionList());
         setHasOptionsMenu(true);
     }

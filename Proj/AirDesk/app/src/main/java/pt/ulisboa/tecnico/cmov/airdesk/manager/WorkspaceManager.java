@@ -1,6 +1,7 @@
 package pt.ulisboa.tecnico.cmov.airdesk.manager;
 
 import android.content.Context;
+import android.widget.Toast;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -19,6 +20,7 @@ import pt.ulisboa.tecnico.cmov.airdesk.core.workspace.ForeignWorkspace;
 import pt.ulisboa.tecnico.cmov.airdesk.core.workspace.LocalWorkspace;
 import pt.ulisboa.tecnico.cmov.airdesk.core.workspace.Workspace;
 import pt.ulisboa.tecnico.cmov.airdesk.database.AirDeskDbHelper;
+import pt.ulisboa.tecnico.cmov.airdesk.util.Constants;
 
 public class WorkspaceManager {
 
@@ -54,7 +56,7 @@ public class WorkspaceManager {
         mForeignWorkspaces = new ArrayList<>();
     }
 
-    public void refreshWorkspaceLists(){
+    public void loadLocalWorkspaces(){
         List<LocalWorkspace> workspaces = getWorkspacesFromDB();
         mLocalWorkspaces.clear();
 
@@ -80,6 +82,25 @@ public class WorkspaceManager {
         mLocalWorkspaces.add(newWorkspace);
 
         return newWorkspace;
+    }
+
+    public void mountForeignWorkspacesFromJSON(String output) {
+        try {
+            // Get the response as a JSONObject
+            JSONObject response = new JSONObject(output);
+
+            // Check if has error
+            if (response.has(Constants.ERROR_KEY))
+                throw new RuntimeException(response.getString(Constants.ERROR_KEY));
+
+            // Get the list of workspaces returned and add them to our list
+            JSONArray workspaceArray = response.getJSONArray(Constants.WORKSPACE_LIST_KEY);
+            for(int i = 0; i < workspaceArray.length(); i++) {
+                mountForeignWorkspace(workspaceArray.getJSONObject(i));
+            }
+        } catch (Exception e) {
+            Toast.makeText(getContext(), e.getMessage(), Toast.LENGTH_SHORT).show();
+        }
     }
 
     public ForeignWorkspace mountForeignWorkspace(JSONObject workspaceJSON) throws JSONException {
