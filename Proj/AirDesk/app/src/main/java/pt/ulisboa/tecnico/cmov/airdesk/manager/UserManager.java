@@ -6,6 +6,7 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collection;
 import java.util.List;
 
@@ -24,6 +25,11 @@ public class UserManager {
 
     public static final String TAG = UserManager.class.getSimpleName();
     private static UserManager mInstance;
+
+    WorkspaceManager manager;
+
+    private ArrayList allTags;
+    private List<Subscription> subscriptionsFromDB;
 
     public static synchronized UserManager getInstance() {
         return mInstance;
@@ -45,7 +51,6 @@ public class UserManager {
     protected UserManager(Context context){
         mContext = context;
         mUserList = new ArrayList<>();
-        // TODO : IR BUSCAR AS SUBSCRICOES A BD
         mSubscriptionList = new ArrayList<>();
     }
 
@@ -90,6 +95,24 @@ public class UserManager {
     public List<Subscription> getSubscriptionList() {
         return mSubscriptionList;
     }
+
+    // Create a subscription and add it to the subscription list of the user
+    public void createSubscription(String name, String[] tags) {
+        AirDeskDbHelper.getInstance(getContext()).insertSubscriptionToUser(getOwner(), name, tags);
+        Subscription subscription = new Subscription(name, tags);
+        mSubscriptionList.add(subscription);
+
+    }
+
+    // Clears the subscription list
+    public void refreshSubscriptionList(){
+        List<Subscription> subscriptions = AirDeskDbHelper.getInstance(getContext()).getSubscriptions(getOwner());
+        mSubscriptionList.clear();
+
+        for(Subscription subscription : subscriptions)
+            mSubscriptionList.add(subscription);
+    }
+
 
     public User getUserById(long databaseId) {
         for(User user : mUserList)
@@ -136,9 +159,48 @@ public class UserManager {
         mUserList.clear();
     }
 
-    public void deleteSubscription(int position) {
-        Subscription subscription = mSubscriptionList.get(position);
+    // Returns tags from all subscriptions (as a list)
+    public ArrayList<String> getAllTags() {
 
+        ArrayList<String> allTags = new ArrayList();
+
+        for(Subscription sub : mSubscriptionList)
+            allTags.addAll(Arrays.asList(sub.getTags()));
+
+        return allTags;
+    }
+
+
+    public String[] removeTagsFromSubscription(String[] tags, List<String> tagsToRemove) {
+        List<String> tagsRemoved = new ArrayList<>();
+        boolean tagOnOtherWorkspace = false;
+
+        for(String tag : tags) {
+            for (String tagToRemove : tagsToRemove)
+                if (tag.equals(tagToRemove)) {
+                    tagOnOtherWorkspace = true;
+                    break;
+                }
+            if(!tagOnOtherWorkspace)
+                tagsRemoved.add(tag);
+        }
+
+
+        return tagsRemoved.toArray(new String[tagsRemoved.size()]);
+    }
+
+
+    public void deleteSubscription(int position) {
+        // remove subscription from the user's subscriptions
+        Subscription subscription = mSubscriptionList.get(position);
+        String[] subTags = subscription.getTags();
         mSubscriptionList.remove(position);
+
+        // remove foreign workspaces regarding this subscription and no one else
+        ArrayList allOtherTags = getAllTags();
+        String[] tagsToRemove = removeTagsFromSubscription(subTags, allOtherTags);
+
+        WorkspaceManager.getInstance().unmountForeignWorkspacesWithTags(tagsToRemove);
+        AirDeskDbHelper.getInstance(getContext()).removeSubscriptionFromUser(getOwner(), subscription);
     }
 }

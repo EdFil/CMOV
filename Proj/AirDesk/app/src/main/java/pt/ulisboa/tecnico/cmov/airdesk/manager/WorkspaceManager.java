@@ -33,7 +33,6 @@ public class WorkspaceManager {
     private List<ForeignWorkspace> mForeignWorkspaces;
 
 
-
     public static synchronized WorkspaceManager getInstance() {
         return mInstance;
     }
@@ -58,14 +57,9 @@ public class WorkspaceManager {
     public void refreshWorkspaceLists(){
         List<LocalWorkspace> workspaces = getWorkspacesFromDB();
         mLocalWorkspaces.clear();
-        mForeignWorkspaces.clear();
-        for(Workspace workspace : workspaces) {
-            if(workspace instanceof LocalWorkspace) {
-                mLocalWorkspaces.add((LocalWorkspace) workspace);
-            }
-            else
-                mForeignWorkspaces.add((ForeignWorkspace) workspace);
-        }
+
+        for(LocalWorkspace workspace : workspaces)
+            mLocalWorkspaces.add(workspace);
     }
 
     public Workspace createLocalWorkspace(String name, long quota, boolean isPrivate, Collection<String> tags) {
@@ -121,9 +115,19 @@ public class WorkspaceManager {
         FileManager.getInstance().createTempFolder(newWorkspace.getWorkspaceFolderName());
 
         // Add Workspace to Workspace Manager
-        mForeignWorkspaces.add(newWorkspace);
+        if(!containsWorkspace(mForeignWorkspaces, newWorkspace))
+            mForeignWorkspaces.add(newWorkspace);
 
         return newWorkspace;
+    }
+
+    public boolean containsWorkspace(Collection<ForeignWorkspace> workspaceCollection, Workspace workspaceToAdd) {
+        String wsToAddName = workspaceToAdd.getName();
+        String wsToAddOwnerEmail = workspaceToAdd.getOwner().getEmail();
+        for(ForeignWorkspace workspace : workspaceCollection)
+            if(workspace.getOwner().getEmail().equals(wsToAddOwnerEmail) && workspace.getName().equals(wsToAddName))
+                return true;
+        return false;
     }
 
     public void deleteLocalWorkspace(int workspaceIndex) {
@@ -138,6 +142,12 @@ public class WorkspaceManager {
         AirDeskDbHelper.getInstance(getContext()).deleteWorkspace(workspace.getDatabaseId());
         FileManager.getInstance().deleteTempFolder(workspace.getWorkspaceFolderName());
         mForeignWorkspaces.remove(workspaceIndex);
+    }
+
+    public void unmountForeignWorkspace(ForeignWorkspace workspace) {
+        AirDeskDbHelper.getInstance(getContext()).deleteWorkspace(workspace.getDatabaseId());
+        FileManager.getInstance().deleteTempFolder(workspace.getWorkspaceFolderName());
+        mForeignWorkspaces.remove(workspace);
     }
 
     public void deletaAllLocalWorkspaces() {
@@ -228,6 +238,14 @@ public class WorkspaceManager {
         return workspaceList;
     }
 
+    public List<ForeignWorkspace> getForeignWorkspacesWithTags(String... tags) {
+        List<ForeignWorkspace> workspaceList = new ArrayList<>();
+        for(ForeignWorkspace workspace : mForeignWorkspaces)
+            if(workspace.containsAtLeastOneTag(Arrays.asList(tags)))
+                workspaceList.add(workspace);
+        return workspaceList;
+    }
+
 
     public List<LocalWorkspace> getLocalWorkspaces() {
         return mLocalWorkspaces;
@@ -237,11 +255,18 @@ public class WorkspaceManager {
     }
 
 
+    // used without network
     public List<JSONObject> getJsonWorkspacesWithTags(String[] tags) {
         List<JSONObject> jsonWorkspaceList = new ArrayList<>();
         for(LocalWorkspace workspace : mLocalWorkspaces)
             if(workspace.containsAtLeastOneTag(Arrays.asList(tags)))
                 jsonWorkspaceList.add(workspace.toJSON());
         return jsonWorkspaceList;
+    }
+
+    public void unmountForeignWorkspacesWithTags(String[] tags) {
+        List<ForeignWorkspace> foreignWorkspaces = getForeignWorkspacesWithTags(tags);
+        for(ForeignWorkspace foreignWorkspace : foreignWorkspaces)
+            unmountForeignWorkspace(foreignWorkspace);
     }
 }

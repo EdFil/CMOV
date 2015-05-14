@@ -93,79 +93,64 @@ public class NewSubscriptionFragment extends DialogFragment {
         @Override
         public void onClick(View v) {
 
-            // Get and convert to String[] all tags, to send as arguments of service (String...)
-            List<String> tagList = mAddTagsLayout.getAllTags();
-            String[] tagValues = new String[tagList.size()];
-            mAddTagsLayout.getAllTags().toArray(tagValues);
-
-            // If no tags were added exit
-            if(tagValues == null || tagValues.length == 0) {
-                Toast.makeText(getActivity(), "No tags were added.", Toast.LENGTH_SHORT).show();
-                return;
-            }
-
-            // Create the broadcast task to send the service to all connected peers
-            // TODO : DESCOMENTAR QUANDO SE PASSAR PARA NETWORK
-//            BroadcastTask task = new BroadcastTask(
-//                    Integer.parseInt(getString(R.string.port)),
-//                    GetWorkspacesWithTagsService.class,
-//                    tagValues
-//            );
-
-//            // Override the callback so we can process the result from the task
-//            task.mDelegate = new AsyncResponse() {
-//                @Override
-//                public void processFinish(String output) {
-//                    try {
-//                        // Get the response as a JSONObject
-//                        JSONObject response = new JSONObject(output);
-//
-//                        // Check if has error
-//                        if (response.has(Constants.ERROR_KEY))
-//                            throw new Exception(response.getString(Constants.ERROR_KEY));
-//
-//                        // Get the list of workspaces returned and add them to our list
-//                        JSONArray workspaceArray = response.getJSONArray(Constants.WORKSPACE_LIST_KEY);
-//                        for(int i = 0; i < workspaceArray.length(); i++) {
-//                            Toast.makeText(getActivity(), "TODO : WORKSPACE TO ADD", Toast.LENGTH_SHORT).show();
-//                                WorkspaceManager.getInstance().mountForeignWorkspace(workspaceArray.getJSONObject(i));
-//                        }
-//                    } catch (Exception e1) {
-//                        // Show our error in a toast
-//                        Toast.makeText(getActivity(), e1.getMessage(), Toast.LENGTH_SHORT).show();
-//                    }
-//                }
-//            };
-//            // Execute our task
-//            task.executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR);
-
-
-
-            // TODO : QUANDO ONLINE (COMENTADO EM CIMA) , REMOVER ESTE CICLO MOUNT
-            // Workspaces with at least one of the tags
-            List<JSONObject> jsonWorkspaceList = WorkspaceManager.getInstance().getJsonWorkspacesWithTags(tagValues);
-
-            for (JSONObject jsonWorkspace : jsonWorkspaceList) {
-                try {
-                    WorkspaceManager.getInstance().mountForeignWorkspace(jsonWorkspace);
-                } catch (JSONException e) {
-                    Toast.makeText(getActivity(), "NewSubscriptionFragment : " + e.toString(), Toast.LENGTH_SHORT).show();
-                }
-            }
-
-            // TODO : ATE AQUI
-
-            // Create the subscription with the tags and workspaces
-            Subscription subscription = new Subscription(subscriptionName.getText().toString(), tagValues);
-
             // Add the subscription to the subscription list of the user
-            UserManager.getInstance().getSubscriptionList().add(subscription);
+            try {
 
-            // CALL back to refresh subscription list on the SubscriptionFragment through the AirDeskActivity
-            mCallback.updateSubscriptionList();
+                // Get and convert to String[] all tags, to send as arguments of service (String...)
+                List<String> tagList = mAddTagsLayout.getAllTags();
+                String[] tagValues = new String[tagList.size()];
+                mAddTagsLayout.getAllTags().toArray(tagValues);
 
-            // Close dialog fragment
-            dismiss();
+                // If no tags were added exit
+                if(tagValues == null || tagValues.length == 0) {
+                    Toast.makeText(getActivity(), "No tags were added.", Toast.LENGTH_SHORT).show();
+                    return;
+                }
+
+                UserManager.getInstance().createSubscription(subscriptionName.getText().toString(), tagValues);
+
+                // Create the broadcast task to send the service to all connected peers
+                BroadcastTask task = new BroadcastTask(
+                        Integer.parseInt(getString(R.string.port)),
+                        GetWorkspacesWithTagsService.class,
+                        tagValues
+                );
+
+                // Override the callback so we can process the result from the task
+                task.mDelegate = new AsyncResponse() {
+                    @Override
+                    public void processFinish(String output) {
+                        try {
+                            // Get the response as a JSONObject
+                            JSONObject response = new JSONObject(output);
+
+                            // Check if has error
+                            if (response.has(Constants.ERROR_KEY))
+                                throw new Exception(response.getString(Constants.ERROR_KEY));
+
+                            // Get the list of workspaces returned and add them to our list
+                            JSONArray workspaceArray = response.getJSONArray(Constants.WORKSPACE_LIST_KEY);
+                            for(int i = 0; i < workspaceArray.length(); i++) {
+                                WorkspaceManager.getInstance().mountForeignWorkspace(workspaceArray.getJSONObject(i));
+                            }
+                        } catch (Exception e1) {
+                            // Show our error in a toast
+                            Toast.makeText(getActivity(), "Tripou no delegate do NewSubscriptionFragment", Toast.LENGTH_SHORT).show();
+                        }
+                    }
+                };
+                // Execute our task
+                task.executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR);
+
+
+                // CALL back to refresh subscription list on the SubscriptionFragment through the AirDeskActivity
+                mCallback.updateSubscriptionList();
+
+                // Close dialog fragment
+                dismiss();
+            } catch (Exception e) {
+                Toast.makeText(getActivity(), e.getMessage(), Toast.LENGTH_SHORT).show();
+            }
         }
 
     };
