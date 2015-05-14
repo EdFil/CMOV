@@ -24,7 +24,11 @@ public class UserManager {
 
     public static final String TAG = UserManager.class.getSimpleName();
     private static UserManager mInstance;
+
+    WorkspaceManager manager;
+
     private ArrayList allTags;
+    private List<Subscription> subscriptionsFromDB;
 
     public static synchronized UserManager getInstance() {
         return mInstance;
@@ -46,7 +50,7 @@ public class UserManager {
     protected UserManager(Context context){
         mContext = context;
         mUserList = new ArrayList<>(AirDeskDbHelper.getInstance(context).getAllUsers());
-        // TODO : IR BUSCAR AS SUBSCRICOES A BD
+
         mSubscriptionList = new ArrayList<>();
     }
 
@@ -91,6 +95,24 @@ public class UserManager {
     public List<Subscription> getSubscriptionList() {
         return mSubscriptionList;
     }
+
+    // Create a subscription and add it to the subscription list of the user
+    public void createSubscription(String name, String[] tags) {
+        AirDeskDbHelper.getInstance(getContext()).insertSubscriptionToUser(getOwner(), name, tags);
+        Subscription subscription = new Subscription(name, tags);
+        mSubscriptionList.add(subscription);
+
+    }
+
+    // Clears the subscription list
+    public void refreshSubscriptionList(){
+        List<Subscription> subscriptions = AirDeskDbHelper.getInstance(getContext()).getSubscriptions(getOwner());
+        mSubscriptionList.clear();
+
+        for(Subscription subscription : subscriptions)
+            mSubscriptionList.add(subscription);
+    }
+
 
     public User getUserById(long databaseId) {
         for(User user : mUserList)
@@ -171,6 +193,6 @@ public class UserManager {
         String[] tagsToRemove = removeTagsFromSubscription(subTags, allOtherTags);
 
         WorkspaceManager.getInstance().unmountForeignWorkspacesWithTags(tagsToRemove);
-        // TODO : REMOVE FROM DB
+        AirDeskDbHelper.getInstance(getContext()).removeSubscriptionFromUser(getOwner(), subscription);
     }
 }

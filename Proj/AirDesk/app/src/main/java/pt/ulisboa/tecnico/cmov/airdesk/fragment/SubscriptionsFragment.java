@@ -31,8 +31,6 @@ public class SubscriptionsFragment extends Fragment {
 
     public static final String TAG = SubscriptionsFragment.class.getSimpleName();
 
-    WorkspaceManager manager;
-
     SubscriptionListAdapter mSubscriptionListAdapter;
 
     public SubscriptionsFragment() {}
@@ -48,7 +46,8 @@ public class SubscriptionsFragment extends Fragment {
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        manager = WorkspaceManager.getInstance();
+
+        UserManager.getInstance().refreshSubscriptionList();
         mSubscriptionListAdapter = new SubscriptionListAdapter(getActivity(), UserManager.getInstance().getSubscriptionList());
         setHasOptionsMenu(true);
     }

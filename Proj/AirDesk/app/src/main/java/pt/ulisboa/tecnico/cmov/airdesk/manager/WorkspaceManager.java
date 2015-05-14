@@ -35,7 +35,6 @@ public class WorkspaceManager {
     private List<ForeignWorkspace> mForeignWorkspaces;
 
 
-
     public static synchronized WorkspaceManager getInstance() {
         return mInstance;
     }
@@ -60,14 +59,9 @@ public class WorkspaceManager {
     public void refreshWorkspaceLists(){
         List<LocalWorkspace> workspaces = getWorkspacesFromDB();
         mLocalWorkspaces.clear();
-        mForeignWorkspaces.clear();
-        for(Workspace workspace : workspaces) {
-            if(workspace instanceof LocalWorkspace) {
-                mLocalWorkspaces.add((LocalWorkspace) workspace);
-            }
-            else
-                mForeignWorkspaces.add((ForeignWorkspace) workspace);
-        }
+
+        for(LocalWorkspace workspace : workspaces)
+            mLocalWorkspaces.add(workspace);
     }
 
     public Workspace createLocalWorkspace(String name, long quota, boolean isPrivate, Collection<String> tags) {
@@ -276,6 +270,4 @@ public class WorkspaceManager {
         for(ForeignWorkspace foreignWorkspace : foreignWorkspaces)
             unmountForeignWorkspace(foreignWorkspace);
     }
-
-
 }

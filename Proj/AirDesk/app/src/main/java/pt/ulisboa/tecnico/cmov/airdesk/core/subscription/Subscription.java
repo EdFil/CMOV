@@ -16,14 +16,6 @@ public class Subscription {
     List<ForeignWorkspace> mForeignWorkspaceList;
     List<LocalWorkspace> mLocalWorkspace;
 
-    public Subscription(String name) {
-        mName = name;
-    }
-
-    public Subscription(String[] tags) {
-        mTags = tags;
-    }
-
     public Subscription(String name, String[] tags) {
         mName = name;
         mTags = tags;
