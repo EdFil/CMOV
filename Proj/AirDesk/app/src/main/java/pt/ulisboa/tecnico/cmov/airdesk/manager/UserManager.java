@@ -6,6 +6,7 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.List;
 
 import pt.ulisboa.tecnico.cmov.airdesk.core.subscription.Subscription;
@@ -43,7 +44,7 @@ public class UserManager {
 
     protected UserManager(Context context){
         mContext = context;
-        mUserList = new ArrayList<>(AirDeskDbHelper.getInstance(context).getAllUsers());
+        mUserList = new ArrayList<>();
         // TODO : IR BUSCAR AS SUBSCRICOES A BD
         mSubscriptionList = new ArrayList<>();
     }
@@ -82,7 +83,7 @@ public class UserManager {
         // If not exists
         long userId = AirDeskDbHelper.getInstance(getContext()).insertUser(userEmail, userNick);
         User user = new User(userId, userEmail, userNick);
-        mUserList.add(user);
+            mUserList.add(user);
         return user;
     }
 
@@ -99,6 +100,14 @@ public class UserManager {
 
     public User getUserByEmail(String storedEmail) {
         for(User user : mUserList)
+            if(user.getEmail().equals(storedEmail))
+                return user;
+        return null;
+    }
+
+    public User getLoggedUserByEmail(String storedEmail) {
+        Collection<User> users = AirDeskDbHelper.getInstance(getContext()).getAllUsers();
+        for(User user : users)
             if(user.getEmail().equals(storedEmail))
                 return user;
         return null;

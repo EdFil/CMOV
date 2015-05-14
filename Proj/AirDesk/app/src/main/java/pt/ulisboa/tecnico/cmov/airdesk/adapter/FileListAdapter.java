@@ -31,7 +31,7 @@ public class FileListAdapter extends ArrayAdapter<MyFile> {
         // Lookup view for data population
         TextView title = (TextView) convertView.findViewById(R.id.itemName);
         // Populate the data into the template view using the data object
-        title.setText(file.getFile().getName());
+        title.setText(file.getName());
 
         // Return the completed view to render on screen
         return convertView;

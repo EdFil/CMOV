@@ -46,7 +46,7 @@ public class LocalWorkspace extends Workspace {
 
     public LocalFile getFileByName(String name) {
         for(LocalFile file : mFiles)
-            if(file.getFile().getName().equals(name))
+            if(file.getName().equals(name))
                 return file;
         return null;
     }

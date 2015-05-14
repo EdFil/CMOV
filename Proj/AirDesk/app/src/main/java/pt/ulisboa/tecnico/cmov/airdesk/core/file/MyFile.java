@@ -10,7 +10,7 @@ import pt.ulisboa.tecnico.cmov.airdesk.core.workspace.Workspace;
 /**
  * Created by edgar on 11-05-2015.
  */
-public class MyFile {
+public abstract class MyFile {
 
     public static final String VERSION_KEY = "version";
     public static final String NAME_KEY = "name";
@@ -19,7 +19,6 @@ public class MyFile {
     private boolean isLocked;
     private Workspace mWorkspace;
     private String mName;
-    private File mFile;
 
     public MyFile(Workspace workspace, String name, int version) {
         mWorkspace = workspace;
@@ -31,9 +30,9 @@ public class MyFile {
     public int getVersion() { return mVersion; }
     public boolean isLocked() { return isLocked; }
     public Workspace getWorkspace() { return mWorkspace; }
-    public File getFile() { return mFile; }
     public String getName() { return mName; }
 
+    public abstract File getFile();
 
     public synchronized boolean open() {
         if(isLocked)

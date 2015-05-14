@@ -219,6 +219,13 @@ public class WorkspaceManager {
         return null;
     }
 
+    public ForeignWorkspace getForeignWorkspaceWithId(long databaseId) {
+        for(ForeignWorkspace workspace : mForeignWorkspaces)
+            if(workspace.getDatabaseId() == databaseId)
+                return workspace;
+        return null;
+    }
+
 
     public List<LocalWorkspace> getLocalWorkspacesWithTags(String... tags) {
         List<LocalWorkspace> workspaceList = new ArrayList<>();

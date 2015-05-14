@@ -4,6 +4,7 @@ import android.content.Intent;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.v7.app.ActionBarActivity;
+import android.util.Log;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ListView;
@@ -68,7 +69,7 @@ public class InviteForWorkspaceActivity extends ActionBarActivity {
         public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
             final User user = (User) parent.getItemAtPosition(position);
 
-            mWorkspace.addAccessToUser(user.getEmail());
+            Log.d(TAG, "OnItemCick " + user.getNick());
 
             // Create a request task for every device
             RequestTask task = new RequestTask(
@@ -92,6 +93,7 @@ public class InviteForWorkspaceActivity extends ActionBarActivity {
                         }
 
                         Toast.makeText(getApplicationContext(), response.getString(Constants.RESULT_KEY), Toast.LENGTH_SHORT).show();
+                        WorkspaceManager.getInstance().addAccessToUser(user.getEmail(), mWorkspace);
                         mUserListAdapter.remove(user);
 
                     } catch (Exception e) {

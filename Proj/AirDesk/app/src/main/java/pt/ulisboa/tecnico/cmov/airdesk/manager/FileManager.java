@@ -48,6 +48,7 @@ public class FileManager {
 
     public void setWorkspacesFolderName(String workspacesFolderName) {
         mWorkspaceFolderName = workspacesFolderName;
+        mRootFolder = mContext.getDir(mWorkspaceFolderName, Context.MODE_PRIVATE);
     }
 
     public File createLocalFile(String folderName, String fileName) {
@@ -100,16 +101,16 @@ public class FileManager {
     // -------------------------
 
     private File createFile(File rootFolder, String folderName, String fileName) {
-        File file = null;
+        File createdFile = null;
         try {
             File workspaceFolder = new File(rootFolder, folderName);
-            File createdFile = new File(workspaceFolder, fileName);
+            createdFile = new File(workspaceFolder, fileName);
 
             createdFile.createNewFile();
         } catch (IOException e) {
             e.printStackTrace();
         } finally {
-            return file;
+            return createdFile;
         }
     }
 

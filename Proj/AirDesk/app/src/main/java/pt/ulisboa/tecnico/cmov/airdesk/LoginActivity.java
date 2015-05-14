@@ -43,7 +43,7 @@ public class LoginActivity extends ActionBarActivity {
         } else {
             String storedEmail = mSharedPreferences.getString(Constants.EMAIL_KEY, null);
             if (storedEmail != null) {
-                User user = UserManager.getInstance().getUserByEmail(storedEmail);
+                User user = UserManager.getInstance().getLoggedUserByEmail(storedEmail);
                 if (user == null) {
                     Log.i(TAG, "Bad user E-mail");
                     mSharedPreferences.edit().remove(Constants.EMAIL_KEY).commit();
