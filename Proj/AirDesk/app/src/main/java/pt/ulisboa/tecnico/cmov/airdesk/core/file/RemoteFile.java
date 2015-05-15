@@ -13,6 +13,7 @@ import java.util.concurrent.ExecutionException;
 import pt.ulisboa.tecnico.cmov.airdesk.R;
 import pt.ulisboa.tecnico.cmov.airdesk.core.file.exception.FileException;
 import pt.ulisboa.tecnico.cmov.airdesk.core.workspace.ForeignWorkspace;
+import pt.ulisboa.tecnico.cmov.airdesk.core.workspace.Workspace;
 import pt.ulisboa.tecnico.cmov.airdesk.manager.FileManager;
 import pt.ulisboa.tecnico.cmov.airdesk.manager.WorkspaceManager;
 import pt.ulisboa.tecnico.cmov.airdesk.service.LockFileService;
@@ -26,6 +27,11 @@ import pt.ulisboa.tecnico.cmov.airdesk.util.Constants;
  * Created by Diogo on 10-May-15.
  */
 public class RemoteFile extends MyFile {
+
+    public RemoteFile(Workspace workspace, String name) {
+        super(workspace, name, 0);
+        setFile(FileManager.getInstance().createTempFile(getWorkspace().getWorkspaceFolderName(), getName()));
+    }
 
     public RemoteFile(ForeignWorkspace workspace, JSONObject jsonObject) throws JSONException {
         super(

@@ -25,6 +25,7 @@ public class CreateFileService implements AirDeskService {
             if (workspace == null)
                 throw new JSONException("Cannot find workspace with name \"" + workspaceName + "\"");
             LocalFile file = WorkspaceManager.getInstance().addFileToWorkspace(fileName, workspace);
+
             response.put(MyFile.CONTENT_KEY, Constants.RESULT_OK);
         } catch (Exception e) {
             response.put(Constants.ERROR_KEY, e.getMessage());

@@ -189,10 +189,16 @@ public class WorkspaceManager {
     }
 
     public LocalFile addFileToWorkspace(String fileName, LocalWorkspace workspace) {
-            AirDeskDbHelper.getInstance(getContext()).insertFileToWorkspace(workspace, fileName, 0);
-            LocalFile localFile = new LocalFile(workspace, fileName, 0);
-            workspace.addFile(localFile);
-            return localFile;
+        AirDeskDbHelper.getInstance(getContext()).insertFileToWorkspace(workspace, fileName, 0);
+        LocalFile localFile = new LocalFile(workspace, fileName, 0);
+        workspace.addFile(localFile);
+        return localFile;
+    }
+
+    public RemoteFile addFileToWorkspace(String fileName, ForeignWorkspace workspace) {
+        RemoteFile remotefile = new RemoteFile(workspace, fileName);
+        workspace.addFile(remotefile);
+        return remotefile;
     }
 
     public void removeFileFromWorkspace(LocalFile file, LocalWorkspace workspace) {
