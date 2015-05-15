@@ -20,6 +20,8 @@ public class ReadFileTask extends AsyncTask<File, Integer, String> {
 
     TextView mTextToView;
 
+    public ReadFileTask() {this(null);}
+
     public ReadFileTask(TextView textToView) {
         mTextToView = textToView;
     }
@@ -52,7 +54,6 @@ public class ReadFileTask extends AsyncTask<File, Integer, String> {
             }
 
         }
-
         return sb.toString();
     }
 
@@ -61,6 +62,7 @@ public class ReadFileTask extends AsyncTask<File, Integer, String> {
         super.onPostExecute(s);
 
         Toast.makeText(mTextToView.getContext(), "File read", Toast.LENGTH_SHORT).show();
-        mTextToView.setText(s);
+        if(mTextToView != null)
+            mTextToView.setText(s);
     }
 }
