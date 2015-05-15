@@ -64,7 +64,7 @@ public class NewWorkspaceFragment extends DialogFragment {
         createButton = (Button) view.findViewById(R.id.createWorkspaceDialog);
         newTagText = (EditText)view.findViewById(R.id.newTag);
         workspaceNameText = (EditText) view.findViewById(R.id.newWorkspaceName);
-        privacySwitch = (Switch) view.findViewById(R.id.privateSwitch);
+        privacySwitch = (Switch) view.findViewById(R.id.private_switch);
         tags = (TextView) view.findViewById(R.id.tags);
         mTagListLayout = (PredicateLayout) view.findViewById(R.id.tagList);
         mTagViewSwitcher = (ViewSwitcher) view.findViewById(R.id.tagViewSwitcher);

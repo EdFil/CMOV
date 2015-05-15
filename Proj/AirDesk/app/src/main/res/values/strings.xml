@@ -8,6 +8,7 @@
     <string name="title_section5">Wifi-Direct Settings</string>
     <string name="title_section6">Logout</string>
 
+    <string name="menu_privacy">Change Privacy</string>
     <string name="menu_quota">Quota</string>
     <string name="menu_rename">Rename</string>
     <string name="menu_delete">Delete</string>

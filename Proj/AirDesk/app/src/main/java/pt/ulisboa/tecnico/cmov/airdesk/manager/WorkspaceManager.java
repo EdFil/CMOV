@@ -337,4 +337,9 @@ public class WorkspaceManager {
             mWorkspace.addTag(tag);
         }
     }
+
+    public void changePrivacyWorkspace(LocalWorkspace workspace, boolean isPrivate) {
+        AirDeskDbHelper.getInstance(getContext()).updateWorkspace(workspace.getDatabaseId(), null, null, isPrivate);
+        workspace.setIsPrivate(isPrivate);
+    }
 }

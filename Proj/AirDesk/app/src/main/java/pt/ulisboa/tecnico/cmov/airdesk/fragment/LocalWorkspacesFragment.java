@@ -117,6 +117,11 @@ public class LocalWorkspacesFragment extends Fragment {
                 tagsFrag.setWorkspace(mWorkspaceListAdapter.getItem(info.position));
                 tagsFrag.show(getActivity().getFragmentManager(), ManageWorkspaceTagsFragment.class.getSimpleName());
                 break;
+            case R.id.menu_privacy:
+                ChangePrivacyWorkspaceFragment privacyFrag = ChangePrivacyWorkspaceFragment.newInstance();
+                privacyFrag.setWorkspace(mWorkspaceListAdapter.getItem(info.position));
+                privacyFrag.show(getActivity().getFragmentManager(), ChangePrivacyWorkspaceFragment.class.getSimpleName());
+                break;
             case R.id.menu_quota:
                 ChangeQuotaWorkspaceFragment quotaFrag = ChangeQuotaWorkspaceFragment.newInstance();
                 quotaFrag.setWorkspace(mWorkspaceListAdapter.getItem(info.position));
