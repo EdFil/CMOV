@@ -53,7 +53,6 @@ public class ReadFileTask extends AsyncTask<File, Integer, String> {
             }
 
         }
-
         return sb.toString();
     }
 
