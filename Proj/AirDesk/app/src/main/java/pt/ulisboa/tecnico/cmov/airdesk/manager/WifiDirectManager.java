@@ -99,8 +99,6 @@ public class WifiDirectManager implements PeerListListener, GroupInfoListener{
 
         int port = Integer.parseInt(mContext.getString(R.string.port));
         mServer = new ServerTask(port);
-
-        turnOnWifiDirect();
     }
 
     public Context getContext() { return mContext; }

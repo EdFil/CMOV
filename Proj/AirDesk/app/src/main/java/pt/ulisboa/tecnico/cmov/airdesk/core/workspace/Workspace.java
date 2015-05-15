@@ -6,6 +6,7 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 
+import pt.ulisboa.tecnico.cmov.airdesk.core.file.MyFile;
 import pt.ulisboa.tecnico.cmov.airdesk.core.user.User;
 import pt.ulisboa.tecnico.cmov.airdesk.core.workspace.exception.WorkspaceNameIsEmptyException;
 import pt.ulisboa.tecnico.cmov.airdesk.core.workspace.exception.WorkspaceNegativeQuotaException;
@@ -54,7 +55,7 @@ public abstract class Workspace {
     public long getDatabaseId() { return mDatabaseId; }
     public List<String> getTags() { return mTags; }
     public List<String> getAccessList() { return mAccessList; }
-    public String getWorkspaceFolderName() { return getOwner().getDatabaseId() + "_" + getName(); }
+    public String getWorkspaceFolderName() { return getOwner().getEmail().replaceAll("@|\\.", "_") + "_" + getName(); }
 
     // Setters
     public void setName(String name) throws WorkspaceNameIsEmptyException, NullPointerException {
@@ -125,6 +126,8 @@ public abstract class Workspace {
                 return true;
         return false;
     }
+
+    public abstract MyFile getFileByName(String name);
 
     public void addAccessToUser(String user) { mAccessList.add(user); }
     public void removeAccessToUser(String user) {

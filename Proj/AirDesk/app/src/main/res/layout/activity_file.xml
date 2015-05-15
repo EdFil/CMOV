@@ -26,7 +26,7 @@
         android:paddingTop="@dimen/activity_horizontal_margin"
         android:clickable="true"
         android:textSize="16dp"
-        android:inputType="textMultiLine"
+        android:inputType="none"
         android:singleLine="false"
         android:layout_below="@+id/typeFile"
         android:gravity="top"

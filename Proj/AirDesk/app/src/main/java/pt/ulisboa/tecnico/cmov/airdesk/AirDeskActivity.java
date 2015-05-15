@@ -19,26 +19,27 @@ import android.view.ViewGroup;
 import android.widget.ListView;
 import android.widget.TextView;
 
-import java.util.List;
-
-import pt.ulisboa.tecnico.cmov.airdesk.core.workspace.ForeignWorkspace;
-import pt.ulisboa.tecnico.cmov.airdesk.fragment.NewSubscriptionFragment;
-import pt.ulisboa.tecnico.cmov.airdesk.fragment.SubscriptionsFragment;
-import pt.ulisboa.tecnico.cmov.airdesk.manager.UserManager;
-import pt.ulisboa.tecnico.cmov.airdesk.fragment.LocalFilesFragment;
+import pt.ulisboa.tecnico.cmov.airdesk.fragment.EditSubscriptionFragment;
 import pt.ulisboa.tecnico.cmov.airdesk.fragment.ForeignWorkspacesFragment;
+import pt.ulisboa.tecnico.cmov.airdesk.fragment.LocalFilesFragment;
 import pt.ulisboa.tecnico.cmov.airdesk.fragment.LocalWorkspacesFragment;
 import pt.ulisboa.tecnico.cmov.airdesk.fragment.NavigationDrawerFragment;
 import pt.ulisboa.tecnico.cmov.airdesk.fragment.NewFileFragment;
+import pt.ulisboa.tecnico.cmov.airdesk.fragment.NewRemoteFileFragment;
+import pt.ulisboa.tecnico.cmov.airdesk.fragment.NewSubscriptionFragment;
 import pt.ulisboa.tecnico.cmov.airdesk.fragment.NewWorkspaceFragment;
-import pt.ulisboa.tecnico.cmov.airdesk.manager.WorkspaceManager;
+import pt.ulisboa.tecnico.cmov.airdesk.fragment.RemoteFilesFragment;
+import pt.ulisboa.tecnico.cmov.airdesk.fragment.SubscriptionsFragment;
+import pt.ulisboa.tecnico.cmov.airdesk.manager.UserManager;
 import pt.ulisboa.tecnico.cmov.airdesk.util.Constants;
 
 public class AirDeskActivity extends ActionBarActivity
         implements NavigationDrawerFragment.NavigationDrawerCallbacks,
                    NewFileFragment.OnNewFileFragmentListener,
                    NewWorkspaceFragment.OnNewWorkspaceFragmentListener,
-                   NewSubscriptionFragment.OnNewSubscriptionFragmentListener {
+                   NewSubscriptionFragment.OnNewSubscriptionFragmentListener,
+                   EditSubscriptionFragment.OnEditSubscriptionFragmentListener,
+                   NewRemoteFileFragment.OnRemoteNewFileFragmentListener {
 
     public static final String TAG = AirDeskActivity.class.getSimpleName();
 
@@ -203,7 +204,16 @@ public class AirDeskActivity extends ActionBarActivity
     //////////////////////////////////////////////////////////
 
     @Override
-    public void updateFileList() {
+    public void updateRemoteFileList() {
+        RemoteFilesFragment filesFrag = (RemoteFilesFragment) getSupportFragmentManager().findFragmentById(R.id.container);
+
+        if (filesFrag != null)
+            filesFrag.updateFileList();
+    }
+
+
+    @Override
+    public void updateLocalFileList() {
         LocalFilesFragment filesFrag = (LocalFilesFragment) getSupportFragmentManager().findFragmentById(R.id.container);
 
         if (filesFrag != null)

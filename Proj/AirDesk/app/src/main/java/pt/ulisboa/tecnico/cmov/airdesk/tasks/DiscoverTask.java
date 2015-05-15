@@ -68,6 +68,9 @@ public class DiscoverTask extends AsyncTask<Void, String, JSONObject> {
 
             // Wait for the server's response
             JSONObject serverResponse = new JSONObject(reader.readLine());
+            if(serverResponse == null) {
+                Log.e(TAG, "Unknown Error");
+            }
             Log.i(TAG, "Received: " + serverResponse.toString());
 
             // Close everything
@@ -95,13 +98,18 @@ public class DiscoverTask extends AsyncTask<Void, String, JSONObject> {
     protected void onPostExecute(JSONObject result) {
         User user = null;
         try {
+
             user = UserManager.getInstance().createUser(result);
-            user.setDevice(mDevice);
-            StringBuilder string = new StringBuilder();
-            string.append("Users after discover:");
-            for (User onlineUser : UserManager.getInstance().getUsers())
-                string.append(onlineUser.toString());
-            Log.i(TAG, string.toString());
+            if(user != null) {
+                Log.e(TAG, "Failed user creation with " + result);
+                user.setDevice(mDevice);
+                StringBuilder string = new StringBuilder();
+                string.append("Users after discover:");
+                for (User onlineUser : UserManager.getInstance().getUsers())
+                    if (onlineUser != null)
+                        string.append(onlineUser.toString());
+                Log.i(TAG, string.toString());
+            }
 
         } catch (JSONException e) {
             e.printStackTrace();

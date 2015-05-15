@@ -85,7 +85,7 @@ public class ForeignWorkspacesFragment extends Fragment {
                 FragmentManager fragmentManager = getActivity().getSupportFragmentManager();
                 FragmentTransaction transaction = fragmentManager.beginTransaction();
 
-                LocalFilesFragment remoteFilesFragment = new LocalFilesFragment();
+                RemoteFilesFragment remoteFilesFragment = new RemoteFilesFragment();
 
                 ForeignWorkspace foreignWorkspace = (ForeignWorkspace) parent.getItemAtPosition(position);
 
@@ -119,6 +119,7 @@ public class ForeignWorkspacesFragment extends Fragment {
     @Override
     public void onResume() {
         super.onResume();
+        ((AirDeskActivity) getActivity()).updateActionBarTitle();
         WorkspaceManager.getInstance().getForeignWorkspaces().clear();
         updateWorkspaceList();
     }
@@ -205,6 +206,7 @@ public class ForeignWorkspacesFragment extends Fragment {
         super.onAttach(activity);
         ((AirDeskActivity) activity).onSectionAttached(getArguments().getInt(ARG_SECTION_NUMBER));
     }
+
 
     public void addWorkspace() {
         updateWorkspaceList();

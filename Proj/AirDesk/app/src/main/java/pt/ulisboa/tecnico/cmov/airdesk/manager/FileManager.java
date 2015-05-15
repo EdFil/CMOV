@@ -5,7 +5,6 @@ import android.os.Environment;
 import android.os.StatFs;
 
 import java.io.File;
-import java.io.FileOutputStream;
 import java.io.IOException;
 
 /**
@@ -107,11 +106,8 @@ public class FileManager {
             File workspaceFolder = new File(rootFolder, folderName);
             workspaceFolder.mkdir();
             createdFile = new File(workspaceFolder, fileName);
-            if(createdFile.exists())
-                delete(createdFile);
-            createdFile.createNewFile();
-            FileOutputStream outputStream = new FileOutputStream(createdFile);
-            outputStream.close();
+            if(!createdFile.exists())
+                createdFile.createNewFile();
         } catch (IOException e) {
             e.printStackTrace();
         } finally {

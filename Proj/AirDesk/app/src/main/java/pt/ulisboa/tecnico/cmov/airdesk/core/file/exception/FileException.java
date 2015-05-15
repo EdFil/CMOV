@@ -11,7 +11,7 @@ public class FileException extends RuntimeException {
         super(mMessage);
     }
 
-    FileException(String message) {
+    public FileException(String message) {
         super(message);
     }
 

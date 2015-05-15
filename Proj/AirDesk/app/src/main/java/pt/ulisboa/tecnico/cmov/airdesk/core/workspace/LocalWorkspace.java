@@ -44,6 +44,7 @@ public class LocalWorkspace extends Workspace {
         mFiles.remove(file);
     }
 
+    @Override
     public LocalFile getFileByName(String name) {
         for(LocalFile file : mFiles)
             if(file.getName().equals(name))

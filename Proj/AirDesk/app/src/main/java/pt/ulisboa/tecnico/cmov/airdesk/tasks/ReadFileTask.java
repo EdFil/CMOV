@@ -3,15 +3,12 @@ package pt.ulisboa.tecnico.cmov.airdesk.tasks;
 import android.os.AsyncTask;
 import android.util.Log;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.util.Scanner;
-
-import pt.ulisboa.tecnico.cmov.airdesk.R;
 
 public class ReadFileTask extends AsyncTask<File, Integer, String> {
 
@@ -20,7 +17,9 @@ public class ReadFileTask extends AsyncTask<File, Integer, String> {
 
     TextView mTextToView;
 
-    public ReadFileTask() {this(null);}
+    public ReadFileTask() {
+        this(null);
+    }
 
     public ReadFileTask(TextView textToView) {
         mTextToView = textToView;
@@ -60,8 +59,6 @@ public class ReadFileTask extends AsyncTask<File, Integer, String> {
     @Override
     protected void onPostExecute(String s) {
         super.onPostExecute(s);
-
-        Toast.makeText(mTextToView.getContext(), "File read", Toast.LENGTH_SHORT).show();
         if(mTextToView != null)
             mTextToView.setText(s);
     }

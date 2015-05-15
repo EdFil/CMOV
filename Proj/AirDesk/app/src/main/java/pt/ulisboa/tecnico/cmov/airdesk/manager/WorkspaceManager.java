@@ -200,6 +200,12 @@ public class WorkspaceManager {
         return localFile;
     }
 
+    public RemoteFile addFileToWorkspace(String fileName, ForeignWorkspace workspace) {
+        RemoteFile remotefile = new RemoteFile(workspace, fileName);
+        workspace.addFile(remotefile);
+        return remotefile;
+    }
+
     public void removeFileFromWorkspace(LocalFile file, LocalWorkspace workspace) {
         FileManager.getInstance().deleteLocalFile(workspace.getWorkspaceFolderName(), file.getName());
         AirDeskDbHelper.getInstance(getContext()).removeFileFromWorkspace(workspace, file.getName());
@@ -251,6 +257,13 @@ public class WorkspaceManager {
     public LocalWorkspace getLocalWorkspaceWithId(long databaseId) {
         for(LocalWorkspace workspace : mLocalWorkspaces)
             if(workspace.getDatabaseId() == databaseId)
+                return workspace;
+        return null;
+    }
+
+    public LocalWorkspace getLocalWorkspaceWithName(String workspaceName) {
+        for(LocalWorkspace workspace : mLocalWorkspaces)
+            if(workspace.getName().equals(workspaceName))
                 return workspace;
         return null;
     }

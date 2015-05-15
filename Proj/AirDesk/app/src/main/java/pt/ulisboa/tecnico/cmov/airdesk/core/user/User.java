@@ -56,7 +56,7 @@ public class User implements Parcelable {
                 .append(", Nick = ")
                 .append(getNick())
                 .append(", Device = ")
-                .append((getDevice() == null)?getDevice().getVirtIp():"null").toString();
+                .append((getDevice() != null) ? getDevice().getVirtIp() : "null").toString();
     }
 
 

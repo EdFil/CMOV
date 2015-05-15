@@ -108,6 +108,7 @@ public class LocalFilesFragment extends Fragment {
     @Override
     public void onResume() {
         super.onResume();
+        mFileListAdapter.notifyDataSetChanged();
 
         // Define action bar title as the Workspace Name
         ((AirDeskActivity) getActivity()).getSupportActionBar().setTitle(mWorkspace.getName());

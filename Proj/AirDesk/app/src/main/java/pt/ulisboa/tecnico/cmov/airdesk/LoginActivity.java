@@ -14,8 +14,11 @@ import android.widget.CheckBox;
 import android.widget.EditText;
 import android.widget.Toast;
 
+import java.util.ArrayList;
+
 import pt.ulisboa.tecnico.cmov.airdesk.adapter.UserListAdapter;
 import pt.ulisboa.tecnico.cmov.airdesk.core.user.User;
+import pt.ulisboa.tecnico.cmov.airdesk.database.AirDeskDbHelper;
 import pt.ulisboa.tecnico.cmov.airdesk.manager.UserManager;
 import pt.ulisboa.tecnico.cmov.airdesk.util.Constants;
 
@@ -33,7 +36,7 @@ public class LoginActivity extends ActionBarActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_login);
 
-        Toast.makeText(this, "LOGIN", Toast.LENGTH_SHORT).show();
+        UserManager.getInstance().setOwner(null);
 
         boolean logout = getIntent().getBooleanExtra(Constants.LOG_OUT_MESSAGE, false);
         mSharedPreferences = getSharedPreferences(Constants.SHARED_PREF_FILE, MODE_PRIVATE);
@@ -59,9 +62,6 @@ public class LoginActivity extends ActionBarActivity {
         mNickView = (EditText) findViewById(R.id.nick);
         mRememberMe = (CheckBox) findViewById(R.id.rememberMe);
 
-        UserListAdapter adapter = new UserListAdapter(getApplicationContext(), UserManager.getInstance().getUsers());
-        mEmailView.setAdapter(adapter);
-
         mEmailView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
@@ -70,6 +70,14 @@ public class LoginActivity extends ActionBarActivity {
                 mNickView.setText(user.getNick());
             }
         });
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+
+        UserListAdapter adapter = new UserListAdapter(getApplicationContext(), new ArrayList<>(AirDeskDbHelper.getInstance(getApplicationContext()).getAllUsers()));
+        mEmailView.setAdapter(adapter);
     }
 
     public void onLoginCLicked(View view) {

@@ -9,10 +9,10 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.List;
+import java.util.Random;
 
 import pt.ulisboa.tecnico.cmov.airdesk.core.subscription.Subscription;
 import pt.ulisboa.tecnico.cmov.airdesk.core.user.User;
-import pt.ulisboa.tecnico.cmov.airdesk.core.workspace.Workspace;
 import pt.ulisboa.tecnico.cmov.airdesk.database.AirDeskDbHelper;
 
 /**
@@ -70,8 +70,13 @@ public class UserManager {
             return null;
         }
 
+        long uuid;
+        do {
+            uuid = new Random().nextLong();
+        } while (getUserById(uuid) != null);
+
         // If not exists
-        User user = new User(-1, email, nick);
+        User user = new User(uuid, email, nick);
         mUserList.add(user);
         return user;
     }
@@ -102,7 +107,12 @@ public class UserManager {
         AirDeskDbHelper.getInstance(getContext()).insertSubscriptionToUser(getOwner(), name, tags);
         Subscription subscription = new Subscription(name, tags);
         mSubscriptionList.add(subscription);
+    }
 
+    public void editSubscription(Subscription subscription, String name, String[] tags) {
+        AirDeskDbHelper.getInstance(getContext()).updateSubscription(getOwner().getDatabaseId(), subscription, name, tags);
+        subscription.setName(name);
+        subscription.setTags(tags);
     }
 
     // Clears the subscription list
@@ -142,7 +152,8 @@ public class UserManager {
     public User getOwner() { return mOwner; }
     public void setOwner(User owner) {
         mOwner = owner;
-        FileManager.getInstance().setWorkspacesFolderName(mOwner.getEmail().replace("@", "_").replace(".", "_") + "_workspace");
+        if(owner != null)
+            FileManager.getInstance().setWorkspacesFolderName(mOwner.getEmail().replace("@", "_").replace(".", "_") + "_workspace");
     }
 
 
@@ -208,4 +219,7 @@ public class UserManager {
 //        WorkspaceManager.getInstance().unmountForeignWorkspacesWithTags(tagsToRemove);
 
     }
+
+
+
 }

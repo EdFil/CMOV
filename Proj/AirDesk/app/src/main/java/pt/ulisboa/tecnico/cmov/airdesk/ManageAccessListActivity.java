@@ -24,9 +24,9 @@ import pt.ulisboa.tecnico.cmov.airdesk.tasks.AsyncResponse;
 import pt.ulisboa.tecnico.cmov.airdesk.tasks.RequestTask;
 import pt.ulisboa.tecnico.cmov.airdesk.util.Constants;
 
-public class InviteForWorkspaceActivity extends ActionBarActivity {
+public class ManageAccessListActivity extends ActionBarActivity {
 
-    public static final String TAG = InviteForWorkspaceActivity.class.getSimpleName();
+    public static final String TAG = ManageAccessListActivity.class.getSimpleName();
 
     UserListAdapter mUserListAdapter;
     LocalWorkspace mWorkspace;
