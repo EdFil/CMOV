@@ -23,6 +23,7 @@ public final class Constants {
 
     // JSON
     public static final String RESULT_KEY = "result";
+    public static final String RESULT_OK = "ok";
     public static final String ERROR_KEY = "error";
     public static final String SERVICE_NAME = "service_name";
     public static final String SERVICE_ARGUMENTS = "service_arguments";

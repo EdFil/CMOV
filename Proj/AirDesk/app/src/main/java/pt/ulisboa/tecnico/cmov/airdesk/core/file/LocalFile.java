@@ -3,6 +3,7 @@ package pt.ulisboa.tecnico.cmov.airdesk.core.file;
 import android.widget.EditText;
 import android.widget.TextView;
 
+import pt.ulisboa.tecnico.cmov.airdesk.core.file.exception.FileAlreadyBeeingEditedException;
 import pt.ulisboa.tecnico.cmov.airdesk.core.file.exception.FileExceedsAvailableSpaceException;
 import pt.ulisboa.tecnico.cmov.airdesk.core.file.exception.FileExceedsMaxQuotaException;
 import pt.ulisboa.tecnico.cmov.airdesk.core.workspace.LocalWorkspace;
@@ -28,18 +29,31 @@ public class LocalFile extends MyFile {
     }
 
     @Override
-    public void write(EditText editText, Workspace workspace) {
-        long bytesToUse = editText.length() - editText.length() + ((LocalWorkspace)workspace).getUsedQuota();
+    public void write(EditText editText) {
+        long bytesToUse = editText.length() - editText.length() + ((LocalWorkspace)getWorkspace()).getUsedQuota();
         long usableSpace = WorkspaceManager.getInstance().getSpaceAvailableInternalStorage();
 
         if(bytesToUse > usableSpace) {
             throw new FileExceedsAvailableSpaceException(bytesToUse, usableSpace);
         }
-        if(bytesToUse > workspace.getMaxQuota()) {
-            throw new FileExceedsMaxQuotaException(bytesToUse, workspace.getMaxQuota());
+        if(bytesToUse > getWorkspace().getMaxQuota()) {
+            throw new FileExceedsMaxQuotaException(bytesToUse, getWorkspace().getMaxQuota());
         }
 
         new WriteFileTask(editText.getText().toString()).execute(getFile());
+    }
+
+    @Override
+    public void lock() {
+        if(isLocked())
+            throw new FileAlreadyBeeingEditedException(getName());
+        setLock(true);
+
+    }
+
+    @Override
+    public void unlock() {
+        setLock(false);
     }
 
 }

@@ -106,7 +106,7 @@ public class FileManager {
             File workspaceFolder = new File(rootFolder, folderName);
             workspaceFolder.mkdir();
             createdFile = new File(workspaceFolder, fileName);
-            if(!createdFile.exists()) 
+            if(!createdFile.exists())
                 createdFile.createNewFile();
         } catch (IOException e) {
             e.printStackTrace();

@@ -8,7 +8,6 @@ import org.json.JSONObject;
 
 import java.io.File;
 
-import pt.ulisboa.tecnico.cmov.airdesk.core.file.exception.FileAlreadyBeeingEditedException;
 import pt.ulisboa.tecnico.cmov.airdesk.core.workspace.Workspace;
 
 /**
@@ -39,25 +38,14 @@ public abstract class MyFile {
     public String getName() { return mName; }
     public File getFile() { return mFile; }
 
-    public void setFile(File file) {
-        mFile = file;
-    }
+    public void setLock(boolean lock) { isLocked = lock; }
+    public void setFile(File file) { mFile = file; }
 
     public abstract void read(TextView textView);
-    public abstract void write(EditText editText, Workspace workspace);
+    public abstract void write(EditText editText);
 
-    public synchronized void lock() {
-        if(isLocked)
-            throw new FileAlreadyBeeingEditedException(getName());
-        isLocked = true;
-    }
-
-    public synchronized void unlock() {
-        if(isLocked) {
-            mVersion++;
-            isLocked = false;
-        }
-    }
+    public abstract void lock();
+    public abstract void unlock();
 
     public JSONObject toJson() {
         JSONObject jsonObject = new JSONObject();

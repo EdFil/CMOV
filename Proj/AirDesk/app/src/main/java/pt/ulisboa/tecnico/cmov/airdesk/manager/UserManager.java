@@ -13,7 +13,6 @@ import java.util.Random;
 
 import pt.ulisboa.tecnico.cmov.airdesk.core.subscription.Subscription;
 import pt.ulisboa.tecnico.cmov.airdesk.core.user.User;
-import pt.ulisboa.tecnico.cmov.airdesk.core.workspace.Workspace;
 import pt.ulisboa.tecnico.cmov.airdesk.database.AirDeskDbHelper;
 
 /**
@@ -148,7 +147,8 @@ public class UserManager {
     public User getOwner() { return mOwner; }
     public void setOwner(User owner) {
         mOwner = owner;
-        FileManager.getInstance().setWorkspacesFolderName(mOwner.getEmail().replace("@", "_").replace(".", "_") + "_workspace");
+        if(owner != null)
+            FileManager.getInstance().setWorkspacesFolderName(mOwner.getEmail().replace("@", "_").replace(".", "_") + "_workspace");
     }
 
 

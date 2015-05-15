@@ -11,10 +11,8 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import pt.ulisboa.tecnico.cmov.airdesk.core.file.MyFile;
-import pt.ulisboa.tecnico.cmov.airdesk.core.file.exception.FileException;
 import pt.ulisboa.tecnico.cmov.airdesk.core.workspace.Workspace;
 import pt.ulisboa.tecnico.cmov.airdesk.manager.WorkspaceManager;
-import pt.ulisboa.tecnico.cmov.airdesk.tasks.ReadFileTask;
 import pt.ulisboa.tecnico.cmov.airdesk.util.Constants;
 
 
@@ -67,24 +65,25 @@ public class FileActivity extends ActionBarActivity {
             mFile.lock();
 
             mFile.read(mTextToView);
+            mTextToEdit.setText(mTextToView.getText().toString());
 
             mTextToView.setVisibility(View.GONE);
             mEditImageView.setVisibility(View.GONE);
 
             mTextToEdit.setVisibility(View.VISIBLE);
             mSaveImageView.setVisibility(View.VISIBLE);
-        } catch (FileException e) {
+        } catch (Exception e) {
             Toast.makeText(this, e.getMessage(), Toast.LENGTH_SHORT).show();
         }
     }
 
     public void onClickSave(View view) {
         try {
-            mFile.write(mTextToEdit, mWorkspace);
+            mFile.write(mTextToEdit);
 
             mFile.unlock();
 
-            new ReadFileTask(mTextToView).execute(mFile.getFile());
+            mFile.read(mTextToView);
 
             mTextToView.setVisibility(View.VISIBLE);
             mEditImageView.setVisibility(View.VISIBLE);
@@ -94,5 +93,12 @@ public class FileActivity extends ActionBarActivity {
         }catch (Exception e) {
             Toast.makeText(getApplicationContext(), e.getMessage(), Toast.LENGTH_SHORT).show();
         }
+    }
+
+    @Override
+    public void onBackPressed() {
+        super.onBackPressed();
+        if(mTextToEdit.getVisibility() == View.VISIBLE)
+            mFile.unlock();
     }
 }

@@ -2,7 +2,6 @@ package pt.ulisboa.tecnico.cmov.airdesk.fragment;
 
 import android.app.Activity;
 import android.app.DialogFragment;
-import android.os.AsyncTask;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -12,25 +11,11 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.Toast;
 
-import org.json.JSONArray;
-import org.json.JSONException;
-import org.json.JSONObject;
-
 import java.util.List;
 
 import pt.ulisboa.tecnico.cmov.airdesk.R;
-import pt.ulisboa.tecnico.cmov.airdesk.core.subscription.Subscription;
-import pt.ulisboa.tecnico.cmov.airdesk.core.workspace.ForeignWorkspace;
-import pt.ulisboa.tecnico.cmov.airdesk.core.workspace.LocalWorkspace;
-import pt.ulisboa.tecnico.cmov.airdesk.core.workspace.Workspace;
 import pt.ulisboa.tecnico.cmov.airdesk.custom.AddTagsLayout;
 import pt.ulisboa.tecnico.cmov.airdesk.manager.UserManager;
-import pt.ulisboa.tecnico.cmov.airdesk.manager.WorkspaceManager;
-import pt.ulisboa.tecnico.cmov.airdesk.service.GetWorkspacesWithTagsService;
-import pt.ulisboa.tecnico.cmov.airdesk.tasks.AsyncResponse;
-import pt.ulisboa.tecnico.cmov.airdesk.tasks.BroadcastTask;
-import pt.ulisboa.tecnico.cmov.airdesk.util.Constants;
-import pt.ulisboa.tecnico.cmov.airdesk.util.Util;
 
 public class NewSubscriptionFragment extends DialogFragment {
 
