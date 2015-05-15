@@ -13,6 +13,7 @@ import android.widget.Toast;
 import org.json.JSONObject;
 
 import java.util.ArrayList;
+import java.util.List;
 
 import pt.ulisboa.tecnico.cmov.airdesk.adapter.UserListAdapter;
 import pt.ulisboa.tecnico.cmov.airdesk.core.user.User;
@@ -28,10 +29,13 @@ public class ManageAccessListActivity extends ActionBarActivity {
 
     public static final String TAG = ManageAccessListActivity.class.getSimpleName();
 
-    UserListAdapter mUserListAdapter;
+    UserListAdapter mUserWithNoAccess;
+    UserListAdapter mUserWithAccess;
+
     LocalWorkspace mWorkspace;
 
-    ListView mUsersList;
+    ListView mUserWithAccessList;
+    ListView mUserNoAccessList;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -42,21 +46,40 @@ public class ManageAccessListActivity extends ActionBarActivity {
         long workspaceIndex = intent.getLongExtra(Constants.WORKSPACE_ID_KEY, -1);
         mWorkspace = WorkspaceManager.getInstance().getLocalWorkspaceWithId(workspaceIndex);
 
-        mUsersList = (ListView) findViewById(R.id.user_list);
+        mUserNoAccessList = (ListView) findViewById(R.id.user_no_access_list);
+        mUserWithAccessList = (ListView) findViewById(R.id.user_with_access_list);
 
-        mUserListAdapter = new UserListAdapter(this, new ArrayList<User>());
-        mUsersList.setAdapter(mUserListAdapter);
+        mUserWithNoAccess = new UserListAdapter(this, new ArrayList<User>());
+        mUserNoAccessList.setAdapter(mUserWithNoAccess);
 
-        mUsersList.setOnItemClickListener(mUserListOnItemClickListener);
+        mUserWithAccess = new UserListAdapter(this, new ArrayList<User>());
+        mUserWithAccessList.setAdapter(mUserWithAccess);
+
+        mUserNoAccessList.setOnItemClickListener(mUserNoAccessListOnItemClickListener);
+        mUserWithAccessList.setOnItemClickListener(mUserWithAccessListOnItemClickListener);
     }
 
     @Override
     protected void onStart() {
         super.onStart();
 
+        mUserWithAccess.clear();
+        mUserWithNoAccess.clear();
+
+        List<String> emailList = mWorkspace.getAccessList();
+        emailList.remove(UserManager.getInstance().getOwner().getEmail());
+
+        for(String email : emailList) {
+            User user = UserManager.getInstance().getUserByEmail(email);
+            if(user != null)
+                mUserWithAccess.add(user);
+            else
+                mUserWithAccess.add(new User(-1, email, "?"));
+        }
+
         for(User onlineUser : UserManager.getInstance().getUsers()) {
             if(!mWorkspace.getAccessList().contains(onlineUser.getEmail()))
-                mUserListAdapter.add(onlineUser);
+                mUserWithNoAccess.add(onlineUser);
         }
     }
 
@@ -64,7 +87,7 @@ public class ManageAccessListActivity extends ActionBarActivity {
     // -------- Listeners --------
     // ---------------------------
 
-    private AdapterView.OnItemClickListener mUserListOnItemClickListener = new AdapterView.OnItemClickListener() {
+    private AdapterView.OnItemClickListener mUserNoAccessListOnItemClickListener = new AdapterView.OnItemClickListener() {
         @Override
         public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
             final User user = (User) parent.getItemAtPosition(position);
@@ -94,7 +117,8 @@ public class ManageAccessListActivity extends ActionBarActivity {
 
                         Toast.makeText(getApplicationContext(), response.getString(Constants.RESULT_KEY), Toast.LENGTH_SHORT).show();
                         WorkspaceManager.getInstance().addAccessToUser(user.getEmail(), mWorkspace);
-                        mUserListAdapter.remove(user);
+                        mUserWithNoAccess.remove(user);
+                        mUserWithAccess.add(user);
 
                     } catch (Exception e) {
                         // Show our error in a toast
@@ -105,6 +129,16 @@ public class ManageAccessListActivity extends ActionBarActivity {
             // Execute the task
             task.executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR);
 
+        }
+    };
+
+    private AdapterView.OnItemClickListener mUserWithAccessListOnItemClickListener = new AdapterView.OnItemClickListener() {
+        @Override
+        public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+            User user = (User) parent.getItemAtPosition(position);
+            WorkspaceManager.getInstance().removeAccessToUser(user.getEmail(), mWorkspace);
+            mUserWithNoAccess.add(user);
+            mUserWithAccess.remove(user);
         }
     };
 

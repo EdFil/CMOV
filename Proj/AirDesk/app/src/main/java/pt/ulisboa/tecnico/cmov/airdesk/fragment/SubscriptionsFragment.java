@@ -106,6 +106,7 @@ public class SubscriptionsFragment extends Fragment {
         switch(item.getItemId()){
             case R.id.menu_edit_subscription:
                 Subscription subscription = UserManager.getInstance().getSubscriptionList().get(info.position);
+
                 EditSubscriptionFragment subscriptionFragment = EditSubscriptionFragment.newInstance();
                 subscriptionFragment.setSubscription(subscription);
                 subscriptionFragment.show(getActivity().getFragmentManager(), EditSubscriptionFragment.class.getSimpleName());
