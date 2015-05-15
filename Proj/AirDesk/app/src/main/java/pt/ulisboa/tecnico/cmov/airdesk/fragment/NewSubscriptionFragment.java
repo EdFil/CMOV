@@ -109,24 +109,6 @@ public class NewSubscriptionFragment extends DialogFragment {
 
                 UserManager.getInstance().createSubscription(subscriptionName.getText().toString(), tags);
 
-                // Create the broadcast task to send the service to all connected peers
-                BroadcastTask task = new BroadcastTask(
-                        Integer.parseInt(getString(R.string.port)),
-                        GetWorkspacesWithTagsService.class,
-                        tags
-                );
-
-                // Override the callback so we can process the result from the task
-                task.mDelegate = new AsyncResponse() {
-                    @Override
-                    public void processFinish(String output) {
-                        // deals with the broadcast request for the workspaces with the respective tags
-                        WorkspaceManager.getInstance().mountForeignWorkspacesFromJSON(output);
-                    }
-                };
-                // Execute the broadcast task to request the workspaces with tags
-                task.executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR);
-
                 // CALL back to refresh subscription list on the SubscriptionFragment through the AirDeskActivity
                 mCallback.updateSubscriptionList();
 

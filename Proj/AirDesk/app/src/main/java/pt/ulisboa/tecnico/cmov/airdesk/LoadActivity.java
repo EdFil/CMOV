@@ -12,47 +12,22 @@ import pt.ulisboa.tecnico.cmov.airdesk.manager.WorkspaceManager;
 
 public class LoadActivity extends Activity {
 
-    //A ProgressDialog object
     private ProgressDialog progressDialog;
 
-    /** Called when the activity is first created. */
     @Override
-    public void onCreate(Bundle savedInstanceState)
-    {
+    public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_loading);
         //Initialize a LoadViewTask object and call the execute() method
-        new LoadViewTask().execute();
+        new LoadAppTask().execute();
 
     }
 
     //To use the AsyncTask, it must be subclassed
-    private class LoadViewTask extends AsyncTask<Void, Integer, Void>
-    {
-        //Before running code in separate thread
+    private class LoadAppTask extends AsyncTask<Void, Integer, Void> {
         @Override
         protected void onPreExecute() {
-            stagesLoader();
-//            ringLoader();
-        }
-
-        private void stagesLoader() {
-            //Create a new progress dialog
-            progressDialog = new ProgressDialog(LoadActivity.this);
-            //Set the progress dialog to display a horizontal progress bar
-            progressDialog.setProgressStyle(ProgressDialog.STYLE_HORIZONTAL);
-//            progressDialog.setTitle("Loading...");
-            progressDialog.setMessage("Loading...");
-            //This dialog can't be canceled by pressing the back key
-            progressDialog.setCancelable(false);
-            //This dialog isn't indeterminate
-            progressDialog.setIndeterminate(false);
-            //The maximum number of items is 3
-            progressDialog.setMax(3);
-            //Set the current progress to zero
-            progressDialog.setProgress(0);
-            //Display the progress dialog
-            progressDialog.show();
+            ringLoader();
         }
 
         public void ringLoader() {
@@ -61,36 +36,24 @@ public class LoadActivity extends Activity {
 
         @Override
         protected Void doInBackground(Void... params) {
-            try
-            {
-
-                // Load local workspaces
+            try {
+                // Load local workspaces and subscriptions
                 WorkspaceManager.getInstance().loadLocalWorkspaces();
-
-                // Load foreign workspaces of subscriptions
-                UserManager.getInstance().loadForeignWorkspaces();
+                UserManager.getInstance().loadSubscriptions();
 
                 //Get the current thread's token
                 synchronized (this)
                 {
                     //Initialize an integer (that will act as a counter) to zero
                     int counter = 0;
-                    //While the counter is smaller than four
-                    while(counter <= 3)
-                    {
-                        //Wait 850 milliseconds
+
+                    for (int i = 0; i < 4; i++){
                         this.wait(1000);
-
-                        // Set progress
-                        counter++;
-
-                        //This value is going to be passed to the onProgressUpdate() method.
-                        publishProgress(counter);
+                        publishProgress(i);
                     }
                 }
             }
-            catch (InterruptedException e)
-            {
+            catch (InterruptedException e) {
                 e.printStackTrace();
             }
             return null;

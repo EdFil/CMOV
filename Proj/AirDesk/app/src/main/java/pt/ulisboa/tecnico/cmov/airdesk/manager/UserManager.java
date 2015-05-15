@@ -106,19 +106,14 @@ public class UserManager {
     }
 
     // Clears the subscription list
-    public void loadSubscriptions(){
+    public List<Subscription> loadSubscriptions(){
         List<Subscription> subscriptions = AirDeskDbHelper.getInstance(getContext()).getSubscriptions(getOwner());
         mSubscriptionList.clear();
 
         for(Subscription subscription : subscriptions)
             mSubscriptionList.add(subscription);
-    }
 
-    public void loadForeignWorkspaces(){
-        loadSubscriptions();
-        // TODO : DESCOMENTAR PARA FAZER LOAD DOS FOREIGN WORKSPACES
-//        for(Subscription subscription : mSubscriptionList)
-//            WorkspaceManager.getInstance().mountForeignWorkspacesWithTags(subscription.getTags());
+        return mSubscriptionList;
     }
 
 
@@ -204,11 +199,13 @@ public class UserManager {
         String[] subTags = subscription.getTags();
         mSubscriptionList.remove(position);
 
-        // remove foreign workspaces regarding this subscription and no one else
-        ArrayList allOtherTags = getAllTags();
-        String[] tagsToRemove = removeTagsFromSubscription(subTags, allOtherTags);
-
-        WorkspaceManager.getInstance().unmountForeignWorkspacesWithTags(tagsToRemove);
         AirDeskDbHelper.getInstance(getContext()).removeSubscriptionFromUser(getOwner(), subscription);
+
+        // remove foreign workspaces regarding this subscription and no one else
+//        ArrayList allOtherTags = getAllTags();
+//        String[] tagsToRemove = removeTagsFromSubscription(subTags, allOtherTags);
+//
+//        WorkspaceManager.getInstance().unmountForeignWorkspacesWithTags(tagsToRemove);
+
     }
 }

@@ -56,6 +56,13 @@ public class WorkspaceManager {
         mForeignWorkspaces = new ArrayList<>();
     }
 
+    public List<LocalWorkspace> getLocalWorkspaces() {
+        return mLocalWorkspaces;
+    }
+    public List<ForeignWorkspace> getForeignWorkspaces() {
+        return mForeignWorkspaces;
+    }
+
     public void loadLocalWorkspaces(){
         List<LocalWorkspace> workspaces = getWorkspacesFromDB();
         mLocalWorkspaces.clear();
@@ -266,15 +273,6 @@ public class WorkspaceManager {
                 workspaceList.add(workspace);
         return workspaceList;
     }
-
-
-    public List<LocalWorkspace> getLocalWorkspaces() {
-        return mLocalWorkspaces;
-    }
-    public List<ForeignWorkspace> getForeignWorkspaces() {
-        return mForeignWorkspaces;
-    }
-
 
     // used without network
     public List<JSONObject> getJsonWorkspacesWithTags(String[] tags) {
