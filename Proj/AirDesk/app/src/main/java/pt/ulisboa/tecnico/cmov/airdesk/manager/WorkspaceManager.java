@@ -258,11 +258,12 @@ public class WorkspaceManager {
     }
 
 
-    public List<LocalWorkspace> getLocalWorkspacesWithTags(String... tags) {
+    public List<LocalWorkspace> getLocalWorkspacesToMount(String email, String... tags) {
         List<LocalWorkspace> workspaceList = new ArrayList<>();
         for(LocalWorkspace workspace : mLocalWorkspaces)
-            if(workspace.containsAtLeastOneTag(Arrays.asList(tags)))
+            if (workspace.containsAtLeastOneTag(Arrays.asList(tags)) || workspace.getAccessList().contains(email))
                 workspaceList.add(workspace);
+
         return workspaceList;
     }
 

@@ -31,10 +31,9 @@ import pt.ulisboa.tecnico.cmov.airdesk.WorkspaceDetailsActivity;
 import pt.ulisboa.tecnico.cmov.airdesk.adapter.ForeignWorkspaceListAdapter;
 import pt.ulisboa.tecnico.cmov.airdesk.core.subscription.Subscription;
 import pt.ulisboa.tecnico.cmov.airdesk.core.workspace.ForeignWorkspace;
-import pt.ulisboa.tecnico.cmov.airdesk.core.workspace.Workspace;
 import pt.ulisboa.tecnico.cmov.airdesk.manager.UserManager;
 import pt.ulisboa.tecnico.cmov.airdesk.manager.WorkspaceManager;
-import pt.ulisboa.tecnico.cmov.airdesk.service.GetWorkspacesWithTagsService;
+import pt.ulisboa.tecnico.cmov.airdesk.service.GetWorkspacesToMount;
 import pt.ulisboa.tecnico.cmov.airdesk.tasks.AsyncResponse;
 import pt.ulisboa.tecnico.cmov.airdesk.tasks.BroadcastTask;
 import pt.ulisboa.tecnico.cmov.airdesk.util.Constants;
@@ -220,20 +219,20 @@ public class ForeignWorkspacesFragment extends Fragment {
         // Load foreign workspaces of subscriptions
         List<Subscription> subscriptionList =  UserManager.getInstance().getSubscriptionList();
 
-        List<String> tagList = new ArrayList<>();
+        List<String> arguments = new ArrayList<>();
+        arguments.add(UserManager.getInstance().getOwner().getEmail());
 
         for(Subscription subscription : subscriptionList)
-            tagList.addAll(Arrays.asList(subscription.getTags()));
+            arguments.addAll(Arrays.asList(subscription.getTags()));
 
         // Get and convert to String[] all tags, to send as arguments of service (String...)
-        String[] tags = new String[tagList.size()];
-        tagList.toArray(tags);
+        String[] tags = new String[arguments.size()];
+        arguments.toArray(tags);
 
         // Create the broadcast task to send the service to all connected peers
-        // TODO : alterar para ter também os INVITED
         BroadcastTask task = new BroadcastTask(
                 Integer.parseInt(getString(R.string.port)),
-                GetWorkspacesWithTagsService.class,
+                GetWorkspacesToMount.class,
                 tags
         );
 
