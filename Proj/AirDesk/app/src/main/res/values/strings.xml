@@ -7,11 +7,13 @@
     <string name="title_section4">Manage Account</string>
     <string name="title_section5">Wifi-Direct Settings</string>
     <string name="title_section6">Logout</string>
-    
-    <string name="menu_edit">Edit</string>
+
+    <string name="menu_quota">Quota</string>
+    <string name="menu_rename">Rename</string>
     <string name="menu_delete">Delete</string>
     <string name="menu_details">Details</string>
-    <string name="menu_invite">Invite</string>
+    <string name="menu_tags">Manage Tags</string>
+    <string name="menu_access_list">Manage Access List</string>
     <string name="menu_leave">Leave</string>
 
     <string name="navigation_drawer_open">Open navigation drawer</string>

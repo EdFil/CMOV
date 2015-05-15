@@ -2,23 +2,34 @@
 <menu xmlns:android="http://schemas.android.com/apk/res/android">
 
     <item
-        android:id="@+id/menu_my_edit"
-        android:title="@string/menu_edit"
+        android:id="@+id/menu_rename"
+        android:title="@string/menu_rename"
         />
 
     <item
-        android:id="@+id/menu_my_delete"
+        android:id="@+id/menu_quota"
+        android:title="@string/menu_quota"
+        />
+
+    <item
+        android:id="@+id/menu_delete"
         android:title="@string/menu_delete"
     />
 
     <item
-        android:id="@+id/menu_my_details"
+        android:id="@+id/menu_details"
         android:title="@string/menu_details"
-    />
+        />
 
     <item
-        android:id="@+id/menu_my_invite"
-        android:title="@string/menu_invite"
-    />
+        android:id="@+id/menu_tags"
+        android:title="@string/menu_tags"
+        />
+
+    <item
+        android:id="@+id/menu_access_list"
+        android:title="@string/menu_access_list"
+        />
+
 
 </menu>

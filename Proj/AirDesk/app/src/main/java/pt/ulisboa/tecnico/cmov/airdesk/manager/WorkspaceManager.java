@@ -312,4 +312,9 @@ public class WorkspaceManager {
         for(ForeignWorkspace foreignWorkspace : foreignWorkspaces)
             unmountForeignWorkspace(foreignWorkspace);
     }
+
+    public void renameWorkspace(Workspace workspace, String name) {
+        AirDeskDbHelper.getInstance(getContext()).updateWorkspace(workspace.getDatabaseId(), name, null, null);
+        workspace.setName(name);
+    }
 }

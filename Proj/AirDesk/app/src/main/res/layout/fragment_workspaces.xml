@@ -32,5 +32,21 @@
         android:visibility="gone"
         />
 
+    <Button
+        android:id="@+id/newWorkspaceButton"
+
+        android:text="+"
+        android:textColor="#FFFF"
+        android:textSize="30sp"
+
+        android:layout_width="60dp"
+        android:layout_height="60dp"
+        android:background="@drawable/button_background"
+        android:layout_alignParentBottom="true"
+        android:layout_alignParentRight="true"
+        android:layout_marginRight="16dp"
+        android:layout_marginBottom="16dp"
+        />
+
 
 </RelativeLayout>

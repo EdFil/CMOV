@@ -1,7 +1,6 @@
 package pt.ulisboa.tecnico.cmov.airdesk.fragment;
 
 import android.app.Activity;
-import android.content.Intent;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.view.ContextMenu;
@@ -20,7 +19,6 @@ import pt.ulisboa.tecnico.cmov.airdesk.R;
 import pt.ulisboa.tecnico.cmov.airdesk.adapter.SubscriptionListAdapter;
 import pt.ulisboa.tecnico.cmov.airdesk.core.subscription.Subscription;
 import pt.ulisboa.tecnico.cmov.airdesk.manager.UserManager;
-import pt.ulisboa.tecnico.cmov.airdesk.manager.WorkspaceManager;
 
 public class SubscriptionsFragment extends Fragment {
 
@@ -104,14 +102,14 @@ public class SubscriptionsFragment extends Fragment {
         AdapterView.AdapterContextMenuInfo info = (AdapterView.AdapterContextMenuInfo) item.getMenuInfo();
 
         switch(item.getItemId()){
-            case R.id.menu_edit_subscription:
+            case R.id.menu_rename:
                 Subscription subscription = UserManager.getInstance().getSubscriptionList().get(info.position);
 
                 EditSubscriptionFragment subscriptionFragment = EditSubscriptionFragment.newInstance();
                 subscriptionFragment.setSubscription(subscription);
                 subscriptionFragment.show(getActivity().getFragmentManager(), EditSubscriptionFragment.class.getSimpleName());
                 break;
-            case R.id.menu_delete_subscription:
+            case R.id.menu_delete:
                 UserManager.getInstance().deleteSubscription(info.position);
                 updateSubscriptionList();
                 break;

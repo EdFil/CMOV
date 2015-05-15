@@ -74,7 +74,7 @@ public class LocalWorkspacesFragment extends Fragment {
         registerForContextMenu(mWorkspaceListView);
 
         // Setup create new workspace button
-        Button newWorkspaceButton = (Button) workspaceFragmentView.findViewById(R.id.newWorkspaceButton);
+        Button newWorkspaceButton = (Button) (workspaceFragmentView.findViewById(R.id.newWorkspaceButton));
         newWorkspaceButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View buttonView) {
@@ -107,25 +107,26 @@ public class LocalWorkspacesFragment extends Fragment {
 
         Intent intent;
         switch(item.getItemId()){
-            case R.id.menu_my_edit:
-                intent = new Intent(getActivity(), WorkspaceDetailsActivity.class);
-                intent.putExtra(WorkspaceDetailsActivity.IS_LOCAL_WS, true);
-                intent.putExtra(WorkspaceDetailsActivity.EDIT_MODE, true);
-                intent.putExtra(Constants.WORKSPACE_INDEX, info.position);
-                getActivity().startActivity(intent);
+            case R.id.menu_rename:
+                RenameWorkspaceFragment frag = RenameWorkspaceFragment.newInstance();
+                frag.setWorkspace(mWorkspaceListAdapter.getItem(info.position));
+                frag.show(getActivity().getFragmentManager(), RenameWorkspaceFragment.class.getSimpleName());
                 break;
-            case R.id.menu_my_details:
+            case R.id.menu_quota:
+                // TODO: context menu quota
+                break;
+            case R.id.menu_details:
                 intent = new Intent(getActivity(), WorkspaceDetailsActivity.class);
                 intent.putExtra(WorkspaceDetailsActivity.IS_LOCAL_WS, true);
                 intent.putExtra(WorkspaceDetailsActivity.EDIT_MODE, false);
                 intent.putExtra(Constants.WORKSPACE_ID_KEY, mWorkspaceListAdapter.getItem(info.position).getDatabaseId());
                 getActivity().startActivity(intent);
                 break;
-            case R.id.menu_my_delete:
+            case R.id.menu_delete:
                 WorkspaceManager.getInstance().deleteLocalWorkspace(info.position);
                 updateWorkspaceList();
                 break;
-            case R.id.menu_my_invite:
+            case R.id.menu_access_list:
                 intent = new Intent(getActivity(), ManageAccessListActivity.class);
                 intent.putExtra(Constants.WORKSPACE_ID_KEY, mWorkspaceListAdapter.getItem(info.position).getDatabaseId());
                 getActivity().startActivity(intent);

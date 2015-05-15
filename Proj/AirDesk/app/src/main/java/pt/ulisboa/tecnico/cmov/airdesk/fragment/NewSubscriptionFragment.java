@@ -44,8 +44,8 @@ public class NewSubscriptionFragment extends DialogFragment {
         // Get references to all the views
         mAddTagsLayout = (AddTagsLayout) subscribeFragmentView.findViewById(R.id.sub_workspace_tags);
 
-        mountButton = (Button) subscribeFragmentView.findViewById(R.id.mountButton);
-        cancelButton = (Button)subscribeFragmentView.findViewById(R.id.cancelDialog);
+        mountButton = (Button) subscribeFragmentView.findViewById(R.id.ok_button);
+        cancelButton = (Button)subscribeFragmentView.findViewById(R.id.cancel_button);
         subscriptionName = (EditText) subscribeFragmentView.findViewById(R.id.newSubscriptionName);
 
         // Setup the on click listeners
