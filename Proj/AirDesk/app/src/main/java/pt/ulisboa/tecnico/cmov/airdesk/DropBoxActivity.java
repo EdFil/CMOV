@@ -77,43 +77,14 @@ public class DropBoxActivity extends ActionBarActivity {
                 // Store it locally in our app for later use
                 storeAuth(session);
 
+                Intent intent = new Intent(getApplicationContext(), LoadActivity.class);
+                startActivity(intent);
+
             } catch (IllegalStateException e) {
                 Toast.makeText(this, "Couldn't authenticate with Dropbox:" + e.getLocalizedMessage(), Toast.LENGTH_SHORT).show();
                 Log.i(TAG, "Error authenticating", e);
             }
         }
-
-        Intent intent = new Intent(getApplicationContext(), LoadActivity.class);
-        startActivity(intent);
-
-//        FileOutputStream fos = null;
-//        if (mDBApi.getSession().authenticationSuccessful()) {
-//            try {
-//                Toast.makeText(this, "dropResume", Toast.LENGTH_SHORT).show();
-//
-//                // Required to complete auth, sets the access token on the session
-//                mDBApi.getSession().finishAuthentication();
-//
-//                String accessToken = mDBApi.getSession().getOAuth2AccessToken();
-//
-//                String text = "Text Test";
-//                fos = openFileOutput("working-draft.txt", Context.MODE_PRIVATE);
-//                fos.write(text.getBytes());
-//
-//            } catch (IllegalStateException e) {
-//                Log.i("DbAuthLog", "Error authenticating", e);
-//            } catch (FileNotFoundException e) {
-//                e.printStackTrace();
-//            } catch (IOException e) {
-//                e.printStackTrace();
-//            } finally {
-//                try {
-//                    fos.close();
-//                } catch (IOException e) {
-//                    Log.d("DROP BOX ACTIVIY", "Close error.");
-//                }
-//            }
-//        }
     }
 
     private void loadAuth(AndroidAuthSession session) {
