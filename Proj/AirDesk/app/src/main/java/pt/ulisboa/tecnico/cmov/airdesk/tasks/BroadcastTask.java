@@ -33,6 +33,8 @@ public class BroadcastTask extends AsyncTask<Void, String, Void> {
         for(int i = 0; i < usersInNetwork.size(); i++) {
             SimWifiP2pDevice device = usersInNetwork.get(i).getDevice();
             // Create a request task for every device
+            if(device == null)
+                continue;
             RequestTask task = new RequestTask(device.getVirtIp(), mPort, mServiceClass, mArguments);
             // Override the callback so we can process the result from the task
             task.mDelegate = new AsyncResponse() {

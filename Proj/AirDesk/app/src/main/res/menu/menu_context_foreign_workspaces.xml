@@ -6,10 +6,10 @@
         android:title="@string/menu_rename"
         />
 
-    <item
-        android:id="@+id/menu_details"
-        android:title="@string/menu_details"
-    />
+    <!--<item-->
+        <!--android:id="@+id/menu_details"-->
+        <!--android:title="@string/menu_details"-->
+    <!--/>-->
 
     <item
         android:id="@+id/menu_leave"

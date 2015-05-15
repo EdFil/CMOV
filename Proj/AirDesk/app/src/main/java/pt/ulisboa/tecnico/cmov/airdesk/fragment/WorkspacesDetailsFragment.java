@@ -45,6 +45,8 @@ public class WorkspacesDetailsFragment extends Fragment {
         Intent intent = getActivity().getIntent();
         long workspaceIndex = intent.getLongExtra(Constants.WORKSPACE_ID_KEY, -1);
         mWorkspace = WorkspaceManager.getInstance().getLocalWorkspaceWithId(workspaceIndex);
+        if(mWorkspace == null)
+            mWorkspace = WorkspaceManager.getInstance().getForeignWorkspaceWithId(workspaceIndex);
 
     }
 

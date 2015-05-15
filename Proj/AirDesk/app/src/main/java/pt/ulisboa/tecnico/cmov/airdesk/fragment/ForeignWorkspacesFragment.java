@@ -130,9 +130,7 @@ public class ForeignWorkspacesFragment extends Fragment implements WifiDirectMan
                 break;
             case R.id.menu_details:
                 intent = new Intent(getActivity(), WorkspaceDetailsActivity.class);
-                intent.putExtra(WorkspaceDetailsActivity.IS_LOCAL_WS, false);
-                intent.putExtra(WorkspaceDetailsActivity.EDIT_MODE, false);
-                intent.putExtra(Constants.WORKSPACE_INDEX, info.position);
+                intent.putExtra(Constants.WORKSPACE_ID_KEY, info.position);
                 getActivity().startActivity(intent);
                 break;
             case R.id.menu_leave:
