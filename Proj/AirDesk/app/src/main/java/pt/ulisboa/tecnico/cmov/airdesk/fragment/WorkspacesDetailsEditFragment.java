@@ -54,14 +54,14 @@ public class WorkspacesDetailsEditFragment extends Fragment {
 
         // Find Views
         mNameInformationEdit = (EditText) workspaceFragmentView.findViewById(R.id.nameInformationEdit);
-        mQuotaValueLayout = (QuotaValueLayout) workspaceFragmentView.findViewById(R.id.quotaLayout);
+        mQuotaValueLayout = (QuotaValueLayout) workspaceFragmentView.findViewById(R.id.workspace_quota_layout);
         mPrivacyInformationSwitch = (Switch) workspaceFragmentView.findViewById(R.id.privateInformationSwitch);
         mPrivateInformationText = (TextView) workspaceFragmentView.findViewById(R.id.privateInformationText);
         mPublicInformationText = (TextView) workspaceFragmentView.findViewById(R.id.publicInformationText);
         mViewSwitcher = (ViewSwitcher) workspaceFragmentView.findViewById(R.id.viewSwitcher);
         mTagsHintText = (TextView) workspaceFragmentView.findViewById(R.id.tagsHintText);
 
-        quotaLayout = (LinearLayout) workspaceFragmentView.findViewById(R.id.quotaLayout);
+        quotaLayout = (LinearLayout) workspaceFragmentView.findViewById(R.id.workspace_quota_layout);
 
         if(isLocal)
             quotaLayout.setVisibility(View.VISIBLE);

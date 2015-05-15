@@ -1,6 +1,5 @@
 package pt.ulisboa.tecnico.cmov.airdesk.core.file;
 
-import android.widget.EditText;
 import android.widget.TextView;
 
 import org.json.JSONException;
@@ -42,7 +41,7 @@ public abstract class MyFile {
     public void setFile(File file) { mFile = file; }
 
     public abstract void read(TextView textView);
-    public abstract void write(EditText editText);
+    public abstract void write(String content) throws JSONException;
 
     public abstract void lock();
     public abstract void unlock();

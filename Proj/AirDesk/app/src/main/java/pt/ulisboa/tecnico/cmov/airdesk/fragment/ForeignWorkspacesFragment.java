@@ -1,10 +1,7 @@
 package pt.ulisboa.tecnico.cmov.airdesk.fragment;
 
 import android.app.Activity;
-import android.app.AlertDialog;
-import android.content.DialogInterface;
 import android.content.Intent;
-import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
@@ -18,24 +15,14 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.ListView;
-import android.widget.Toast;
-
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
 
 import pt.ulisboa.tecnico.cmov.airdesk.AirDeskActivity;
 import pt.ulisboa.tecnico.cmov.airdesk.R;
 import pt.ulisboa.tecnico.cmov.airdesk.WorkspaceDetailsActivity;
 import pt.ulisboa.tecnico.cmov.airdesk.adapter.ForeignWorkspaceListAdapter;
-import pt.ulisboa.tecnico.cmov.airdesk.core.subscription.Subscription;
 import pt.ulisboa.tecnico.cmov.airdesk.core.workspace.ForeignWorkspace;
-import pt.ulisboa.tecnico.cmov.airdesk.manager.UserManager;
 import pt.ulisboa.tecnico.cmov.airdesk.manager.WifiDirectManager;
 import pt.ulisboa.tecnico.cmov.airdesk.manager.WorkspaceManager;
-import pt.ulisboa.tecnico.cmov.airdesk.service.GetWorkspacesToMount;
-import pt.ulisboa.tecnico.cmov.airdesk.tasks.AsyncResponse;
-import pt.ulisboa.tecnico.cmov.airdesk.tasks.BroadcastTask;
 import pt.ulisboa.tecnico.cmov.airdesk.util.Constants;
 
 public class ForeignWorkspacesFragment extends Fragment implements WifiDirectManager.NetworkUpdate {
@@ -128,21 +115,19 @@ public class ForeignWorkspacesFragment extends Fragment implements WifiDirectMan
 
         Intent intent;
         switch(item.getItemId()){
-            case R.id.menu_foreign_edit:
-                intent = new Intent(getActivity(), WorkspaceDetailsActivity.class);
-                intent.putExtra(WorkspaceDetailsActivity.IS_LOCAL_WS, false);
-                intent.putExtra(WorkspaceDetailsActivity.EDIT_MODE, true);
-                intent.putExtra(Constants.WORKSPACE_INDEX, info.position);
-                getActivity().startActivity(intent);
+            case R.id.menu_rename:
+                RenameWorkspaceFragment frag = RenameWorkspaceFragment.newInstance();
+                frag.setWorkspace(mForeignWorkspaceListAdapter.getItem(info.position));
+                frag.show(getActivity().getFragmentManager(), RenameWorkspaceFragment.class.getSimpleName());
                 break;
-            case R.id.menu_foreign_details:
+            case R.id.menu_details:
                 intent = new Intent(getActivity(), WorkspaceDetailsActivity.class);
                 intent.putExtra(WorkspaceDetailsActivity.IS_LOCAL_WS, false);
                 intent.putExtra(WorkspaceDetailsActivity.EDIT_MODE, false);
                 intent.putExtra(Constants.WORKSPACE_INDEX, info.position);
                 getActivity().startActivity(intent);
                 break;
-            case R.id.menu_foreign_leave:
+            case R.id.menu_leave:
                 WorkspaceManager.getInstance().unmountForeignWorkspace(info.position);
                 break;
         }

@@ -2,17 +2,17 @@
 <menu xmlns:android="http://schemas.android.com/apk/res/android">
 
     <item
-        android:id="@+id/menu_foreign_edit"
+        android:id="@+id/menu_rename"
         android:title="@string/menu_rename"
         />
 
     <item
-        android:id="@+id/menu_foreign_details"
+        android:id="@+id/menu_details"
         android:title="@string/menu_details"
     />
 
     <item
-        android:id="@+id/menu_foreign_leave"
+        android:id="@+id/menu_leave"
         android:title="@string/menu_leave"
     />
 

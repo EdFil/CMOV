@@ -73,7 +73,6 @@ public abstract class Workspace {
     }
 
     public void setQuota(long quota) throws WorkspaceNegativeQuotaException{
-        //TODO: Check when setting a quota bellow the used space
         if(quota < 0)
             throw new WorkspaceNegativeQuotaException();
         if(quota == 0)

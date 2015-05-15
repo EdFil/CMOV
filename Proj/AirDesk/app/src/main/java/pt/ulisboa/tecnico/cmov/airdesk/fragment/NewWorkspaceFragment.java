@@ -69,7 +69,7 @@ public class NewWorkspaceFragment extends DialogFragment {
         mTagListLayout = (PredicateLayout) view.findViewById(R.id.tagList);
         mTagViewSwitcher = (ViewSwitcher) view.findViewById(R.id.tagViewSwitcher);
         mAddTagsLayout = (AddTagsLayout) view.findViewById(R.id.addTagsView);
-        mQuotaValueLayout = (QuotaValueLayout) view.findViewById(R.id.quotaLayout);
+        mQuotaValueLayout = (QuotaValueLayout) view.findViewById(R.id.workspace_quota_layout);
 
 
 

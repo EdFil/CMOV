@@ -2,7 +2,6 @@ package pt.ulisboa.tecnico.cmov.airdesk.core.file;
 
 
 import android.os.AsyncTask;
-import android.widget.EditText;
 import android.widget.TextView;
 
 import org.json.JSONException;
@@ -60,10 +59,10 @@ public class RemoteFile extends MyFile {
     }
 
     @Override
-    public void write(EditText editText) {
+    public void write(String content) throws JSONException {
         String ip = getWorkspace().getOwner().getDevice().getVirtIp();
-        int port = Integer.parseInt(editText.getContext().getString(R.string.port));
-        RequestTask task = new RequestTask(ip, port, WriteFileService.class, getWorkspace().getName(), getName(), editText.getText().toString());
+        int port = Integer.parseInt(WorkspaceManager.getInstance().getContext().getString(R.string.port));
+        RequestTask task = new RequestTask(ip, port, WriteFileService.class, getWorkspace().getName(), getName(), content);
         task.executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR);
         try {
             JSONObject response = task.get();
@@ -76,8 +75,6 @@ public class RemoteFile extends MyFile {
         } catch (InterruptedException e) {
             e.printStackTrace();
         } catch (ExecutionException e) {
-            e.printStackTrace();
-        } catch (JSONException e) {
             e.printStackTrace();
         }
     }

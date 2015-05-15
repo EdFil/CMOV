@@ -28,8 +28,8 @@ import pt.ulisboa.tecnico.cmov.airdesk.fragment.NewFileFragment;
 import pt.ulisboa.tecnico.cmov.airdesk.fragment.NewRemoteFileFragment;
 import pt.ulisboa.tecnico.cmov.airdesk.fragment.NewSubscriptionFragment;
 import pt.ulisboa.tecnico.cmov.airdesk.fragment.NewWorkspaceFragment;
+import pt.ulisboa.tecnico.cmov.airdesk.fragment.OnWorspaceInfoChangedListener;
 import pt.ulisboa.tecnico.cmov.airdesk.fragment.RemoteFilesFragment;
-import pt.ulisboa.tecnico.cmov.airdesk.fragment.RenameWorkspaceFragment;
 import pt.ulisboa.tecnico.cmov.airdesk.fragment.SubscriptionsFragment;
 import pt.ulisboa.tecnico.cmov.airdesk.manager.UserManager;
 import pt.ulisboa.tecnico.cmov.airdesk.util.Constants;
@@ -41,7 +41,7 @@ public class AirDeskActivity extends ActionBarActivity
                    NewSubscriptionFragment.OnNewSubscriptionFragmentListener,
                    EditSubscriptionFragment.OnEditSubscriptionFragmentListener,
                    NewRemoteFileFragment.OnRemoteNewFileFragmentListener,
-                   RenameWorkspaceFragment.OnWorkspaceUpdatedListener{
+                   OnWorspaceInfoChangedListener{
 
     public static final String TAG = AirDeskActivity.class.getSimpleName();
 
@@ -246,9 +246,9 @@ public class AirDeskActivity extends ActionBarActivity
     public void onWorkspaceInfoChanged() {
         Fragment frag = getSupportFragmentManager().findFragmentById(R.id.container);
         if(frag instanceof LocalWorkspacesFragment)
-            ((LocalWorkspacesFragment) frag).updateWorkspaceList();
+            ((LocalWorkspacesFragment) frag).onUpdateWorkspaceList();
         else if (frag instanceof ForeignWorkspacesFragment)
-            ((ForeignWorkspacesFragment) frag).updateWorkspaceList();
+            ((ForeignWorkspacesFragment) frag).onForeignWorkspaceUpdate();
     }
 
     /**

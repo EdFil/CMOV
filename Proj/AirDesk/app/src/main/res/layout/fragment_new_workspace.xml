@@ -37,7 +37,7 @@
         android:textStyle="bold" />
 
     <pt.ulisboa.tecnico.cmov.airdesk.custom.QuotaValueLayout
-        android:id="@+id/quotaLayout"
+        android:id="@+id/workspace_quota_layout"
         android:layout_width="match_parent"
         android:layout_height="wrap_content" />
 

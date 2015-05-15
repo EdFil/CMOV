@@ -313,8 +313,13 @@ public class WorkspaceManager {
             unmountForeignWorkspace(foreignWorkspace);
     }
 
-    public void renameWorkspace(Workspace workspace, String name) {
+    public void renameWorkspace(LocalWorkspace workspace, String name) {
         AirDeskDbHelper.getInstance(getContext()).updateWorkspace(workspace.getDatabaseId(), name, null, null);
         workspace.setName(name);
+    }
+
+    public void changeQuotaWorkspace(LocalWorkspace workspace, long quota) {
+        workspace.setQuota(quota);
+        AirDeskDbHelper.getInstance(getContext()).updateWorkspace(workspace.getDatabaseId(), null, quota, null);
     }
 }

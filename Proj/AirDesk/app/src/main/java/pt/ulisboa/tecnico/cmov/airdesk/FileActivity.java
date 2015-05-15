@@ -79,7 +79,8 @@ public class FileActivity extends ActionBarActivity {
 
     public void onClickSave(View view) {
         try {
-            mFile.write(mTextToEdit);
+            Log.d(TAG, mTextToEdit.getText().toString());
+            mFile.write(mTextToEdit.getText().toString());
 
             mFile.unlock();
 

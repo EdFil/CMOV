@@ -89,7 +89,7 @@ public class LocalWorkspacesFragment extends Fragment {
     public void onResume() {
         super.onResume();
         ((AirDeskActivity) getActivity()).updateActionBarTitle();
-        updateWorkspaceList();
+        onUpdateWorkspaceList();
     }
 
     // This will be invoked when an item in the listView is long pressed
@@ -108,12 +108,14 @@ public class LocalWorkspacesFragment extends Fragment {
         Intent intent;
         switch(item.getItemId()){
             case R.id.menu_rename:
-                RenameWorkspaceFragment frag = RenameWorkspaceFragment.newInstance();
-                frag.setWorkspace(mWorkspaceListAdapter.getItem(info.position));
-                frag.show(getActivity().getFragmentManager(), RenameWorkspaceFragment.class.getSimpleName());
+                RenameWorkspaceFragment renameFrag = RenameWorkspaceFragment.newInstance();
+                renameFrag.setWorkspace(mWorkspaceListAdapter.getItem(info.position));
+                renameFrag.show(getActivity().getFragmentManager(), RenameWorkspaceFragment.class.getSimpleName());
                 break;
             case R.id.menu_quota:
-                // TODO: context menu quota
+                ChangeQuotaWorkspaceFragment quotaFrag = ChangeQuotaWorkspaceFragment.newInstance();
+                quotaFrag.setWorkspace(mWorkspaceListAdapter.getItem(info.position));
+                quotaFrag.show(getActivity().getFragmentManager(), ChangeQuotaWorkspaceFragment.class.getSimpleName());
                 break;
             case R.id.menu_details:
                 intent = new Intent(getActivity(), WorkspaceDetailsActivity.class);
@@ -124,7 +126,7 @@ public class LocalWorkspacesFragment extends Fragment {
                 break;
             case R.id.menu_delete:
                 WorkspaceManager.getInstance().deleteLocalWorkspace(info.position);
-                updateWorkspaceList();
+                onUpdateWorkspaceList();
                 break;
             case R.id.menu_access_list:
                 intent = new Intent(getActivity(), ManageAccessListActivity.class);
@@ -149,7 +151,7 @@ public class LocalWorkspacesFragment extends Fragment {
         // as you specify a parent activity in AndroidManifest.xml.
 
         if (item.getItemId() == R.id.refresh_workspaces) {
-            updateWorkspaceList();
+            onUpdateWorkspaceList();
             return true;
         }
 
@@ -182,15 +184,15 @@ public class LocalWorkspacesFragment extends Fragment {
     }
 
     public void addWorkspace() {
-        updateWorkspaceList();
+        onUpdateWorkspaceList();
     }
 
     public void deleteAllWorkspaces() {
         manager.deletaAllLocalWorkspaces();
-        updateWorkspaceList();
+        onUpdateWorkspaceList();
     }
 
-    public void updateWorkspaceList() {
+    public void onUpdateWorkspaceList() {
         mWorkspaceListAdapter.notifyDataSetChanged();
     }
 

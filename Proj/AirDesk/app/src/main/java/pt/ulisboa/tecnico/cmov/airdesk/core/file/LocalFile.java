@@ -1,6 +1,6 @@
 package pt.ulisboa.tecnico.cmov.airdesk.core.file;
 
-import android.widget.EditText;
+import android.util.Log;
 import android.widget.TextView;
 
 import pt.ulisboa.tecnico.cmov.airdesk.core.file.exception.FileAlreadyBeeingEditedException;
@@ -29,8 +29,9 @@ public class LocalFile extends MyFile {
     }
 
     @Override
-    public void write(EditText editText) {
-        long bytesToUse = editText.length() - editText.length() + ((LocalWorkspace)getWorkspace()).getUsedQuota();
+    public void write(String content) {
+        Log.d("LocalFile", String.valueOf(getFile().length()));
+        long bytesToUse = content.length() - getFile().length() + ((LocalWorkspace)getWorkspace()).getUsedQuota();
         long usableSpace = WorkspaceManager.getInstance().getSpaceAvailableInternalStorage();
 
         if(bytesToUse > usableSpace) {
@@ -40,7 +41,7 @@ public class LocalFile extends MyFile {
             throw new FileExceedsMaxQuotaException(bytesToUse, getWorkspace().getMaxQuota());
         }
 
-        new WriteFileTask(editText.getText().toString()).execute(getFile());
+        new WriteFileTask(content).execute(getFile());
     }
 
     @Override
