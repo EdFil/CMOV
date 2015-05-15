@@ -50,7 +50,7 @@ public class LoadActivity extends Activity {
                     int counter = 0;
 
                     for (int i = 0; i < 4; i++){
-                        this.wait(1000);
+                        this.wait(850);
                         publishProgress(i);
                     }
                 }
