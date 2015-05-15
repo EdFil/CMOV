@@ -141,6 +141,7 @@ public class DropBoxActivity extends ActionBarActivity {
         AppKeyPair appKeyPair = new AppKeyPair(APP_KEY, APP_SECRET);
 
         AndroidAuthSession session = new AndroidAuthSession(appKeyPair);
+
         loadAuth(session);
         return session;
     }

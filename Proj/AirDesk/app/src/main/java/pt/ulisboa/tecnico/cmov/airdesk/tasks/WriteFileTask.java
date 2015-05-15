@@ -27,6 +27,9 @@ public class WriteFileTask extends AsyncTask<File, Void, Void> {
             fos = new FileOutputStream(file[0]);
             fos.write(mContent.getBytes());
 
+            String path = file[0].getPath();
+            new UploadFileTask().execute(path);
+
         } catch (FileNotFoundException e) {
             Log.e(LOG_TAG, "File not found", e);
         } catch (IOException e) {

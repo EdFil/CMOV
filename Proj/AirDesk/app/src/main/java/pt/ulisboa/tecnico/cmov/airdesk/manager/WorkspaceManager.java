@@ -20,6 +20,7 @@ import pt.ulisboa.tecnico.cmov.airdesk.core.workspace.ForeignWorkspace;
 import pt.ulisboa.tecnico.cmov.airdesk.core.workspace.LocalWorkspace;
 import pt.ulisboa.tecnico.cmov.airdesk.core.workspace.Workspace;
 import pt.ulisboa.tecnico.cmov.airdesk.database.AirDeskDbHelper;
+import pt.ulisboa.tecnico.cmov.airdesk.tasks.DeleteFileTask;
 import pt.ulisboa.tecnico.cmov.airdesk.tasks.UploadFileTask;
 import pt.ulisboa.tecnico.cmov.airdesk.util.Constants;
 
@@ -84,7 +85,7 @@ public class WorkspaceManager {
             AirDeskDbHelper.getInstance(getContext()).insertTagToWorkspace(newWorkspace, tag);
         }
         AirDeskDbHelper.getInstance(getContext()).insertUserToWorkspace(newWorkspace, owner.getEmail());
-        // Create folder for workspace
+        // Create folder for workspace and Dropbox
         FileManager.getInstance().createLocalFolder(newWorkspace.getWorkspaceFolderName());
         // Add workspace to Workspace Manager
         mLocalWorkspaces.add(newWorkspace);
@@ -209,6 +210,10 @@ public class WorkspaceManager {
     public void removeFileFromWorkspace(LocalFile file, LocalWorkspace workspace) {
         FileManager.getInstance().deleteLocalFile(workspace.getWorkspaceFolderName(), file.getName());
         AirDeskDbHelper.getInstance(getContext()).removeFileFromWorkspace(workspace, file.getName());
+
+        String path = file.getFile().getPath();
+        new DeleteFileTask().execute(path);
+
         workspace.removeFile(file);
     }
 

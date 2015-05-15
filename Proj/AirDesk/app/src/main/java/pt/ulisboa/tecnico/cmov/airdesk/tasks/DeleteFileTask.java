@@ -2,24 +2,18 @@ package pt.ulisboa.tecnico.cmov.airdesk.tasks;
 
 import android.os.AsyncTask;
 import android.util.Log;
-import android.widget.TextView;
-import android.widget.Toast;
 
 import com.dropbox.client2.DropboxAPI;
 import com.dropbox.client2.exception.DropboxException;
 
-import java.io.File;
 import java.io.FileInputStream;
-import java.io.FileNotFoundException;
-import java.io.FileOutputStream;
 import java.io.IOException;
 
 import pt.ulisboa.tecnico.cmov.airdesk.DropBoxActivity;
-import pt.ulisboa.tecnico.cmov.airdesk.core.workspace.Workspace;
 
-public class UploadFileTask extends AsyncTask<String, String, Void> {
+public class DeleteFileTask extends AsyncTask<String, String, Void> {
 
-    public static final String LOG_TAG = UploadFileTask.class.getSimpleName();
+    public static final String LOG_TAG = DeleteFileTask.class.getSimpleName();
 
     @Override
     protected Void doInBackground(String... file) {
@@ -34,24 +28,16 @@ public class UploadFileTask extends AsyncTask<String, String, Void> {
 
         String dbPath = userName + "/" + wsName + "/" + fileName + ".txt";
 
-        FileInputStream fis = null;
         try {
-            fis = new FileInputStream(path);
-            DropboxAPI.Entry response = DropBoxActivity.mDBApi.putFileOverwrite(dbPath, fis,
-                    fis.getChannel().size(), null);
-            Log.i("DbExampleLog", "The uploaded file's rev is: " + response.rev);
+
+            DropBoxActivity.mDBApi.delete(dbPath);
+
         } catch (DropboxException e) {
-            System.out.println("Upload went wrong: " + e);
+            System.out.println("Delete went wrong: " + e);
             e.printStackTrace();
         }catch (Exception e) {
             System.out.println("Something went wrong: " + e);
             e.printStackTrace();
-        } finally {
-            if (fis != null) {
-                try {
-                    fis.close();
-                } catch (IOException e) {e.printStackTrace();}
-            }
         }
 //            DropboxAPI.Entry existingEntry = mDBApi.metadata("/magnum-opus.txt", 1, null, false, null);
 //            Log.i("DbExampleLog", "The file's rev is now: " + existingEntry.rev);
