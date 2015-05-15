@@ -9,6 +9,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.List;
+import java.util.Random;
 
 import pt.ulisboa.tecnico.cmov.airdesk.core.subscription.Subscription;
 import pt.ulisboa.tecnico.cmov.airdesk.core.user.User;
@@ -69,8 +70,13 @@ public class UserManager {
             return null;
         }
 
+        long uuid;
+        do {
+            uuid = new Random().nextLong();
+        } while (getUserById(uuid) != null);
+
         // If not exists
-        User user = new User(-1, email, nick);
+        User user = new User(uuid, email, nick);
         mUserList.add(user);
         return user;
     }

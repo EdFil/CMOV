@@ -1,5 +1,8 @@
 package pt.ulisboa.tecnico.cmov.airdesk.core.file;
 
+import android.widget.EditText;
+import android.widget.TextView;
+
 import org.json.JSONException;
 import org.json.JSONObject;
 
@@ -15,6 +18,7 @@ public abstract class MyFile {
 
     public static final String VERSION_KEY = "version";
     public static final String NAME_KEY = "name";
+    public static final String CONTENT_KEY = "content";
 
     private int mVersion;
     private boolean isLocked;
@@ -39,13 +43,16 @@ public abstract class MyFile {
         mFile = file;
     }
 
-    public synchronized void open() {
+    public abstract void read(TextView textView);
+    public abstract void write(EditText editText, Workspace workspace);
+
+    public synchronized void lock() {
         if(isLocked)
             throw new FileAlreadyBeeingEditedException(getName());
         isLocked = true;
     }
 
-    public synchronized void close() {
+    public synchronized void unlock() {
         if(isLocked) {
             mVersion++;
             isLocked = false;

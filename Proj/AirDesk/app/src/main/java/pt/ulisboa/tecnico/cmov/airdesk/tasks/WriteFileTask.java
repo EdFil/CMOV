@@ -3,7 +3,6 @@ package pt.ulisboa.tecnico.cmov.airdesk.tasks;
 import android.os.AsyncTask;
 import android.util.Log;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import java.io.File;
 import java.io.FileNotFoundException;
@@ -53,7 +52,5 @@ public class WriteFileTask extends AsyncTask<File, Void, Void> {
     @Override
     protected void onPostExecute(Void aVoid) {
         super.onPostExecute(aVoid);
-
-        Toast.makeText(mTextToEdit.getContext(), "File written", Toast.LENGTH_SHORT).show();
     }
 }

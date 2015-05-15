@@ -2,7 +2,6 @@ package pt.ulisboa.tecnico.cmov.airdesk.tasks;
 
 import android.os.AsyncTask;
 import android.util.Log;
-import android.widget.Toast;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -18,7 +17,6 @@ import java.util.Random;
 
 import pt.inesc.termite.wifidirect.SimWifiP2pDevice;
 import pt.inesc.termite.wifidirect.sockets.SimWifiP2pSocket;
-import pt.ulisboa.tecnico.cmov.airdesk.manager.WorkspaceManager;
 import pt.ulisboa.tecnico.cmov.airdesk.util.Constants;
 
 /**
@@ -57,6 +55,7 @@ public class RequestTask extends AsyncTask<Void, String, JSONObject> {
                 }
             }
         });
+        //mTimeLimitThread.run();
     }
 
 
@@ -111,8 +110,6 @@ public class RequestTask extends AsyncTask<Void, String, JSONObject> {
     protected void onPostExecute(JSONObject result) {
         if(mDelegate != null)
             mDelegate.processFinish(result.toString());
-        else
-            Toast.makeText(WorkspaceManager.getInstance().getContext(), result.toString(), Toast.LENGTH_SHORT).show();
     }
 
     private JSONObject makeJsonErrorMessage(String errorMessage) {

@@ -222,6 +222,13 @@ public class WorkspaceManager {
         return null;
     }
 
+    public LocalWorkspace getLocalWorkspaceWithName(String workspaceName) {
+        for(LocalWorkspace workspace : mLocalWorkspaces)
+            if(workspace.getName().equals(workspaceName))
+                return workspace;
+        return null;
+    }
+
     public ForeignWorkspace getForeignWorkspaceWithId(long databaseId) {
         for(ForeignWorkspace workspace : mForeignWorkspaces)
             if(workspace.getDatabaseId() == databaseId)

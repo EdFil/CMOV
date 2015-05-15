@@ -3,20 +3,18 @@ package pt.ulisboa.tecnico.cmov.airdesk;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.v7.app.ActionBarActivity;
+import android.util.Log;
 import android.view.View;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import pt.ulisboa.tecnico.cmov.airdesk.core.file.LocalFile;
-import pt.ulisboa.tecnico.cmov.airdesk.core.file.exception.FileExceedsAvailableSpaceException;
-import pt.ulisboa.tecnico.cmov.airdesk.core.file.exception.FileExceedsMaxQuotaException;
+import pt.ulisboa.tecnico.cmov.airdesk.core.file.MyFile;
 import pt.ulisboa.tecnico.cmov.airdesk.core.file.exception.FileException;
-import pt.ulisboa.tecnico.cmov.airdesk.core.workspace.LocalWorkspace;
+import pt.ulisboa.tecnico.cmov.airdesk.core.workspace.Workspace;
 import pt.ulisboa.tecnico.cmov.airdesk.manager.WorkspaceManager;
 import pt.ulisboa.tecnico.cmov.airdesk.tasks.ReadFileTask;
-import pt.ulisboa.tecnico.cmov.airdesk.tasks.WriteFileTask;
 import pt.ulisboa.tecnico.cmov.airdesk.util.Constants;
 
 
@@ -31,8 +29,8 @@ public class FileActivity extends ActionBarActivity {
     private EditText mTextToEdit;
     private ImageView mSaveImageView;
 
-    private LocalFile mFile;
-    private LocalWorkspace mWorkspace;
+    private MyFile mFile;
+    private Workspace mWorkspace;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -51,19 +49,24 @@ public class FileActivity extends ActionBarActivity {
         long workspaceId = intent.getLongExtra(Constants.WORKSPACE_ID_KEY, -1);
 
         mWorkspace = WorkspaceManager.getInstance().getLocalWorkspaceWithId(workspaceId);
+        if(mWorkspace == null)
+            mWorkspace = WorkspaceManager.getInstance().getForeignWorkspaceWithId(workspaceId);
+        if(mWorkspace == null)
+            Log.e(TAG, "Could not open file");
+
         mFile = mWorkspace.getFileByName(fileName);
 
         // Action bar back button e name
         getSupportActionBar().setTitle(mFile.getName());
 
-        new ReadFileTask(mTextToView).execute(mFile.getFile());
+        mFile.read(mTextToView);
     }
 
     public void onClickEdit(View view) {
         try {
-            mFile.open();
+            mFile.lock();
 
-            new ReadFileTask(mTextToEdit).execute(mFile.getFile());
+            mFile.read(mTextToView);
 
             mTextToView.setVisibility(View.GONE);
             mEditImageView.setVisibility(View.GONE);
@@ -77,19 +80,9 @@ public class FileActivity extends ActionBarActivity {
 
     public void onClickSave(View view) {
         try {
-            long bytesToUse = mTextToEdit.length() - mTextToView.length() + (mWorkspace).getUsedQuota();
-            long usableSpace = WorkspaceManager.getInstance().getSpaceAvailableInternalStorage();
+            mFile.write(mTextToEdit, mWorkspace);
 
-            if(bytesToUse > usableSpace) {
-                throw new FileExceedsAvailableSpaceException(bytesToUse, usableSpace);
-            }
-            if(bytesToUse > mWorkspace.getMaxQuota()) {
-                throw new FileExceedsMaxQuotaException(bytesToUse, mWorkspace.getMaxQuota());
-            }
-
-            new WriteFileTask(mTextToEdit, mWorkspace).execute(mFile.getFile());
-
-            mFile.close();
+            mFile.unlock();
 
             new ReadFileTask(mTextToView).execute(mFile.getFile());
 

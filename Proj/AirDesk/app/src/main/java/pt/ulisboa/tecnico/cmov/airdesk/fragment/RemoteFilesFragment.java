@@ -22,7 +22,6 @@ import pt.ulisboa.tecnico.cmov.airdesk.AirDeskActivity;
 import pt.ulisboa.tecnico.cmov.airdesk.FileActivity;
 import pt.ulisboa.tecnico.cmov.airdesk.R;
 import pt.ulisboa.tecnico.cmov.airdesk.adapter.FileListAdapter;
-import pt.ulisboa.tecnico.cmov.airdesk.core.file.LocalFile;
 import pt.ulisboa.tecnico.cmov.airdesk.core.file.RemoteFile;
 import pt.ulisboa.tecnico.cmov.airdesk.core.workspace.ForeignWorkspace;
 import pt.ulisboa.tecnico.cmov.airdesk.manager.WorkspaceManager;
@@ -63,7 +62,7 @@ public class RemoteFilesFragment extends Fragment {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
                 // Send file to the File activity
-                LocalFile file = ((LocalFile) parent.getItemAtPosition(position));
+                RemoteFile file = ((RemoteFile) parent.getItemAtPosition(position));
 
                 Intent intent = new Intent(getActivity(), FileActivity.class);
                 intent.putExtra(Constants.FILE_NAME_KEY, file.getFile().getName());
