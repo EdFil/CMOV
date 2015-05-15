@@ -107,7 +107,12 @@ public class UserManager {
         AirDeskDbHelper.getInstance(getContext()).insertSubscriptionToUser(getOwner(), name, tags);
         Subscription subscription = new Subscription(name, tags);
         mSubscriptionList.add(subscription);
+    }
 
+    public void editSubscription(Subscription subscription, String name, String[] tags) {
+        AirDeskDbHelper.getInstance(getContext()).updateSubscription(getOwner().getDatabaseId(), subscription, name, tags);
+        subscription.setName(name);
+        subscription.setTags(tags);
     }
 
     // Clears the subscription list
@@ -214,4 +219,7 @@ public class UserManager {
 //        WorkspaceManager.getInstance().unmountForeignWorkspacesWithTags(tagsToRemove);
 
     }
+
+
+
 }

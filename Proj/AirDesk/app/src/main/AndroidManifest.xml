@@ -70,7 +70,7 @@
             android:label="Manage Account"
             android:screenOrientation="portrait" />
         <activity
-            android:name=".InviteForWorkspaceActivity"
+            android:name=".ManageAccessListActivity"
             android:label="@string/title_activity_invite_for_workspace"
             android:screenOrientation="portrait" />
 

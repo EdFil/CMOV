@@ -105,6 +105,12 @@ public class AddTagsLayout extends LinearLayout {
         return tags;
     }
 
+    // Gets all tags from the PredicateLayout
+    public void setAllTags(String[] tags) {
+        for(String tag : tags)
+            addTag(tag);
+    }
+
     public void flush() {
         if(mTagsEditText.getText().length() > 0) {
             addTag(mTagsEditText.getText().toString());

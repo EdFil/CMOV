@@ -453,4 +453,26 @@ public class AirDeskDbHelper extends SQLiteOpenHelper {
 
         return subscriptions;
     }
+
+    public void updateSubscription(long ownerKey, Subscription subscription, String name, String[] tags) {
+        SQLiteDatabase db = mInstance.getWritableDatabase();
+
+        StringBuilder builder = new StringBuilder();
+        for(int i = 0; i < tags.length; i++) {
+            builder.append(tags[i]);
+            if(i < tags.length - 1)
+                builder.append("|");
+        }
+
+        ContentValues values = new ContentValues();
+        values.put(SubscriptionEntry.COLUMN_NAME, name);
+        values.put(SubscriptionEntry.COLUMN_TAGS, builder.toString());
+
+        String whereClause = SubscriptionEntry.COLUMN_USER_KEY + "=? AND " + SubscriptionEntry.COLUMN_NAME + "=?";
+        String[] whereArgs = new String[] { String.valueOf(ownerKey), subscription.getName() };
+
+        db.update(AirDeskContract.SubscriptionEntry.TABLE_NAME, values, whereClause, whereArgs);
+
+        db.close();
+    }
 }

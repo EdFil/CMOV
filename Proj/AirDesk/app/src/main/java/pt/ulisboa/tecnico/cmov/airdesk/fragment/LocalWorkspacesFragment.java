@@ -21,7 +21,7 @@ import android.widget.ListView;
 import android.widget.Toast;
 
 import pt.ulisboa.tecnico.cmov.airdesk.AirDeskActivity;
-import pt.ulisboa.tecnico.cmov.airdesk.InviteForWorkspaceActivity;
+import pt.ulisboa.tecnico.cmov.airdesk.ManageAccessListActivity;
 import pt.ulisboa.tecnico.cmov.airdesk.R;
 import pt.ulisboa.tecnico.cmov.airdesk.WorkspaceDetailsActivity;
 import pt.ulisboa.tecnico.cmov.airdesk.adapter.WorkspaceListAdapter;
@@ -126,7 +126,7 @@ public class LocalWorkspacesFragment extends Fragment {
                 updateWorkspaceList();
                 break;
             case R.id.menu_my_invite:
-                intent = new Intent(getActivity(), InviteForWorkspaceActivity.class);
+                intent = new Intent(getActivity(), ManageAccessListActivity.class);
                 intent.putExtra(Constants.WORKSPACE_ID_KEY, mWorkspaceListAdapter.getItem(info.position).getDatabaseId());
                 getActivity().startActivity(intent);
                 break;

@@ -2,6 +2,12 @@
 <menu xmlns:android="http://schemas.android.com/apk/res/android">
 
     <item
+        android:id="@+id/menu_edit_subscription"
+        android:title="@string/menu_edit"
+        />
+
+
+    <item
         android:id="@+id/menu_delete_subscription"
         android:title="@string/menu_delete"
     />

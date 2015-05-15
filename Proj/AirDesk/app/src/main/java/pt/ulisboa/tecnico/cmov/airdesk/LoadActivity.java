@@ -7,6 +7,7 @@ import android.os.AsyncTask;
 import android.os.Bundle;
 
 import pt.ulisboa.tecnico.cmov.airdesk.manager.UserManager;
+import pt.ulisboa.tecnico.cmov.airdesk.manager.WifiDirectManager;
 import pt.ulisboa.tecnico.cmov.airdesk.manager.WorkspaceManager;
 
 
@@ -40,6 +41,7 @@ public class LoadActivity extends Activity {
                 // Load local workspaces and subscriptions
                 WorkspaceManager.getInstance().loadLocalWorkspaces();
                 UserManager.getInstance().loadSubscriptions();
+                WifiDirectManager.getInstance().turnOnWifiDirect();
 
                 //Get the current thread's token
                 synchronized (this)

@@ -232,7 +232,6 @@ public class ForeignWorkspacesFragment extends Fragment {
         arguments.toArray(tags);
 
         // Create the broadcast task to send the service to all connected peers
-        // TODO : alterar para ter tamb�m os INVITED
         BroadcastTask task = new BroadcastTask(
                 Integer.parseInt(getString(R.string.port)),
                 GetWorkspacesToMount.class,

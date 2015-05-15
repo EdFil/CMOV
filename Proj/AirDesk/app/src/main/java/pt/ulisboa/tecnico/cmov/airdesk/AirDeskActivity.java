@@ -19,6 +19,7 @@ import android.view.ViewGroup;
 import android.widget.ListView;
 import android.widget.TextView;
 
+import pt.ulisboa.tecnico.cmov.airdesk.fragment.EditSubscriptionFragment;
 import pt.ulisboa.tecnico.cmov.airdesk.fragment.ForeignWorkspacesFragment;
 import pt.ulisboa.tecnico.cmov.airdesk.fragment.LocalFilesFragment;
 import pt.ulisboa.tecnico.cmov.airdesk.fragment.LocalWorkspacesFragment;
@@ -34,8 +35,8 @@ public class AirDeskActivity extends ActionBarActivity
         implements NavigationDrawerFragment.NavigationDrawerCallbacks,
                    NewFileFragment.OnNewFileFragmentListener,
                    NewWorkspaceFragment.OnNewWorkspaceFragmentListener,
-                   NewSubscriptionFragment.OnNewSubscriptionFragmentListener {
-
+                   NewSubscriptionFragment.OnNewSubscriptionFragmentListener,
+                   EditSubscriptionFragment.OnEditSubscriptionFragmentListener {
     public static final String TAG = AirDeskActivity.class.getSimpleName();
 
     // Fragment managing the behaviors, interactions and presentation of the navigation drawer.
