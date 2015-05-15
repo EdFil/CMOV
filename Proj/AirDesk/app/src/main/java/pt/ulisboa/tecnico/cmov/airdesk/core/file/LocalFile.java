@@ -39,7 +39,7 @@ public class LocalFile extends MyFile {
             throw new FileExceedsMaxQuotaException(bytesToUse, workspace.getMaxQuota());
         }
 
-        new WriteFileTask(editText, workspace).execute(getFile());
+        new WriteFileTask(editText.getText().toString()).execute(getFile());
     }
 
 }

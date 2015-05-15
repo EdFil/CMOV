@@ -2,7 +2,6 @@ package pt.ulisboa.tecnico.cmov.airdesk.core.file;
 
 
 import android.os.AsyncTask;
-import android.util.Log;
 import android.widget.EditText;
 import android.widget.TextView;
 
@@ -33,14 +32,13 @@ public class RemoteFile extends MyFile {
     }
 
     @Override
-    public void read(final TextView textView) {
+    public void read(TextView textView) {
         String ip = getWorkspace().getOwner().getDevice().getVirtIp();
         int port = Integer.parseInt(textView.getContext().getString(R.string.port));
         RequestTask task = new RequestTask(ip, port, ReadFileService.class, getWorkspace().getName(), getName());
         task.executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR);
         try {
-            String content = task.get().getString(MyFile.CONTENT_KEY);
-            Log.d("RemoteFile", content);
+            textView.setText(task.get().getString(MyFile.CONTENT_KEY));
         } catch (InterruptedException e) {
             e.printStackTrace();
         } catch (ExecutionException e) {
@@ -52,6 +50,7 @@ public class RemoteFile extends MyFile {
 
     @Override
     public void write(EditText editText, Workspace workspace) {
-
+        String ip = getWorkspace().getOwner().getDevice().getVirtIp();
+        int port = Integer.parseInt(editText.getContext().getString(R.string.port));
     }
 }
