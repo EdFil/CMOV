@@ -75,21 +75,19 @@ public class ForeignWorkspacesFragment extends Fragment {
                 FragmentManager fragmentManager = getActivity().getSupportFragmentManager();
                 FragmentTransaction transaction = fragmentManager.beginTransaction();
 
-                LocalFilesFragment localFilesFragment = new LocalFilesFragment();
+                LocalFilesFragment remoteFilesFragment = new LocalFilesFragment();
 
                 ForeignWorkspace foreignWorkspace = (ForeignWorkspace) parent.getItemAtPosition(position);
-                long foreignId = foreignWorkspace.getOwner().getDatabaseId();
-                String foreignName = foreignWorkspace.getName();
 
-//                Bundle bundle = new Bundle();
-//                bundle.putParcelable("Workspace", foreignWorkspace);
-//                filesFragment.setArguments(bundle);
-//
-//                transaction.replace(R.id.container, filesFragment);
-//                transaction.addToBackStack(null);
-//
-//                // Commit the transaction
-//                transaction.commit();
+                Bundle bundle = new Bundle();
+                bundle.putLong(Constants.WORKSPACE_ID_KEY, foreignWorkspace.getDatabaseId());
+                remoteFilesFragment.setArguments(bundle);
+
+                transaction.replace(R.id.container, remoteFilesFragment);
+                transaction.addToBackStack(null);
+
+                // Commit the transaction
+                transaction.commit();
             }
         });
 

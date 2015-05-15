@@ -52,8 +52,6 @@ public class ServerTask extends AsyncTask<Void, SimWifiP2pSocket, Void> {
     @Override
     protected void onProgressUpdate(final SimWifiP2pSocket... values) {
         Log.d(TAG, values.toString());
-
-
     }
 
     @Override

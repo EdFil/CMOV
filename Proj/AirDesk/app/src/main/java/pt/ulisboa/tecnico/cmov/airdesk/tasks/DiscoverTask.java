@@ -97,6 +97,12 @@ public class DiscoverTask extends AsyncTask<Void, String, JSONObject> {
         try {
             user = UserManager.getInstance().createUser(result);
             user.setDevice(mDevice);
+            StringBuilder string = new StringBuilder();
+            string.append("Users after discover:");
+            for (User onlineUser : UserManager.getInstance().getUsers())
+                string.append(onlineUser.toString());
+            Log.i(TAG, string.toString());
+
         } catch (JSONException e) {
             e.printStackTrace();
         }

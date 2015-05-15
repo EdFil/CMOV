@@ -13,6 +13,7 @@ import java.util.List;
 
 import pt.ulisboa.tecnico.cmov.airdesk.core.file.LocalFile;
 import pt.ulisboa.tecnico.cmov.airdesk.core.file.exception.FileAlreadyExistsException;
+import pt.ulisboa.tecnico.cmov.airdesk.core.subscription.Subscription;
 import pt.ulisboa.tecnico.cmov.airdesk.core.user.User;
 import pt.ulisboa.tecnico.cmov.airdesk.core.workspace.LocalWorkspace;
 import pt.ulisboa.tecnico.cmov.airdesk.core.workspace.Workspace;
@@ -23,6 +24,7 @@ import pt.ulisboa.tecnico.cmov.airdesk.database.AirDeskContract.SubscriptionEntr
 import pt.ulisboa.tecnico.cmov.airdesk.database.AirDeskContract.TagsEntry;
 import pt.ulisboa.tecnico.cmov.airdesk.database.AirDeskContract.UsersEntry;
 import pt.ulisboa.tecnico.cmov.airdesk.database.AirDeskContract.WorkspaceEntry;
+import pt.ulisboa.tecnico.cmov.airdesk.manager.UserManager;
 
 public class AirDeskDbHelper extends SQLiteOpenHelper {
 
@@ -31,6 +33,7 @@ public class AirDeskDbHelper extends SQLiteOpenHelper {
 
     public static final String DATABASE_NAME = "airdesk.db";
     public static final int DATABASE_VERSION = 30;
+    private int subscriptions;
 
     public static synchronized AirDeskDbHelper getInstance(Context context) {
         if (mInstance == null) {
@@ -77,11 +80,11 @@ public class AirDeskDbHelper extends SQLiteOpenHelper {
                 " );";
 
         final String SQL_SUBSCRIPTIONS_TABLE = "CREATE TABLE " + SubscriptionEntry.TABLE_NAME + " (" +
-                SubscriptionEntry._ID + " INTEGER PRIMARY KEY AUTOINCREMENT, " +
                 SubscriptionEntry.COLUMN_USER_KEY+ " TEXT NOT NULL, " +
                 SubscriptionEntry.COLUMN_NAME + " TEXT NOT NULL, " +
                 SubscriptionEntry.COLUMN_TAGS + " TEXT NOT NULL, " +
-                "FOREIGN KEY (" + SubscriptionEntry.COLUMN_USER_KEY  + ") REFERENCES " + UsersEntry.TABLE_NAME + "( " + UsersEntry._ID + " ) " +
+                "FOREIGN KEY (" + SubscriptionEntry.COLUMN_USER_KEY  + ") REFERENCES " + UsersEntry.TABLE_NAME + "( " + UsersEntry._ID + " ), " +
+                "PRIMARY KEY (" + SubscriptionEntry.COLUMN_USER_KEY + ", " + SubscriptionEntry.COLUMN_NAME + ") " +
                 " );";
 
 
@@ -398,5 +401,56 @@ public class AirDeskDbHelper extends SQLiteOpenHelper {
         db.update(AirDeskContract.WorkspaceEntry.TABLE_NAME, values, AirDeskContract.WorkspaceEntry._ID + "=" + workspaceId, null);
 
         db.close();
+    }
+
+    public void insertSubscriptionToUser(User user, String name, String[] tags)  {
+        SQLiteDatabase db = mInstance.getWritableDatabase();
+
+        StringBuilder builder = new StringBuilder();
+        for(int i = 0; i < tags.length; i++) {
+            builder.append(tags[i]);
+            if(i < tags.length - 1)
+                builder.append("|");
+        }
+
+        ContentValues values = new ContentValues();
+        values.put(SubscriptionEntry.COLUMN_USER_KEY, user.getDatabaseId());
+        values.put(SubscriptionEntry.COLUMN_NAME, name);
+        values.put(SubscriptionEntry.COLUMN_TAGS, builder.toString());
+
+        long rowId = db.insert(SubscriptionEntry.TABLE_NAME, null, values);
+        db.close();
+
+        if(rowId == -1)
+            throw new RuntimeException("Subscription already exists.");
+    }
+
+    public void removeSubscriptionFromUser(User user, Subscription subscription){
+        SQLiteDatabase db = mInstance.getWritableDatabase();
+
+        String whereClause = String.format("%s=? AND %s=?;", SubscriptionEntry.COLUMN_USER_KEY, SubscriptionEntry.COLUMN_NAME);
+        String[] whereArgs = new String[] { String.valueOf(user.getDatabaseId()), subscription.getName() };
+        db.delete(SubscriptionEntry.TABLE_NAME, whereClause, whereArgs);
+
+        db.close();
+    }
+
+    public List<Subscription> getSubscriptions(User user) {
+        SQLiteDatabase db = mInstance.getReadableDatabase();
+        ArrayList<Subscription> subscriptions = new ArrayList<>();
+
+        Cursor cursor = db.rawQuery("SELECT * FROM " + SubscriptionEntry.TABLE_NAME, null);
+
+        int columnNameIndex = cursor.getColumnIndex(SubscriptionEntry.COLUMN_NAME);
+        int columnTagsIndex = cursor.getColumnIndex(SubscriptionEntry.COLUMN_TAGS);
+
+        while(cursor.moveToNext()){
+            subscriptions.add(new Subscription(cursor.getString(columnNameIndex), cursor.getString(columnTagsIndex).split("|")));
+        }
+
+        cursor.close();
+        db.close();
+
+        return subscriptions;
     }
 }

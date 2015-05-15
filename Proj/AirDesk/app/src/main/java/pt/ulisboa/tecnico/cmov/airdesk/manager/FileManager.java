@@ -5,6 +5,7 @@ import android.os.Environment;
 import android.os.StatFs;
 
 import java.io.File;
+import java.io.FileOutputStream;
 import java.io.IOException;
 
 /**
@@ -42,12 +43,13 @@ public class FileManager {
 
     public FileManager(Context context) {
         mContext = context;
-        mRootFolder = mContext.getDir(mWorkspaceFolderName, Context.MODE_PRIVATE);
+        mRootFolder = null;
         mCacheFolder = mContext.getCacheDir();
     }
 
     public void setWorkspacesFolderName(String workspacesFolderName) {
         mWorkspaceFolderName = workspacesFolderName;
+        mRootFolder = mContext.getDir(mWorkspaceFolderName, Context.MODE_PRIVATE);
     }
 
     public File createLocalFile(String folderName, String fileName) {
@@ -100,16 +102,20 @@ public class FileManager {
     // -------------------------
 
     private File createFile(File rootFolder, String folderName, String fileName) {
-        File file = null;
+        File createdFile = null;
         try {
             File workspaceFolder = new File(rootFolder, folderName);
-            File createdFile = new File(workspaceFolder, fileName);
-
+            workspaceFolder.mkdir();
+            createdFile = new File(workspaceFolder, fileName);
+            if(createdFile.exists())
+                delete(createdFile);
             createdFile.createNewFile();
+            FileOutputStream outputStream = new FileOutputStream(createdFile);
+            outputStream.close();
         } catch (IOException e) {
             e.printStackTrace();
         } finally {
-            return file;
+            return createdFile;
         }
     }
 

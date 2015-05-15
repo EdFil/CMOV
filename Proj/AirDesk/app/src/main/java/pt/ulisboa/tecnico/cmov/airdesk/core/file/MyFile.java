@@ -5,12 +5,13 @@ import org.json.JSONObject;
 
 import java.io.File;
 
+import pt.ulisboa.tecnico.cmov.airdesk.core.file.exception.FileAlreadyBeeingEditedException;
 import pt.ulisboa.tecnico.cmov.airdesk.core.workspace.Workspace;
 
 /**
  * Created by edgar on 11-05-2015.
  */
-public class MyFile {
+public abstract class MyFile {
 
     public static final String VERSION_KEY = "version";
     public static final String NAME_KEY = "name";
@@ -31,22 +32,24 @@ public class MyFile {
     public int getVersion() { return mVersion; }
     public boolean isLocked() { return isLocked; }
     public Workspace getWorkspace() { return mWorkspace; }
-    public File getFile() { return mFile; }
     public String getName() { return mName; }
+    public File getFile() { return mFile; }
 
-
-    public synchronized boolean open() {
-        if(isLocked)
-            return false;
-        isLocked = true;
-        return true;
+    public void setFile(File file) {
+        mFile = file;
     }
 
-    public synchronized boolean close() {
-        if(!isLocked)
-            return false;
-        isLocked = false;
-        return true;
+    public synchronized void open() {
+        if(isLocked)
+            throw new FileAlreadyBeeingEditedException(getName());
+        isLocked = true;
+    }
+
+    public synchronized void close() {
+        if(isLocked) {
+            mVersion++;
+            isLocked = false;
+        }
     }
 
     public JSONObject toJson() {

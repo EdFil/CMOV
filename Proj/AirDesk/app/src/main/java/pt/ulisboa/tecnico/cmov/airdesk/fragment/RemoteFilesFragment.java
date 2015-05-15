@@ -1,9 +1,7 @@
 package pt.ulisboa.tecnico.cmov.airdesk.fragment;
 
 import android.app.Activity;
-import android.app.AlertDialog;
 import android.content.Context;
-import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
@@ -17,7 +15,6 @@ import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.Button;
 import android.widget.ListView;
-import android.widget.Toast;
 
 import java.util.List;
 
@@ -26,28 +23,29 @@ import pt.ulisboa.tecnico.cmov.airdesk.FileActivity;
 import pt.ulisboa.tecnico.cmov.airdesk.R;
 import pt.ulisboa.tecnico.cmov.airdesk.adapter.FileListAdapter;
 import pt.ulisboa.tecnico.cmov.airdesk.core.file.LocalFile;
-import pt.ulisboa.tecnico.cmov.airdesk.core.workspace.LocalWorkspace;
+import pt.ulisboa.tecnico.cmov.airdesk.core.file.RemoteFile;
+import pt.ulisboa.tecnico.cmov.airdesk.core.workspace.ForeignWorkspace;
 import pt.ulisboa.tecnico.cmov.airdesk.manager.WorkspaceManager;
 import pt.ulisboa.tecnico.cmov.airdesk.util.Constants;
 
-public class LocalFilesFragment extends Fragment {
+public class RemoteFilesFragment extends Fragment {
 
-    public static final String TAG = LocalFilesFragment.class.getSimpleName();
+    public static final String TAG = RemoteFilesFragment.class.getSimpleName();
 
-    LocalWorkspace mWorkspace;
+    ForeignWorkspace mWorkspace;
 
-    List<LocalFile> mFiles;
+    List<RemoteFile> mFiles;
     ListView mFileListView;
     FileListAdapter mFileListAdapter;
 
-    public LocalFilesFragment() {setHasOptionsMenu(true);}
+    public RemoteFilesFragment() {setHasOptionsMenu(true);}
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setHasOptionsMenu(true);
         Bundle bundle = getArguments();
-        mWorkspace = WorkspaceManager.getInstance().getLocalWorkspaceWithId(bundle.getLong(Constants.WORKSPACE_ID_KEY));
+        mWorkspace = WorkspaceManager.getInstance().getForeignWorkspaceWithId(bundle.getLong(Constants.WORKSPACE_ID_KEY));
     }
 
     @Override
@@ -68,7 +66,7 @@ public class LocalFilesFragment extends Fragment {
                 LocalFile file = ((LocalFile) parent.getItemAtPosition(position));
 
                 Intent intent = new Intent(getActivity(), FileActivity.class);
-                intent.putExtra(Constants.FILE_NAME_KEY, file.getName());
+                intent.putExtra(Constants.FILE_NAME_KEY, file.getFile().getName());
                 intent.putExtra(Constants.WORKSPACE_ID_KEY, mWorkspace.getDatabaseId());
                 startActivity(intent);
             }
@@ -127,25 +125,6 @@ public class LocalFilesFragment extends Fragment {
             case R.id.refresh_files:
                 updateFileList();
                 break;
-            case R.id.delete_all_files:
-                new AlertDialog.Builder(getActivity())
-                        .setTitle("Delete All")
-                        .setMessage("Are you sure you want to delete all your files from this workspace?")
-                        .setPositiveButton(android.R.string.yes, new DialogInterface.OnClickListener() {
-                            public void onClick(DialogInterface dialog, int which) {
-                                WorkspaceManager.getInstance().removeAllFilesFromWorkspace(mWorkspace);
-                                mFileListAdapter.notifyDataSetChanged();
-                                Toast.makeText(getActivity(), "DELETED", Toast.LENGTH_SHORT).show();
-                            }
-                        })
-                        .setNegativeButton(android.R.string.no, new DialogInterface.OnClickListener() {
-                            public void onClick(DialogInterface dialog, int which) {
-                                // do nothing
-                            }
-                        })
-                        .setIcon(android.R.drawable.ic_dialog_alert)
-                        .show();
-                break;
         }
         return super.onOptionsItemSelected(item);
     }
@@ -162,15 +141,8 @@ public class LocalFilesFragment extends Fragment {
     public boolean onContextItemSelected(MenuItem item) {
 
         AdapterView.AdapterContextMenuInfo info = (AdapterView.AdapterContextMenuInfo) item.getMenuInfo();
-
-        switch(item.getItemId()){
-            case R.id.menu_file_delete:
-                LocalFile file = (LocalFile) mFileListAdapter.getItem(info.position);
-                WorkspaceManager.getInstance().removeFileFromWorkspace(file, mWorkspace);
-                mFileListAdapter.notifyDataSetChanged();
-                break;
-        }
         return true;
+
     }
 
     @Override
@@ -185,6 +157,6 @@ public class LocalFilesFragment extends Fragment {
 
 
     public static Fragment newInstance() {
-        return new LocalFilesFragment();
+        return new RemoteFilesFragment();
     }
 }

@@ -25,6 +25,22 @@ import pt.ulisboa.tecnico.cmov.airdesk.util.Constants;
 public class DealWithRequestTask extends AsyncTask<SimWifiP2pSocket, String, Void> {
 
     public static final String TAG = DealWithRequestTask.class.getSimpleName();
+    private Thread mTimeLimitThread;
+
+    @Override
+    protected void onPreExecute() {
+        mTimeLimitThread = new Thread(new Runnable() {
+            @Override
+            public void run() {
+                try {
+                    Thread.sleep(Constants.TIME_TO_DEAL_WITH_REQUESTS);
+                    DealWithRequestTask.this.cancel(true);
+                } catch (InterruptedException e) {
+                    Log.i(TAG + "[THREAD]", "Interrupted");
+                }
+            }
+        });
+    }
 
     @Override
     protected Void doInBackground(SimWifiP2pSocket... params) {

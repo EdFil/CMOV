@@ -14,8 +14,6 @@ import java.util.List;
 
 import pt.ulisboa.tecnico.cmov.airdesk.core.file.LocalFile;
 import pt.ulisboa.tecnico.cmov.airdesk.core.file.RemoteFile;
-import pt.ulisboa.tecnico.cmov.airdesk.core.file.exception.FileAlreadyExistsException;
-import pt.ulisboa.tecnico.cmov.airdesk.core.subscription.Subscription;
 import pt.ulisboa.tecnico.cmov.airdesk.core.user.User;
 import pt.ulisboa.tecnico.cmov.airdesk.core.workspace.ForeignWorkspace;
 import pt.ulisboa.tecnico.cmov.airdesk.core.workspace.LocalWorkspace;
@@ -33,7 +31,6 @@ public class WorkspaceManager {
     private static WorkspaceManager mInstance;
     private List<LocalWorkspace> mLocalWorkspaces;
     private List<ForeignWorkspace> mForeignWorkspaces;
-
 
 
     public static synchronized WorkspaceManager getInstance() {
@@ -60,14 +57,9 @@ public class WorkspaceManager {
     public void refreshWorkspaceLists(){
         List<LocalWorkspace> workspaces = getWorkspacesFromDB();
         mLocalWorkspaces.clear();
-        mForeignWorkspaces.clear();
-        for(Workspace workspace : workspaces) {
-            if(workspace instanceof LocalWorkspace) {
-                mLocalWorkspaces.add((LocalWorkspace) workspace);
-            }
-            else
-                mForeignWorkspaces.add((ForeignWorkspace) workspace);
-        }
+
+        for(LocalWorkspace workspace : workspaces)
+            mLocalWorkspaces.add(workspace);
     }
 
     public Workspace createLocalWorkspace(String name, long quota, boolean isPrivate, Collection<String> tags) {
@@ -169,16 +161,10 @@ public class WorkspaceManager {
     }
 
     public LocalFile addFileToWorkspace(String fileName, LocalWorkspace workspace) {
-        LocalFile localFile = null;
-        try {
-            localFile = new LocalFile(workspace, fileName, 0);
             AirDeskDbHelper.getInstance(getContext()).insertFileToWorkspace(workspace, fileName, 0);
+            LocalFile localFile = new LocalFile(workspace, fileName, 0);
             workspace.addFile(localFile);
-        } catch (Exception e) {
-            throw new FileAlreadyExistsException(fileName);
-        } finally {
             return localFile;
-        }
     }
 
     public void removeFileFromWorkspace(LocalFile file, LocalWorkspace workspace) {
@@ -236,6 +222,13 @@ public class WorkspaceManager {
         return null;
     }
 
+    public ForeignWorkspace getForeignWorkspaceWithId(long databaseId) {
+        for(ForeignWorkspace workspace : mForeignWorkspaces)
+            if(workspace.getDatabaseId() == databaseId)
+                return workspace;
+        return null;
+    }
+
 
     public List<LocalWorkspace> getLocalWorkspacesWithTags(String... tags) {
         List<LocalWorkspace> workspaceList = new ArrayList<>();
@@ -276,6 +269,4 @@ public class WorkspaceManager {
         for(ForeignWorkspace foreignWorkspace : foreignWorkspaces)
             unmountForeignWorkspace(foreignWorkspace);
     }
-
-
 }
