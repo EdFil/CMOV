@@ -13,13 +13,21 @@ import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.OutputStreamWriter;
 import java.net.UnknownHostException;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
 import java.util.Random;
 
 import pt.inesc.termite.wifidirect.SimWifiP2pDevice;
 import pt.inesc.termite.wifidirect.sockets.SimWifiP2pSocket;
+import pt.ulisboa.tecnico.cmov.airdesk.R;
+import pt.ulisboa.tecnico.cmov.airdesk.core.subscription.Subscription;
 import pt.ulisboa.tecnico.cmov.airdesk.core.user.User;
 import pt.ulisboa.tecnico.cmov.airdesk.manager.UserManager;
+import pt.ulisboa.tecnico.cmov.airdesk.manager.WifiDirectManager;
+import pt.ulisboa.tecnico.cmov.airdesk.manager.WorkspaceManager;
 import pt.ulisboa.tecnico.cmov.airdesk.service.GetUserService;
+import pt.ulisboa.tecnico.cmov.airdesk.service.GetWorkspacesToMount;
 import pt.ulisboa.tecnico.cmov.airdesk.util.Constants;
 
 /**
@@ -110,6 +118,8 @@ public class DiscoverTask extends AsyncTask<Void, String, JSONObject> {
                         string.append(onlineUser.toString());
                 Log.i(TAG, string.toString());
             }
+
+            WifiDirectManager.getInstance().updateForeignWorkspaceList();
 
         } catch (JSONException e) {
             e.printStackTrace();

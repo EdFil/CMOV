@@ -85,7 +85,7 @@ public class WorkspaceManager {
             AirDeskDbHelper.getInstance(getContext()).insertTagToWorkspace(newWorkspace, tag);
         }
         AirDeskDbHelper.getInstance(getContext()).insertUserToWorkspace(newWorkspace, owner.getEmail());
-        // Create folder for workspace
+        // Create folder for workspace and Dropbox
         FileManager.getInstance().createLocalFolder(newWorkspace.getWorkspaceFolderName());
         // Add workspace to Workspace Manager
         mLocalWorkspaces.add(newWorkspace);

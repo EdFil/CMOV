@@ -1,5 +1,6 @@
 package pt.ulisboa.tecnico.cmov.airdesk.manager;
 
+import android.app.Activity;
 import android.content.ComponentName;
 import android.content.Context;
 import android.content.Intent;
@@ -12,6 +13,7 @@ import android.os.Messenger;
 import android.util.Log;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 import pt.inesc.termite.wifidirect.SimWifiP2pBroadcast;
@@ -24,7 +26,11 @@ import pt.inesc.termite.wifidirect.SimWifiP2pManager.PeerListListener;
 import pt.inesc.termite.wifidirect.service.SimWifiP2pService;
 import pt.inesc.termite.wifidirect.sockets.SimWifiP2pSocketManager;
 import pt.ulisboa.tecnico.cmov.airdesk.R;
+import pt.ulisboa.tecnico.cmov.airdesk.core.subscription.Subscription;
 import pt.ulisboa.tecnico.cmov.airdesk.receiver.SimWifiP2pBroadcastReceiver;
+import pt.ulisboa.tecnico.cmov.airdesk.service.GetWorkspacesToMount;
+import pt.ulisboa.tecnico.cmov.airdesk.tasks.AsyncResponse;
+import pt.ulisboa.tecnico.cmov.airdesk.tasks.BroadcastTask;
 import pt.ulisboa.tecnico.cmov.airdesk.tasks.DiscoverTask;
 import pt.ulisboa.tecnico.cmov.airdesk.tasks.ServerTask;
 
@@ -51,6 +57,12 @@ public class WifiDirectManager implements PeerListListener, GroupInfoListener{
     // ------------------------
     //      Manager Stuff
     // ------------------------
+
+    public interface NetworkUpdate {
+        void onForeignWorkspaceUpdate();
+    }
+
+    private NetworkUpdate mCallBack;
 
     private SimWifiP2pManager mManager = null;
     private SimWifiP2pManager.Channel mChannel = null;
@@ -164,4 +176,45 @@ public class WifiDirectManager implements PeerListListener, GroupInfoListener{
     public List<SimWifiP2pDevice> getPeerList() {
         return mPeerList;
     }
+
+    public void setOnForeignWorkspaceUpdate(NetworkUpdate networkUpdate) {
+        mCallBack = networkUpdate;
+    }
+
+    public void updateForeignWorkspaceList() {
+        // Load foreign workspaces of subscriptions
+        List<Subscription> subscriptionList =  UserManager.getInstance().getSubscriptionList();
+
+        List<String> arguments = new ArrayList<>();
+        arguments.add(UserManager.getInstance().getOwner().getEmail());
+
+        for(Subscription subscription : subscriptionList)
+            arguments.addAll(Arrays.asList(subscription.getTags()));
+
+        // Get and convert to String[] all tags, to send as arguments of service (String...)
+        String[] tags = new String[arguments.size()];
+        arguments.toArray(tags);
+
+        // Create the broadcast task to send the service to all connected peers
+        BroadcastTask task = new BroadcastTask(
+                Integer.parseInt(WifiDirectManager.getInstance().getContext().getString(R.string.port)),
+                GetWorkspacesToMount.class,
+                tags
+        );
+
+        // Override the callback so we can process the result from the task
+        task.mDelegate = new AsyncResponse() {
+            @Override
+            public void processFinish(String output) {
+                // deals with the broadcast request for the workspaces with the respective tags
+                WorkspaceManager.getInstance().mountForeignWorkspacesFromJSON(output);
+                if(mCallBack != null)
+                    mCallBack.onForeignWorkspaceUpdate();
+//                mForeignWorkspaceListAdapter.notifyDataSetChanged();
+            }
+        };
+        // Execute the broadcast task to request the workspaces with tags
+        task.executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR);
+    }
+
 }

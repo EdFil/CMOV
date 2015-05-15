@@ -16,6 +16,7 @@ import java.util.List;
 import pt.ulisboa.tecnico.cmov.airdesk.R;
 import pt.ulisboa.tecnico.cmov.airdesk.custom.AddTagsLayout;
 import pt.ulisboa.tecnico.cmov.airdesk.manager.UserManager;
+import pt.ulisboa.tecnico.cmov.airdesk.manager.WifiDirectManager;
 
 public class NewSubscriptionFragment extends DialogFragment {
 
@@ -96,6 +97,8 @@ public class NewSubscriptionFragment extends DialogFragment {
 
                 // CALL back to refresh subscription list on the SubscriptionFragment through the AirDeskActivity
                 mCallback.updateSubscriptionList();
+
+                WifiDirectManager.getInstance().updateForeignWorkspaceList();
 
                 // Close dialog fragment
                 dismiss();

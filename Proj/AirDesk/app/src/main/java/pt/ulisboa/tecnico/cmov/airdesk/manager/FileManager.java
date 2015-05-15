@@ -7,6 +7,9 @@ import android.os.StatFs;
 import java.io.File;
 import java.io.IOException;
 
+import pt.ulisboa.tecnico.cmov.airdesk.tasks.CreateFolderTask;
+import pt.ulisboa.tecnico.cmov.airdesk.tasks.DeleteFolderTask;
+
 /**
  * Created by edgar on 22-03-2015.
  */
@@ -77,6 +80,7 @@ public class FileManager {
 
     public void deleteLocalFolder(String folderName) {
         delete(new File(mRootFolder, folderName));
+        new DeleteFolderTask().execute(mRootFolder.getName(), folderName);
     }
 
     public void deleteTempFolder(String folderName) {
@@ -124,6 +128,8 @@ public class FileManager {
     private File createFolder(File rootFolder, String folderName){
         File newFolder = new File(rootFolder, folderName);
         newFolder.mkdir();
+        // create folder in Dropbox
+        new CreateFolderTask().execute(rootFolder.getName(), folderName);
         return newFolder;
     }
 

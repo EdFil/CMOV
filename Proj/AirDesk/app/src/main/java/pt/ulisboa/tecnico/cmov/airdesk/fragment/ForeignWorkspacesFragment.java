@@ -31,13 +31,14 @@ import pt.ulisboa.tecnico.cmov.airdesk.adapter.ForeignWorkspaceListAdapter;
 import pt.ulisboa.tecnico.cmov.airdesk.core.subscription.Subscription;
 import pt.ulisboa.tecnico.cmov.airdesk.core.workspace.ForeignWorkspace;
 import pt.ulisboa.tecnico.cmov.airdesk.manager.UserManager;
+import pt.ulisboa.tecnico.cmov.airdesk.manager.WifiDirectManager;
 import pt.ulisboa.tecnico.cmov.airdesk.manager.WorkspaceManager;
 import pt.ulisboa.tecnico.cmov.airdesk.service.GetWorkspacesToMount;
 import pt.ulisboa.tecnico.cmov.airdesk.tasks.AsyncResponse;
 import pt.ulisboa.tecnico.cmov.airdesk.tasks.BroadcastTask;
 import pt.ulisboa.tecnico.cmov.airdesk.util.Constants;
 
-public class ForeignWorkspacesFragment extends Fragment {
+public class ForeignWorkspacesFragment extends Fragment implements WifiDirectManager.NetworkUpdate {
 
     /**
      * The fragment argument representing the section number for this
@@ -110,8 +111,6 @@ public class ForeignWorkspacesFragment extends Fragment {
     public void onResume() {
         super.onResume();
         ((AirDeskActivity) getActivity()).updateActionBarTitle();
-        WorkspaceManager.getInstance().getForeignWorkspaces().clear();
-        updateWorkspaceList();
     }
 
     // This will be invoked when an item in the listView is long pressed
@@ -145,7 +144,6 @@ public class ForeignWorkspacesFragment extends Fragment {
                 break;
             case R.id.menu_foreign_leave:
                 WorkspaceManager.getInstance().unmountForeignWorkspace(info.position);
-                updateWorkspaceList();
                 break;
         }
         return true;
@@ -165,27 +163,9 @@ public class ForeignWorkspacesFragment extends Fragment {
         // as you specify a parent activity in AndroidManifest.xml.
 
         if (item.getItemId() == R.id.refresh_workspaces) {
-            updateWorkspaceList();
+            WorkspaceManager.getInstance().getForeignWorkspaces().clear();
+            WifiDirectManager.getInstance().updateForeignWorkspaceList();
             return true;
-        }
-
-        if(item.getItemId() == R.id.delete_all_workspaces) {
-            new AlertDialog.Builder(getActivity())
-                    .setTitle("Delete All")
-                    .setMessage("Are you sure you want to delete all your workspaces?")
-                    .setPositiveButton(android.R.string.yes, new DialogInterface.OnClickListener() {
-                        public void onClick(DialogInterface dialog, int which) {
-                            deleteAllWorkspaces();
-                            Toast.makeText(getActivity(), "DELETED", Toast.LENGTH_SHORT).show();
-                        }
-                    })
-                    .setNegativeButton(android.R.string.no, new DialogInterface.OnClickListener() {
-                        public void onClick(DialogInterface dialog, int which) {
-                            // do nothing
-                        }
-                    })
-                    .setIcon(android.R.drawable.ic_dialog_alert)
-                    .show();
         }
 
         return super.onOptionsItemSelected(item);
@@ -195,51 +175,17 @@ public class ForeignWorkspacesFragment extends Fragment {
     public void onAttach(Activity activity) {
         super.onAttach(activity);
         ((AirDeskActivity) activity).onSectionAttached(getArguments().getInt(ARG_SECTION_NUMBER));
+        WifiDirectManager.getInstance().setOnForeignWorkspaceUpdate(this);
     }
 
-
-    public void addWorkspace() {
-        updateWorkspaceList();
+    @Override
+    public void onDetach() {
+        super.onDetach();
+        WifiDirectManager.getInstance().setOnForeignWorkspaceUpdate(null);
     }
 
-    public void deleteAllWorkspaces() {
-        WorkspaceManager.getInstance().unmountAllForeignWorkspaces();
-        updateWorkspaceList();
-    }
-
-    public void updateWorkspaceList() {
-        // Load foreign workspaces of subscriptions
-        List<Subscription> subscriptionList =  UserManager.getInstance().getSubscriptionList();
-
-        List<String> arguments = new ArrayList<>();
-        arguments.add(UserManager.getInstance().getOwner().getEmail());
-
-        for(Subscription subscription : subscriptionList)
-            arguments.addAll(Arrays.asList(subscription.getTags()));
-
-        // Get and convert to String[] all tags, to send as arguments of service (String...)
-        String[] tags = new String[arguments.size()];
-        arguments.toArray(tags);
-
-        // Create the broadcast task to send the service to all connected peers
-        BroadcastTask task = new BroadcastTask(
-                Integer.parseInt(getString(R.string.port)),
-                GetWorkspacesToMount.class,
-                tags
-        );
-
-        // Override the callback so we can process the result from the task
-        task.mDelegate = new AsyncResponse() {
-            @Override
-            public void processFinish(String output) {
-                // deals with the broadcast request for the workspaces with the respective tags
-                WorkspaceManager.getInstance().mountForeignWorkspacesFromJSON(output);
-                mForeignWorkspaceListAdapter.notifyDataSetChanged();
-            }
-        };
-        // Execute the broadcast task to request the workspaces with tags
-        task.executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR);
-
-
+    @Override
+    public void onForeignWorkspaceUpdate() {
+        mForeignWorkspaceListAdapter.notifyDataSetChanged();
     }
 }
