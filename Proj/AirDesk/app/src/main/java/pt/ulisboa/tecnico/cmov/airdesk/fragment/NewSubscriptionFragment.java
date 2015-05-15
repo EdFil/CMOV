@@ -98,50 +98,16 @@ public class NewSubscriptionFragment extends DialogFragment {
 
                 // Get and convert to String[] all tags, to send as arguments of service (String...)
                 List<String> tagList = mAddTagsLayout.getAllTags();
-                String[] tagValues = new String[tagList.size()];
-                mAddTagsLayout.getAllTags().toArray(tagValues);
+                String[] tags = new String[tagList.size()];
+                tagList.toArray(tags);
 
                 // If no tags were added exit
-                if(tagValues == null || tagValues.length == 0) {
+                if(tags == null || tags.length == 0) {
                     Toast.makeText(getActivity(), "No tags were added.", Toast.LENGTH_SHORT).show();
                     return;
                 }
 
-                UserManager.getInstance().createSubscription(subscriptionName.getText().toString(), tagValues);
-
-                // Create the broadcast task to send the service to all connected peers
-                BroadcastTask task = new BroadcastTask(
-                        Integer.parseInt(getString(R.string.port)),
-                        GetWorkspacesWithTagsService.class,
-                        tagValues
-                );
-
-                // Override the callback so we can process the result from the task
-                task.mDelegate = new AsyncResponse() {
-                    @Override
-                    public void processFinish(String output) {
-                        try {
-                            // Get the response as a JSONObject
-                            JSONObject response = new JSONObject(output);
-
-                            // Check if has error
-                            if (response.has(Constants.ERROR_KEY))
-                                throw new Exception(response.getString(Constants.ERROR_KEY));
-
-                            // Get the list of workspaces returned and add them to our list
-                            JSONArray workspaceArray = response.getJSONArray(Constants.WORKSPACE_LIST_KEY);
-                            for(int i = 0; i < workspaceArray.length(); i++) {
-                                WorkspaceManager.getInstance().mountForeignWorkspace(workspaceArray.getJSONObject(i));
-                            }
-                        } catch (Exception e1) {
-                            // Show our error in a toast
-                            Toast.makeText(getActivity(), "Tripou no delegate do NewSubscriptionFragment", Toast.LENGTH_SHORT).show();
-                        }
-                    }
-                };
-                // Execute our task
-                task.executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR);
-
+                UserManager.getInstance().createSubscription(subscriptionName.getText().toString(), tags);
 
                 // CALL back to refresh subscription list on the SubscriptionFragment through the AirDeskActivity
                 mCallback.updateSubscriptionList();

@@ -4,6 +4,7 @@ import android.app.Activity;
 import android.app.AlertDialog;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
@@ -20,12 +21,21 @@ import android.widget.Button;
 import android.widget.ListView;
 import android.widget.Toast;
 
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
+
 import pt.ulisboa.tecnico.cmov.airdesk.AirDeskActivity;
 import pt.ulisboa.tecnico.cmov.airdesk.R;
 import pt.ulisboa.tecnico.cmov.airdesk.WorkspaceDetailsActivity;
-import pt.ulisboa.tecnico.cmov.airdesk.adapter.WorkspaceListAdapter;
+import pt.ulisboa.tecnico.cmov.airdesk.adapter.ForeignWorkspaceListAdapter;
+import pt.ulisboa.tecnico.cmov.airdesk.core.subscription.Subscription;
 import pt.ulisboa.tecnico.cmov.airdesk.core.workspace.ForeignWorkspace;
+import pt.ulisboa.tecnico.cmov.airdesk.manager.UserManager;
 import pt.ulisboa.tecnico.cmov.airdesk.manager.WorkspaceManager;
+import pt.ulisboa.tecnico.cmov.airdesk.service.GetWorkspacesWithTagsService;
+import pt.ulisboa.tecnico.cmov.airdesk.tasks.AsyncResponse;
+import pt.ulisboa.tecnico.cmov.airdesk.tasks.BroadcastTask;
 import pt.ulisboa.tecnico.cmov.airdesk.util.Constants;
 
 public class ForeignWorkspacesFragment extends Fragment {
@@ -39,7 +49,7 @@ public class ForeignWorkspacesFragment extends Fragment {
 
     WorkspaceManager manager;
 
-    WorkspaceListAdapter mWorkspaceListAdapter;
+    ForeignWorkspaceListAdapter mForeignWorkspaceListAdapter;
 
     public ForeignWorkspacesFragment() {setHasOptionsMenu(true);}
 
@@ -54,10 +64,10 @@ public class ForeignWorkspacesFragment extends Fragment {
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        manager = WorkspaceManager.getInstance();
-        mWorkspaceListAdapter = new WorkspaceListAdapter(getActivity(), WorkspaceManager.getInstance().getForeignWorkspaces());
+        mForeignWorkspaceListAdapter = new ForeignWorkspaceListAdapter(getActivity(), WorkspaceManager.getInstance().getForeignWorkspaces());
         setHasOptionsMenu(true);
     }
+
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
@@ -65,7 +75,7 @@ public class ForeignWorkspacesFragment extends Fragment {
 
 
         ListView listView = (ListView) workspaceFragmentView.findViewById(R.id.workspacesList);
-        listView.setAdapter(mWorkspaceListAdapter);
+        listView.setAdapter(mForeignWorkspaceListAdapter);
 
         // When selecting a workspace replaces this fragment for the FilesFragment
         listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
@@ -110,6 +120,8 @@ public class ForeignWorkspacesFragment extends Fragment {
     public void onResume() {
         super.onResume();
         ((AirDeskActivity) getActivity()).updateActionBarTitle();
+        WorkspaceManager.getInstance().getForeignWorkspaces().clear();
+        updateWorkspaceList();
     }
 
     // This will be invoked when an item in the listView is long pressed
@@ -206,6 +218,38 @@ public class ForeignWorkspacesFragment extends Fragment {
     }
 
     public void updateWorkspaceList() {
-        mWorkspaceListAdapter.notifyDataSetChanged();
+        // Load foreign workspaces of subscriptions
+        List<Subscription> subscriptionList =  UserManager.getInstance().getSubscriptionList();
+
+        List<String> tagList = new ArrayList<>();
+
+        for(Subscription subscription : subscriptionList)
+            tagList.addAll(Arrays.asList(subscription.getTags()));
+
+        // Get and convert to String[] all tags, to send as arguments of service (String...)
+        String[] tags = new String[tagList.size()];
+        tagList.toArray(tags);
+
+        // Create the broadcast task to send the service to all connected peers
+        // TODO : alterar para ter tamb�m os INVITED
+        BroadcastTask task = new BroadcastTask(
+                Integer.parseInt(getString(R.string.port)),
+                GetWorkspacesWithTagsService.class,
+                tags
+        );
+
+        // Override the callback so we can process the result from the task
+        task.mDelegate = new AsyncResponse() {
+            @Override
+            public void processFinish(String output) {
+                // deals with the broadcast request for the workspaces with the respective tags
+                WorkspaceManager.getInstance().mountForeignWorkspacesFromJSON(output);
+                mForeignWorkspaceListAdapter.notifyDataSetChanged();
+            }
+        };
+        // Execute the broadcast task to request the workspaces with tags
+        task.executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR);
+
+
     }
 }

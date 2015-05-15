@@ -29,7 +29,6 @@ public class BroadcastTask extends AsyncTask<Void, String, Void> {
         // Get all peers in network
         List<User> usersInNetwork = UserManager.getInstance().getUsers();
 
-
         // Iterate all the devices
         for(int i = 0; i < usersInNetwork.size(); i++) {
             SimWifiP2pDevice device = usersInNetwork.get(i).getDevice();

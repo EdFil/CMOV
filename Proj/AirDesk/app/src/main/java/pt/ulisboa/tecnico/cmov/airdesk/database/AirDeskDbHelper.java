@@ -445,7 +445,7 @@ public class AirDeskDbHelper extends SQLiteOpenHelper {
         int columnTagsIndex = cursor.getColumnIndex(SubscriptionEntry.COLUMN_TAGS);
 
         while(cursor.moveToNext()){
-            subscriptions.add(new Subscription(cursor.getString(columnNameIndex), cursor.getString(columnTagsIndex).split("|")));
+            subscriptions.add(new Subscription(cursor.getString(columnNameIndex), cursor.getString(columnTagsIndex).split("\\|")));
         }
 
         cursor.close();

@@ -56,9 +56,6 @@ public class LocalWorkspacesFragment extends Fragment {
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
-        manager = WorkspaceManager.getInstance();
-        // TODO: This in global state?
-        manager.refreshWorkspaceLists();
         mWorkspaceListAdapter = new WorkspaceListAdapter(getActivity(), WorkspaceManager.getInstance().getLocalWorkspaces());
         setHasOptionsMenu(true);
     }

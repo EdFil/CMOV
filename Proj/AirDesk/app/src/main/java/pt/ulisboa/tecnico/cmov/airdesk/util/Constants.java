@@ -31,4 +31,8 @@ public final class Constants {
     // Threads & Requests
     public static final long TIME_TO_DEAL_WITH_REQUESTS = 2000;
     public static final int REQUEST_DELAY = 1000;
+
+    public static final int REQUEST_PORT = 10001;
+
+
 }

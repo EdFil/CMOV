@@ -13,6 +13,7 @@ import java.util.Random;
 
 import pt.ulisboa.tecnico.cmov.airdesk.core.subscription.Subscription;
 import pt.ulisboa.tecnico.cmov.airdesk.core.user.User;
+import pt.ulisboa.tecnico.cmov.airdesk.core.workspace.Workspace;
 import pt.ulisboa.tecnico.cmov.airdesk.database.AirDeskDbHelper;
 
 /**
@@ -111,12 +112,14 @@ public class UserManager {
     }
 
     // Clears the subscription list
-    public void refreshSubscriptionList(){
+    public List<Subscription> loadSubscriptions(){
         List<Subscription> subscriptions = AirDeskDbHelper.getInstance(getContext()).getSubscriptions(getOwner());
         mSubscriptionList.clear();
 
         for(Subscription subscription : subscriptions)
             mSubscriptionList.add(subscription);
+
+        return mSubscriptionList;
     }
 
 
@@ -202,11 +205,13 @@ public class UserManager {
         String[] subTags = subscription.getTags();
         mSubscriptionList.remove(position);
 
-        // remove foreign workspaces regarding this subscription and no one else
-        ArrayList allOtherTags = getAllTags();
-        String[] tagsToRemove = removeTagsFromSubscription(subTags, allOtherTags);
-
-        WorkspaceManager.getInstance().unmountForeignWorkspacesWithTags(tagsToRemove);
         AirDeskDbHelper.getInstance(getContext()).removeSubscriptionFromUser(getOwner(), subscription);
+
+        // remove foreign workspaces regarding this subscription and no one else
+//        ArrayList allOtherTags = getAllTags();
+//        String[] tagsToRemove = removeTagsFromSubscription(subTags, allOtherTags);
+//
+//        WorkspaceManager.getInstance().unmountForeignWorkspacesWithTags(tagsToRemove);
+
     }
 }
