@@ -19,6 +19,7 @@ import pt.ulisboa.tecnico.cmov.airdesk.core.user.User;
 import pt.ulisboa.tecnico.cmov.airdesk.core.workspace.ForeignWorkspace;
 import pt.ulisboa.tecnico.cmov.airdesk.core.workspace.LocalWorkspace;
 import pt.ulisboa.tecnico.cmov.airdesk.core.workspace.Workspace;
+import pt.ulisboa.tecnico.cmov.airdesk.core.workspace.exception.WorkspaceException;
 import pt.ulisboa.tecnico.cmov.airdesk.database.AirDeskDbHelper;
 import pt.ulisboa.tecnico.cmov.airdesk.tasks.DeleteFileTask;
 import pt.ulisboa.tecnico.cmov.airdesk.tasks.UploadFileTask;
@@ -74,6 +75,8 @@ public class WorkspaceManager {
     }
 
     public Workspace createLocalWorkspace(String name, long quota, boolean isPrivate, Collection<String> tags) {
+        if(WorkspaceManager.getInstance().getLocalWorkspaceWithName(name) != null)
+            throw new WorkspaceException("Workspace \"" + name + "\" already exists");
         // Create workspace
         User owner = UserManager.getInstance().getOwner();
         LocalWorkspace newWorkspace = new LocalWorkspace(name, owner, quota, isPrivate, tags);
