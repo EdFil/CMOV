@@ -20,6 +20,7 @@ import pt.ulisboa.tecnico.cmov.airdesk.core.workspace.ForeignWorkspace;
 import pt.ulisboa.tecnico.cmov.airdesk.core.workspace.LocalWorkspace;
 import pt.ulisboa.tecnico.cmov.airdesk.core.workspace.Workspace;
 import pt.ulisboa.tecnico.cmov.airdesk.database.AirDeskDbHelper;
+import pt.ulisboa.tecnico.cmov.airdesk.tasks.UploadFileTask;
 import pt.ulisboa.tecnico.cmov.airdesk.util.Constants;
 
 public class WorkspaceManager {
@@ -191,6 +192,10 @@ public class WorkspaceManager {
     public LocalFile addFileToWorkspace(String fileName, LocalWorkspace workspace) {
         AirDeskDbHelper.getInstance(getContext()).insertFileToWorkspace(workspace, fileName, 0);
         LocalFile localFile = new LocalFile(workspace, fileName, 0);
+
+        String path = localFile.getFile().getPath();
+        new UploadFileTask().execute(path);
+
         workspace.addFile(localFile);
         return localFile;
     }

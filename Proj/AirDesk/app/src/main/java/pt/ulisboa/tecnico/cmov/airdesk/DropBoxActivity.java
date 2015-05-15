@@ -40,7 +40,7 @@ public class DropBoxActivity extends ActionBarActivity {
     private TextView fileContent;
 
     private SharedPreferences mSharedPreferences;
-    private DropboxAPI<AndroidAuthSession> mDBApi;
+    public static DropboxAPI<AndroidAuthSession> mDBApi;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -83,34 +83,37 @@ public class DropBoxActivity extends ActionBarActivity {
             }
         }
 
-        FileOutputStream fos = null;
-        if (mDBApi.getSession().authenticationSuccessful()) {
-            try {
-                Toast.makeText(this, "dropResume", Toast.LENGTH_SHORT).show();
+        Intent intent = new Intent(getApplicationContext(), LoadActivity.class);
+        startActivity(intent);
 
-                // Required to complete auth, sets the access token on the session
-                mDBApi.getSession().finishAuthentication();
-
-                String accessToken = mDBApi.getSession().getOAuth2AccessToken();
-
-                String text = "Text Test";
-                fos = openFileOutput("working-draft.txt", Context.MODE_PRIVATE);
-                fos.write(text.getBytes());
-
-            } catch (IllegalStateException e) {
-                Log.i("DbAuthLog", "Error authenticating", e);
-            } catch (FileNotFoundException e) {
-                e.printStackTrace();
-            } catch (IOException e) {
-                e.printStackTrace();
-            } finally {
-                try {
-                    fos.close();
-                } catch (IOException e) {
-                    Log.d("DROP BOX ACTIVIY", "Close error.");
-                }
-            }
-        }
+//        FileOutputStream fos = null;
+//        if (mDBApi.getSession().authenticationSuccessful()) {
+//            try {
+//                Toast.makeText(this, "dropResume", Toast.LENGTH_SHORT).show();
+//
+//                // Required to complete auth, sets the access token on the session
+//                mDBApi.getSession().finishAuthentication();
+//
+//                String accessToken = mDBApi.getSession().getOAuth2AccessToken();
+//
+//                String text = "Text Test";
+//                fos = openFileOutput("working-draft.txt", Context.MODE_PRIVATE);
+//                fos.write(text.getBytes());
+//
+//            } catch (IllegalStateException e) {
+//                Log.i("DbAuthLog", "Error authenticating", e);
+//            } catch (FileNotFoundException e) {
+//                e.printStackTrace();
+//            } catch (IOException e) {
+//                e.printStackTrace();
+//            } finally {
+//                try {
+//                    fos.close();
+//                } catch (IOException e) {
+//                    Log.d("DROP BOX ACTIVIY", "Close error.");
+//                }
+//            }
+//        }
     }
 
     private void loadAuth(AndroidAuthSession session) {
@@ -167,6 +170,9 @@ public class DropBoxActivity extends ActionBarActivity {
     public void copy(View view){
         File file = new File("working-draft.txt");
         new PutFileTask().execute(file.getName());
+
+        Intent intent = new Intent(getApplicationContext(), LoadActivity.class);
+        startActivity(intent);
     }
 
     public void download(View view){
