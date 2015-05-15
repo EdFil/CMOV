@@ -2,6 +2,7 @@ package pt.ulisboa.tecnico.cmov.airdesk.fragment;
 
 import android.app.Activity;
 import android.app.DialogFragment;
+import android.os.AsyncTask;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -11,28 +12,33 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.Toast;
 
+import org.json.JSONObject;
+
 import pt.ulisboa.tecnico.cmov.airdesk.R;
-import pt.ulisboa.tecnico.cmov.airdesk.core.workspace.LocalWorkspace;
+import pt.ulisboa.tecnico.cmov.airdesk.core.workspace.ForeignWorkspace;
 import pt.ulisboa.tecnico.cmov.airdesk.manager.WorkspaceManager;
+import pt.ulisboa.tecnico.cmov.airdesk.service.CreateFileService;
+import pt.ulisboa.tecnico.cmov.airdesk.tasks.AsyncResponse;
+import pt.ulisboa.tecnico.cmov.airdesk.tasks.RequestTask;
 import pt.ulisboa.tecnico.cmov.airdesk.util.Constants;
 
-public class NewFileFragment extends DialogFragment {
+public class NewRemoteFileFragment extends DialogFragment {
 
-    OnNewFileFragmentListener mCallback;
+    OnRemoteNewFileFragmentListener mCallback;
 
     // AirDeskActivity must implement this interface
-    public interface OnNewFileFragmentListener {
-        public void updateLocalFileList();
+    public interface OnRemoteNewFileFragmentListener {
+        public void updateRemoteFileList();
     }
 
-    LocalWorkspace mWorkspace;
+    ForeignWorkspace mWorkspace;
 
     Button mCancelButton;
     Button mCreateButton;
     EditText mFileNameText;
 
-    public static NewFileFragment newInstance() {
-        return new NewFileFragment();
+    public static NewRemoteFileFragment newInstance() {
+        return new NewRemoteFileFragment();
     }
 
     @Override
@@ -42,7 +48,7 @@ public class NewFileFragment extends DialogFragment {
 
         // Get the WORKSPACE selected in order to retrieve the respective files
         Bundle bundle = getArguments();
-        mWorkspace = WorkspaceManager.getInstance().getLocalWorkspaceWithId(bundle.getLong(Constants.WORKSPACE_ID_KEY));
+        mWorkspace = WorkspaceManager.getInstance().getForeignWorkspaceWithId(bundle.getLong(Constants.WORKSPACE_ID_KEY));
 
         // Store the references to the view elements in this fragment
         mFileNameText = (EditText) view.findViewById(R.id.newFileName);
@@ -63,7 +69,7 @@ public class NewFileFragment extends DialogFragment {
         // This makes sure that the container activity has implemented
         // the callback interface. If not, it throws an exception
         try {
-            mCallback = (OnNewFileFragmentListener) activity;
+            mCallback = (OnRemoteNewFileFragmentListener) activity;
         } catch (ClassCastException e) {
             throw new ClassCastException(activity.toString() + " must implement OnHeadlineSelectedListener");
         }
@@ -85,16 +91,37 @@ public class NewFileFragment extends DialogFragment {
     private View.OnClickListener mCreateButtonOnClickListener = new View.OnClickListener() {
         @Override
         public void onClick(View v) {
-            String fileName = mFileNameText.getText().toString().trim();
+            final String fileName = mFileNameText.getText().toString().trim();
 
             try {
-                // Create workspace with associated user (owner) in database
-                WorkspaceManager.getInstance().addFileToWorkspace(fileName, mWorkspace);
+                String ip = mWorkspace.getOwner().getDevice().getVirtIp();
+                int port = Integer.parseInt(getString(R.string.port));
 
-                // request the activity to update the FilesFragment's files
-                mCallback.updateLocalFileList();
+                RequestTask task = new RequestTask(ip, port, CreateFileService.class, mWorkspace.getName(), fileName);
+                task.mDelegate = new AsyncResponse() {
+                    @Override
+                    public void processFinish(String output) {
+                        // Get the response as a JSONObject
+                        try {
+                            JSONObject response = new JSONObject(output);
 
-                Toast.makeText(v.getContext(), "File created", Toast.LENGTH_SHORT).show();
+                            // Check if has error
+                            if (response.has(Constants.ERROR_KEY)) {
+                                throw new Exception(response.getString(Constants.ERROR_KEY));
+                            }
+
+                            // Create workspace with associated user (owner) in database
+                            WorkspaceManager.getInstance().addFileToWorkspace(fileName, mWorkspace);
+
+                            // request the activity to update the FilesFragment's files
+                            mCallback.updateRemoteFileList();
+                        } catch (Exception e) {
+                            Toast.makeText(getActivity(), e.getMessage(), Toast.LENGTH_SHORT).show();
+                        }
+                    }
+                };
+                task.executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR, null);
+
 
                 // Close dialog fragment
                 dismiss();

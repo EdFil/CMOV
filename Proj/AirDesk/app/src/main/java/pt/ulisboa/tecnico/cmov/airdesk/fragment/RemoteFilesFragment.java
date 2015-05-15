@@ -81,15 +81,15 @@ public class RemoteFilesFragment extends Fragment {
             @Override
             public void onClick(View buttonView) {
                 // Create fragment
-                NewFileFragment newFileFragment = new NewFileFragment();
+                NewRemoteFileFragment newRemoteFileFragment = new NewRemoteFileFragment();
 
                 // set the Workspace to send to fragment
                 Bundle bundle = new Bundle();
                 bundle.putLong(Constants.WORKSPACE_ID_KEY, mWorkspace.getDatabaseId());
-                newFileFragment.setArguments(bundle);
+                newRemoteFileFragment.setArguments(bundle);
 
                 // Show dialog fragment
-                newFileFragment.show(getActivity().getFragmentManager(), NewFileFragment.class.getSimpleName());
+                newRemoteFileFragment.show(getActivity().getFragmentManager(), NewRemoteFileFragment.class.getSimpleName());
             }
         });
         return fileFragmentView;

@@ -68,6 +68,9 @@ public class DiscoverTask extends AsyncTask<Void, String, JSONObject> {
 
             // Wait for the server's response
             JSONObject serverResponse = new JSONObject(reader.readLine());
+            if(serverResponse == null) {
+                Log.e(TAG, "Unknown Error");
+            }
             Log.i(TAG, "Received: " + serverResponse.toString());
 
             // Close everything
