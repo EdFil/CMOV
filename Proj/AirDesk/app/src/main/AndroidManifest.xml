@@ -39,6 +39,7 @@
         </activity>
         <activity
             android:name="com.dropbox.client2.android.AuthActivity"
+            android:noHistory="true"
             android:configChanges="orientation|keyboard"
             android:launchMode="singleTask" >
             <intent-filter>
@@ -86,6 +87,7 @@
         </activity>
         <activity
             android:name=".LoadActivity"
+            android:noHistory="true"
             android:label="@string/title_activity_loading" >
         </activity>
     </application>

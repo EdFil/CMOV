@@ -122,6 +122,11 @@ public class AddTagsLayout extends LinearLayout {
         return mTagsLayout.getChildCount() == 0;
     }
 
+    public void setAllTags(List<String> tags) {
+        for(String string : tags)
+            addTag(string);
+    }
+
     // -----------------
     // --- Listeners ---
     // -----------------

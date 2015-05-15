@@ -24,7 +24,6 @@ import pt.ulisboa.tecnico.cmov.airdesk.database.AirDeskContract.SubscriptionEntr
 import pt.ulisboa.tecnico.cmov.airdesk.database.AirDeskContract.TagsEntry;
 import pt.ulisboa.tecnico.cmov.airdesk.database.AirDeskContract.UsersEntry;
 import pt.ulisboa.tecnico.cmov.airdesk.database.AirDeskContract.WorkspaceEntry;
-import pt.ulisboa.tecnico.cmov.airdesk.manager.UserManager;
 
 public class AirDeskDbHelper extends SQLiteOpenHelper {
 
@@ -165,6 +164,7 @@ public class AirDeskDbHelper extends SQLiteOpenHelper {
         SQLiteDatabase db = mInstance.getWritableDatabase();
 
         db.delete(UsersEntry.TABLE_NAME, UsersEntry._ID + "=" + userId, null);
+        db.delete(SubscriptionEntry.TABLE_NAME, SubscriptionEntry.COLUMN_USER_KEY + "=" + userId, null);
 
         db.close();
     }

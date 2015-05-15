@@ -325,4 +325,16 @@ public class WorkspaceManager {
         workspace.setQuota(quota);
         AirDeskDbHelper.getInstance(getContext()).updateWorkspace(workspace.getDatabaseId(), null, quota, null);
     }
+
+    public void changeTagsWorkspace(LocalWorkspace mWorkspace, List<String> tags) {
+        List<String> workspaceTags = mWorkspace.getTags();
+        for(String tag : workspaceTags) {
+            AirDeskDbHelper.getInstance(getContext()).removeTagFromWorkspace(mWorkspace, tag);
+            mWorkspace.removeTag(tag);
+        }
+        for(String tag : tags) {
+            AirDeskDbHelper.getInstance(getContext()).insertTagToWorkspace(mWorkspace, tag);
+            mWorkspace.addTag(tag);
+        }
+    }
 }
